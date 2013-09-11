@@ -2,15 +2,14 @@ import datetime
 
 from django.db import models
 from django.db.models import fields
-from django.contrib.csrf.middleware import csrf_exempt
 import logging
 import decimal
 import traceback
 
 import requests
+from pyparsing import *
 
 import grammar
-from pyparsing import *
 from models import *
 from secrets import google_api_key
 

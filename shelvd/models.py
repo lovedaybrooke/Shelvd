@@ -2,7 +2,6 @@ import datetime
 
 from django.db import models
 from django.db.models import fields
-from django.contrib.csrf.middleware import csrf_exempt
 
 from twitterhelper import TwitterHelper
 

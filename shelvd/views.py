@@ -1,15 +1,9 @@
 import logging
 
-from django.shortcuts import render
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.core.context_processors import csrf
-from django.views.decorators.csrf import csrf_protect
-from django.http import HttpResponseRedirect
+from django.contrib.csrf.middleware import csrf_exempt
 
-from models import *
 from twitterhelper import TwitterHelper
-from shelvd import BadThing
+from shelvd import BadThing, Request
 
 
 @csrf_exempt
