@@ -12,6 +12,7 @@ def receiveInput(request):
         try:
             this_request = Request(request.POST["bkinput"])
             this_request.perform()
+            return render(request, 'home.html', {})
         except BadThing, message:
             if request.POST["source"] == "twitter":
                 t = TwitterHelper()
