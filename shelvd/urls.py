@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from django.views.decorators.csrf import csrf_exempt
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -8,7 +9,7 @@ import views
 
 urlpatterns = patterns('',
     url(r'^$', views.home),
-    url(r'^receive-input$', views.receiveInput)
+    url(r'^receive-input$', csrf_exempt(views.receiveInput))
 )
 
     # Examples:
