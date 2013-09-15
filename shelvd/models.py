@@ -20,22 +20,24 @@ class Book(models.Model):
 
     @classmethod
     def find_or_create(cls, request):
-        if request.nick:
-            book = Book.find(request)
-        elif request.ISBN:
-            book = Book.get_or_create(ISBN=request.ISBN)
-            # if book was just created, it won't have a title
-            # so it'll need extra info from google books API
-            if not book.title:
-                book.get_google_book_data()
+        book = Book.find(request)
+        if not book:
+            book = Book(ISBN=request.ISBN)
+            book.get_google_book_data()
         return book
 
     @classmethod
     def find(cls, request):
         if request.nick:
-            book = Book.objects.filter(nick=request.nick).get()
+            nick_query = Book.objects.filter(nick=request.nick)
+            if nick_query:
+                return nick_query.get()
         elif request.ISBN:
-            book = Book.objects.filter(ISBN=request.ISBN).get()
+            ISBN_query = Book.objects.filter(nick=request.nick)
+            if ISBN_query:
+                return ISBN_query.get()
+        else:
+            return False
 
     @classmethod
     def add_to_reading_list(cls, request):
@@ -127,9 +129,13 @@ class Reading(models.Model):
 
     @classmethod
     def find(cls, book, ended, abandoned=False):
-        return Reading.objects.filter('book_ISBN =',
+        reading = Reading.objects.filter('book_ISBN =',
             book.ISBN).filter('ended =', ended).filter('abandoned =',
-            abandoned).get()
+            abandoned)
+        if reading:
+            return reading
+        else:
+            return False
 
     @classmethod
     def start(cls, book):
