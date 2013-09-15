@@ -1,5 +1,3 @@
-import logging
-
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -15,7 +13,6 @@ def receiveInput(request):
             this_request = Request(request.POST["bkinput"])
             this_request.perform()
         except BadThing, message:
-            logging.error(message)
             if request.POST["source"] == "twitter":
                 t = TwitterHelper()
                 t.send_response(message)

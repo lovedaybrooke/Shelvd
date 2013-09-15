@@ -45,8 +45,8 @@ class Book(models.Model):
     def add_to_reading_list(cls, request):
         book = cls.find_or_create(request)
         twitter_helper = TwitterHelper()
-        twitter_helper.send_response("{0} ({1}) added to your reading "
-            "list".format(book.title, book.ISBN))
+        twitter_helper.send_response("{0} ({1}) was added to your"
+            " reading list".format(book.title, book.ISBN))
 
     @classmethod
     def nick_already_used(cls, nick):

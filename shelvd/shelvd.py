@@ -1,12 +1,11 @@
 import datetime
 import os
+import decimal
+import traceback
+import logging
 
 from django.db import models
 from django.db.models import fields
-import logging
-import decimal
-import traceback
-
 import requests
 from pyparsing import *
 

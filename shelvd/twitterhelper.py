@@ -1,4 +1,5 @@
 import os
+import logging
 
 import twitter
 
@@ -15,5 +16,8 @@ class TwitterHelper(object):
         )
         self.api = twitter.Twitter(auth=auth)
 
-    def send_response(self, message):
-        self.api.direct_messages.new(user=os.environ['TWITTER_HANDLE'], text=message)
+    def send_response(self, DM_message):
+        try:
+            self.api.direct_messages.new(user=os.environ['TWITTER_HANDLE'], text=DM_message)
+        except twitter.TwitterHTTPError, message:
+            logging.info(message)
