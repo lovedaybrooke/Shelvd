@@ -2,6 +2,7 @@ import logging
 
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
+from django.http import HttpResponse
 
 from twitterhelper import TwitterHelper
 from shelvd import BadThing, Request
@@ -18,6 +19,7 @@ def receiveInput(request):
             if request.POST["source"] == "twitter":
                 t = TwitterHelper()
                 t.send_response(message)
+                return HttpResponse("OK")
             else:
                 return render(request, 'home.html', {'error': 'message'})
 
