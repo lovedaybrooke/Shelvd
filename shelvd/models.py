@@ -153,11 +153,11 @@ class Reading(models.Model):
         return self.bookmarks.order_by('-date').first()
 
 
-class Bookmark(db.Model):
+class Bookmark(models.Model):
     reading = models.ForeignKey('Reading', related_name='bookmarks')
     page = models.IntegerField(default=0)
     pages_read = models.IntegerField(default=0)
-    date = models.DateTimeField()(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True)
 
     @classmethod
     def create(cls, request, reading=False):

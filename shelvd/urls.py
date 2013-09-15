@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 
-from views import *
+import views
 
 urlpatterns = patterns('',
     url(r'^receive-tweet$', views.receiveTweet)

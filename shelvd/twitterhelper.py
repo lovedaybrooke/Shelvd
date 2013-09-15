@@ -1,4 +1,4 @@
-import tweepy
+import twitter
 
 import secrets
 
