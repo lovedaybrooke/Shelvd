@@ -11,7 +11,6 @@ from pyparsing import *
 
 import grammar
 from models import *
-from secrets import google_api_key
 
 
 class Request(object):
@@ -60,6 +59,7 @@ class Request(object):
 
     def convert_to_ISBN_13(self, original_ISBN):
         if len(original_ISBN) == 10:
+            google_api_key = os.environ['GOOGLE_API_KEY']
             url = ("https://www.googleapis.com/books/v1/volumes"
                 "?key={0}&country=GB&userIp=86.184.229.225"
                 "&q=isbn:{1}").format(google_api_key, original_ISBN)

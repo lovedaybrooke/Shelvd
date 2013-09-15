@@ -91,6 +91,7 @@ class Book(models.Model):
         self.save()
 
     def get_google_book_data(self):
+        google_api_key = os.environ['GOOGLE_API_KEY']
         url = ("https://www.googleapis.com/books/v1/volumes"
             "?key={0}&country=GB&userIp=86.184.229.225"
             "&q=isbn:{1}").format(google_api_key, self.ISBN)
