@@ -1,5 +1,5 @@
+venv
 shelvdENV
-.env
-.DS_Store
 *.pyc
-staticfiles
+.DS_Store
+.pep8
