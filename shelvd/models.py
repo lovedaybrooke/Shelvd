@@ -14,7 +14,7 @@ class Book(models.Model):
     page_count = models.IntegerField()
     title = models.CharField(max_length=500)
     author = models.CharField(max_length=500)
-    last_action_date = models.DateTimeField()
+    last_action_date = models.DateTimeField(blank=True, null=True)
 
     @property
     def identifier(self):
@@ -111,7 +111,7 @@ class Reading(models.Model):
     book = models.ForeignKey('Book', related_name='readings')
     book_ISBN = models.CharField(max_length=13)
     start_date = models.DateTimeField(auto_now_add=True)
-    end_date = models.DateTimeField()
+    end_date = models.DateTimeField(blank=True, null=True)
     ended = models.BooleanField(default=False)
     abandoned = models.BooleanField(default=False)
 
