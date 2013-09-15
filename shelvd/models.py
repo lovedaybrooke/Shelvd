@@ -7,11 +7,11 @@ from twitterhelper import TwitterHelper
 
 
 class Book(models.Model):
-    ISBN = models.CharField(primary_key=True)
-    nick = models.CharField()
+    ISBN = models.CharField(primary_key=True, max_length=13)
+    nick = models.CharField(max_length=500)
     page_count = models.IntegerField()
-    title = models.CharField()
-    author = models.CharField()
+    title = models.CharField(max_length=500)
+    author = models.CharField(max_length=500)
     last_action_date = models.DateTimeField()
 
     @property
@@ -105,7 +105,7 @@ class Book(models.Model):
 
 class Reading(models.Model):
     book = models.ForeignKey('Book', related_name='readings')
-    book_ISBN = models.CharField()
+    book_ISBN = models.CharField(max_length=13)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField()
     ended = models.BooleanField(default=False)
