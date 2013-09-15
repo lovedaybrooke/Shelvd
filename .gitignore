@@ -1,4 +1,5 @@
 shelvdENV
 .env
+.DS_Store
 *.pyc
 staticfiles
