@@ -9,7 +9,7 @@ from twitterhelper import TwitterHelper
 
 
 class Book(models.Model):
-    ISBN = models.CharField(primary_key=True, max_length=13)
+    isbn = models.CharField(primary_key=True, max_length=13)
     nick = models.CharField(max_length=500)
     page_count = models.IntegerField()
     title = models.CharField(max_length=500)
@@ -18,22 +18,22 @@ class Book(models.Model):
 
     @property
     def identifier(self):
-        return self.nick or self.ISBN
+        return self.nick or self.isbn
 
     @classmethod
     def find_or_create(cls, request):
         book = Book.find(request)
         if not book:
-            book = Book(ISBN=request.ISBN)
+            book = Book(isbn=request.isbn)
             book.get_google_book_data()
         return book
 
     @classmethod
     def find(cls, request):
-        if request.ISBN:
-            ISBN_query = Book.objects.filter(ISBN=request.ISBN)
-            if ISBN_query:
-                return ISBN_query.get()
+        if request.isbn:
+            isbn_query = Book.objects.filter(isbn=request.isbn)
+            if isbn_query:
+                return isbn_query.get()
             else:
                 return False
         elif request.nick:
@@ -50,7 +50,7 @@ class Book(models.Model):
         book = cls.find_or_create(request)
         twitter_helper = TwitterHelper()
         twitter_helper.send_response("{0} ({1}) was added to your"
-            " reading list".format(book.title, book.ISBN))
+            " reading list".format(book.title, book.isbn))
 
     @classmethod
     def nick_already_used(cls, nick):
@@ -84,7 +84,7 @@ class Book(models.Model):
                     booklist.append({"end_date": reading.clean_end_date,
                         "title": book.title,
                         "identifier": book.identifier,
-                        "isbn": book.ISBN,
+                        "isbn": book.isbn,
                         "page": bookmark.page})
 
         else:
@@ -94,7 +94,7 @@ class Book(models.Model):
             # ie, have had no action, so no last_action_date
                 if not book.last_action_date:
                     booklist.append({"title": book.title,
-                        "isbn": book.ISBN})
+                        "isbn": book.isbn})
 
         return booklist
 
@@ -106,7 +106,7 @@ class Book(models.Model):
         google_api_key = os.environ['GOOGLE_API_KEY']
         url = ("https://www.googleapis.com/books/v1/volumes"
             "?key={0}&country=GB&userIp=86.184.229.225"
-            "&q=isbn:{1}").format(google_api_key, self.ISBN)
+            "&q=isbn:{1}").format(google_api_key, self.isbn)
         bkdata = requests.get(url).json()
         volumedata = bkdata.get('items', [{}])[0].get('volumeInfo', {})
         self.title = volumedata.get('title', 'Unknown')
@@ -117,7 +117,7 @@ class Book(models.Model):
 
 class Reading(models.Model):
     book = models.ForeignKey('Book', related_name='readings')
-    book_ISBN = models.CharField(max_length=13)
+    book_isbn = models.CharField(max_length=13)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(blank=True, null=True)
     ended = models.BooleanField(default=False)
@@ -139,7 +139,7 @@ class Reading(models.Model):
 
     @classmethod
     def find(cls, book, ended, abandoned=False):
-        reading = Reading.objects.filter(book_ISBN=book.ISBN).filter(
+        reading = Reading.objects.filter(book_isbn=book.isbn).filter(
             ended=ended).filter(abandoned=abandoned)
         if reading:
             return reading
@@ -149,7 +149,7 @@ class Reading(models.Model):
     @classmethod
     def start(cls, book, request):
         reading = Reading(book=book,
-            book_ISBN=book.ISBN)
+            book_isbn=book.isbn)
         reading.save()
         Bookmark.create(request, reading)
         return reading

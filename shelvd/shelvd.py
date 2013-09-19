@@ -26,7 +26,7 @@ class Request(object):
         self.initiator = exp.initiator
         self.terminator = exp.terminator
         self.readinglist = exp.readinglist
-        self.ISBN = self.convert_to_ISBN_13(exp.ISBN)
+        self.isbn = self.convert_to_isbn_13(exp.isbn)
 
         if exp.percent:
             decimal_percent = decimal.Decimal(int(exp.percent[0]))
@@ -46,7 +46,7 @@ class Request(object):
             self.validate_end_reading()
             book = Book.find(self)
             Reading.end(book)
-        elif self.ISBN and self.nick:
+        elif self.isbn and self.nick:
             self.validate_create_nick()
             book = Book.find(self)
             book.create_nick(self.nick)
@@ -58,23 +58,23 @@ class Request(object):
         else:
             raise BadThing("Sorry, I don't understand your input")
 
-    def convert_to_ISBN_13(self, original_ISBN):
-        if len(original_ISBN) == 10:
+    def convert_to_isbn_13(self, original_isbn):
+        if len(original_isbn) == 10:
             google_api_key = os.environ['GOOGLE_API_KEY']
             url = ("https://www.googleapis.com/books/v1/volumes"
                 "?key={0}&country=GB&userIp=86.184.229.225"
-                "&q=isbn:{1}").format(google_api_key, original_ISBN)
+                "&q=isbn:{1}").format(google_api_key, original_isbn)
             bkdata = requests.get(url).json()
             volumedata = bkdata.get('items', [{}])[0].get('volumeInfo', {})
-            ISBNs = bkdata['items'][0]['volumeInfo']['industryIdentifiers']
-            for ISBN in ISBNs:
-                if ISBN["type"] == 'ISBN_13':
-                    return ISBN['identifier']
-        return original_ISBN
+            isbns = bkdata['items'][0]['volumeInfo']['industryIdentifiers']
+            for isbn in isbns:
+                if isbn["type"] == 'ISBN_13':
+                    return isbn['identifier']
+        return original_isbn
 
     def validate_start_reading(self):
         # check there's actually an ISBN
-        if not self.ISBN:
+        if not self.isbn:
             raise BadThing("You need to include a 10 or 13 digit ISBN to "
                 "start a book.")
         # check reading not already started
