@@ -30,14 +30,18 @@ class Book(models.Model):
 
     @classmethod
     def find(cls, request):
-        if request.nick:
+        if request.ISBN:
+            ISBN_query = Book.objects.filter(ISBN=request.ISBN)
+            if ISBN_query:
+                return ISBN_query.get()
+            else:
+                return False
+        elif request.nick:
             nick_query = Book.objects.filter(nick=request.nick)
             if nick_query:
                 return nick_query.get()
-        elif request.ISBN:
-            ISBN_query = Book.objects.filter(nick=request.nick)
-            if ISBN_query:
-                return ISBN_query.get()
+            else:
+                return False
         else:
             return False
 
