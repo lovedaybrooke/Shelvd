@@ -162,7 +162,7 @@ class Reading(models.Model):
         Bookmark.create(request, reading)
         return reading
 
-    def end(self):
+    def end(self, request):
         self.ended = True
         self.end_date = datetime.datetime.now()
         if request.terminator == 'abandon':

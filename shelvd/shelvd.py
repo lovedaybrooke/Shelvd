@@ -45,7 +45,8 @@ class Request(object):
         elif self.terminator:
             self.validate_end_reading()
             book = Book.find(self)
-            Reading.end(book)
+            reading = Reading.find(book, False)
+            reading.end(self)
         elif self.isbn and self.nick:
             self.validate_create_nick()
             book = Book.find(self)
@@ -90,7 +91,7 @@ class Request(object):
             raise BadThing("You haven't started that book yet.")
         # check that there is an unfinished reading
         if not Reading.find(book, False):
-            # if there's a finished reading, adjust error message
+            # if there's a finished or abandoned reading, adjust error message
             if Reading.find(book, True) or Reading.find(book, True, True):
                 raise BadThing("You've already finished this book.")
             else:
