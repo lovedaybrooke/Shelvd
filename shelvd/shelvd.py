@@ -48,7 +48,8 @@ class Request(object):
             Reading.end(book)
         elif self.ISBN and self.nick:
             self.validate_create_nick()
-            Book.create_nick(self.nick)
+            book = Book.find(self)
+            book.create_nick(self.nick)
         elif 'page' in dir(self) or 'percent' in dir(self):
             self.validate_create_bookmark()
             book = Book.find_or_create(self)

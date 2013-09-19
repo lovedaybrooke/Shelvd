@@ -54,7 +54,11 @@ class Book(models.Model):
 
     @classmethod
     def nick_already_used(cls, nick):
-        return Book.objects.filter(nick=nick).get()
+        nick_query = Book.objects.filter(nick=nick)
+        if nick_query:
+            return nick_query.get()
+        else:
+            return False
 
     @classmethod
     def generate_booklist(cls, type):
