@@ -131,9 +131,8 @@ class Reading(models.Model):
 
     @classmethod
     def find(cls, book, ended, abandoned=False):
-        reading = Reading.objects.filter('book_ISBN =',
-            book.ISBN).filter('ended =', ended).filter('abandoned =',
-            abandoned)
+        reading = Reading.objects.filter(book_ISBN=book.ISBN).filter(
+            ended=ended).filter(abandoned=abandoned)
         if reading:
             return reading
         else:
