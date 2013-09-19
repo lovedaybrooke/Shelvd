@@ -54,7 +54,7 @@ class Request(object):
             self.validate_create_bookmark()
             book = Book.find_or_create(self)
             reading = Reading.find(book, False)
-            Bookmark.create_bookmark(reading, self.page_count)
+            Bookmark.create(self, reading)
         else:
             raise BadThing("Sorry, I don't understand your input")
 
@@ -120,8 +120,8 @@ class Request(object):
                 "can log some reading.")
         # check that the most recent bookmark is fewer pages than this new one
         else:
-            last_bookmark = Bookmark.get_most_recent(reading).page
-            page = Bookmark.get_pages(self, book)
+            last_bookmark = reading.get_most_recent_bookmark().page
+            page = book.calculate_page(self)
             if last_bookmark > page:
                 raise BadThing("You've already read this far.")
 

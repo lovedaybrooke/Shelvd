@@ -114,6 +114,14 @@ class Book(models.Model):
         self.page_count = volumedata.get('pageCount', 350)
         self.save()
 
+    def calculate_page(self, request):
+        if request.initiator:
+            return 1
+        elif 'page' in dir(request):
+            return request.page
+        elif 'percent' in dir(request):
+            return int(self.page_count * request.percent)
+
 
 class Reading(models.Model):
     book = models.ForeignKey('Book', related_name='readings')
@@ -142,7 +150,7 @@ class Reading(models.Model):
         reading = Reading.objects.filter(book_isbn=book.isbn).filter(
             ended=ended).filter(abandoned=abandoned)
         if reading:
-            return reading
+            return reading.get()
         else:
             return False
 
@@ -165,7 +173,7 @@ class Reading(models.Model):
         self.save()
 
     def get_most_recent_bookmark(self):
-        return self.bookmarks.order_by('-date').first()
+        return self.bookmarks.order_by('-date')[0]
 
 
 class Bookmark(models.Model):
@@ -180,19 +188,11 @@ class Bookmark(models.Model):
             reading = Reading.find(book, False)
         bookmark = Bookmark()
         bookmark.reading = reading
-        bookmark.page = bookmark.calculate_page(request, reading.book)
+        bookmark.page = reading.book.calculate_page(request)
         bookmark.page_read = bookmark.calculate_pages_read(request, reading)
         bookmark.save()
         reading.book.last_action_date = bookmark.date
         reading.book.save()
-
-    def calculate_page(self, request, book):
-        if request.initiator:
-            return 1
-        elif 'page' in dir(request):
-            return request.page
-        elif 'percent' in dir(request):
-            return int(book.page_count * request.percent)
 
     def calculate_pages_read(self, request, reading):
         # set pages read, using previous bookmark, if one exists
