@@ -147,12 +147,11 @@ class Reading(models.Model):
             return False
 
     @classmethod
-    def start(cls, book):
+    def start(cls, book, request):
         reading = Reading(book=book,
             book_ISBN=book.ISBN)
         reading.save()
-        request.page = 1
-        Bookmark.create(request, book, reading)
+        Bookmark.create(request, reading)
         return reading
 
     def end(self):
@@ -188,7 +187,9 @@ class Bookmark(models.Model):
         reading.book.save()
 
     def calculate_page(self, request, book):
-        if 'page' in dir(request):
+        if request.initiator:
+            return 1
+        elif 'page' in dir(request):
             return request.page
         elif 'percent' in dir(request):
             return int(book.page_count * request.percent)

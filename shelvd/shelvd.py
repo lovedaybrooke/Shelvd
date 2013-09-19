@@ -41,7 +41,7 @@ class Request(object):
         elif self.initiator:
             self.validate_start_reading()
             book = Book.find_or_create(self)
-            Reading.start(book)
+            Reading.start(book, self)
         elif self.terminator:
             self.validate_end_reading()
             book = Book.find(self)
@@ -79,8 +79,9 @@ class Request(object):
                 "start a book.")
         # check reading not already started
         book = Book.find(self)
-        if Reading.find(book, False):
-            raise BadThing("You've already started that book.")
+        if book:
+            if Reading.find(book, False):
+                raise BadThing("You've already started that book.")
 
     def validate_end_reading(self):
         # check that the book is in the DB
