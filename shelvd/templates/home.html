@@ -1,4 +1,16 @@
-{% block maincontent %}
-<h1>Shelvd</h1>
-{{ error }}
-{% endblock %}
+{% extends "basic-layout.html" %}
+
+   	{% block maincontent %}
+          {% if unfinished_books %}
+              {% for bookdata in unfinished_books %}
+                <p class = "booklist">{{ bookdata.title }} ({{ bookdata.identifier }}): page {{ bookdata.page }}</p>
+              {% endfor %}
+          {% else %}
+            <p>You're not reading any books at the moment.</p>
+          {% endif %}
+    {% endblock %}
+      
+	{% block navigation %}
+    <p><span class="nav">Reading</span><span class="nav"><a href="/finished">Finished</a></span><span class="nav"><a href="/abandoned">Abandoned</a></span><a href="/reading-list">Reading list</a></p>
+    <p><a href="/change-details">Change book details</a></p>
+	{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "basic-layout.html" %}
+
+   	{% block maincontent %}
+      {% if reading_list %}
+          {% for bookdata in reading_list %}
+            <p class = "booklist">{{ bookdata.title }} ({{ bookdata.isbn }})</p>
+          {% endfor %}
+      {% else %}
+        <p>There are no unread books on your reading list.</p>
+      {% endif %}
+    {% endblock %}
+      
+	{% block navigation %}
+    <p><span class="nav"><a href="/">Reading</a></span><span class="nav"><a href="/finished">Finished</a></span><span class="nav"><a href="/abandoned">Abandoned</a></span>Reading list</p>
+    <p><a href="/change-details">Change book details</a></p>
+	{% endblock %}

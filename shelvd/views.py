@@ -4,6 +4,7 @@ from django.http import HttpResponse
 
 from twitterhelper import TwitterHelper
 from shelvd import BadThing, Request
+from models import *
 
 
 @csrf_exempt
@@ -23,4 +24,24 @@ def receiveInput(request):
 
 def home(request):
     if request.method == 'GET':
-        return render(request, 'home.html', {})
+        unfinished_books = Book.generate_booklist('unfinished')
+        return render(request, 'home.html',
+            {'unfinished_books': unfinished_books})
+
+def finished(request):
+    if request.method == 'GET':
+        finished_books = Book.generate_booklist('finished')
+        return render(request, 'finished.html',
+            {'finished_books': finished_books})
+
+def abandoned(request):
+    if request.method == 'GET':
+        abandoned_books = Book.generate_booklist('abandoned')
+        return render(request, 'abandoned.html',
+            {'abandoned_books': abandoned_books})
+
+def readingList(request):
+    if request.method == 'GET':
+        reading_list_books = Book.generate_booklist('reading_list_books')
+        return render(request, 'reading-list.html',
+            {'reading_list_books': reading_list_books})

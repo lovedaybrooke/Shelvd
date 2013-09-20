@@ -1,0 +1,65 @@
+body {
+  font-family: Helvetica, sans-serif;
+  font-size: 14px;
+  background-color: #2E6444;
+  text-align: center;
+}
+
+div.content {
+  width: 350px;
+  margin: solid #2E6444 15px;
+  height: inherit;
+  background-color: #FFFFFA;  
+  padding: 15px;
+}
+
+input {
+  font-family: Helvetica, sans-serif !important;
+  font-size: 1em;
+}
+
+input[type="text"] {
+  font-size: 14px;
+  width: 200px;
+}
+
+#details label {
+    display: block;
+    text-align: left;
+}
+
+#details {
+  text-align: left;
+}
+
+#details input {
+  text-align: center;
+}
+
+h1, h2 {
+  font-family: 'Cardo', serif;
+}
+
+h1 {
+  font-size: 40px;
+  font-weight: 400;
+  /* text-shadow: 2px 2px 2px #aaa; */
+  margin-bottom: 16px;
+  margin-top: 5px;
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: 200;
+  margin-bottom: 12px;
+}
+
+h2.footer {
+  margin-top: 50px;
+}
+
+.nav {
+  margin-right: 10px;
+  padding-right: 10px;
+  border-right: solid 1px black;
+}

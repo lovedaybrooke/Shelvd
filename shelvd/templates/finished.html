@@ -1,0 +1,16 @@
+{% extends "basic-layout.html" %}
+
+   	{% block maincontent %}
+      {% if finished_books %}
+          {% for bookdata in finished_books %}
+            <p class = "booklist">{{ bookdata.title }}, finished on {{ bookdata.end_date }}</p>
+          {% endfor %}
+      {% else %}
+        <p>You haven't finished any books.</p>
+      {% endif %}
+    {% endblock %}
+      
+	{% block navigation %}
+    <p><span class="nav"><a href="/">Reading</a></span><span class="nav">Finished</span><span class="nav"><a href="/abandoned">Abandoned</a></span><a href="/reading-list">Reading list</a></p>
+    <p><a href="/change-details">Change book details</a></p>
+	{% endblock %}

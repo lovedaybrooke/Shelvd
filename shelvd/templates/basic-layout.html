@@ -1,8 +1,25 @@
 <html>
-<head>
-    <title></title>
-</head>
-<body>
-{% block maincontent %}{% endblock %}
-</body>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/static/stylesheets/main.css" />
+    <link  href="http://fonts.googleapis.com/css?family=Cardo:regular&v1" rel="stylesheet" type="text/css" >
+    <!-- Start iPhone -->
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+    <!-- <link rel="apple-touch-icon" href="/iphone.png" /> -->
+    <link media="only screen and (max-device-width: 320px)" href="/static/stylesheets/iphone.css" type= "text/css" rel="stylesheet" />
+    <!-- End iPhone -->
+  </head>
+  <body>
+  <div class="content">
+  <h1>Shelvd</h1>
+
+    
+    {% block maincontent %}
+    {% endblock %}
+    
+
+    <h2 class="footer">My library</h2>
+    {% block navigation %}
+    {% endblock %}
+  </div>
+  </body>
 </html>
