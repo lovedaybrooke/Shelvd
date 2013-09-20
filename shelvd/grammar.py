@@ -7,7 +7,8 @@ __all__ = ['expression']
 initiator = (Keyword('begin') | Keyword('start')).setResultsName("initiator")
 terminator = (Keyword('end') | Keyword('finish')
     | Keyword('abandon')).setResultsName("terminator")
-readinglist = (Keyword('addtoreadinglist')).setResultsName("readinglist")
+addreadinglist = (Keyword('addtoreadinglist')).setResultsName("addreadinglist")
+readinglist = (Keyword('readinglist')).setResultsName("readinglist")
 isbn = Word(nums, min=10, max=13).setResultsName("isbn")
 nick = Word(alphas).setResultsName("nick")
 percent = (Word(nums, min=1, max=2) + Word("%",
@@ -16,6 +17,6 @@ page = Word(nums, min=1, max=4).setResultsName("page")
 
 
 identifier = isbn | nick
-command = initiator | terminator | readinglist | percent | page
+command = initiator | terminator | addreadinglist | percent | page
 
-expression = identifier + command | isbn + nick
+expression = readinglist | identifier + command | isbn + nick

@@ -53,6 +53,15 @@ class Book(models.Model):
             " reading list".format(book.title, book.isbn))
 
     @classmethod
+    def print_reading_list(cls):
+        books = cls.generate_booklist('unfinished')
+        twitter_helper = TwitterHelper()
+        for book in books:
+            print book
+            twitter_helper.send_response("You've read '{0}' ({1}) to page"
+                " {2}".format(book["title"], book["identifier"], book["page"]))
+
+    @classmethod
     def nick_already_used(cls, nick):
         nick_query = Book.objects.filter(nick=nick)
         if nick_query:
@@ -79,7 +88,7 @@ class Book(models.Model):
             for book in books:
                 reading = Reading.find(book, ended, abandoned)
                 if reading:
-                    bookmark = reading.bookmarks.order_by('-date').first()
+                    bookmark = reading.bookmarks.order_by('-date')[0]
 
                     booklist.append({"end_date": reading.clean_end_date,
                         "title": book.title,

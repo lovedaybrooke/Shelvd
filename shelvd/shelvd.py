@@ -26,6 +26,7 @@ class Request(object):
         self.initiator = exp.initiator
         self.terminator = exp.terminator
         self.readinglist = exp.readinglist
+        self.addreadinglist = exp.addreadinglist
         self.isbn = self.convert_to_isbn_13(exp.isbn)
 
         if exp.percent:
@@ -36,8 +37,10 @@ class Request(object):
             self.page = int(exp.page)
 
     def perform(self):
-        if self.readinglist:
+        if self.addreadinglist:
             Book.add_to_reading_list(self)
+        elif self.readinglist:
+            Book.print_reading_list()
         elif self.initiator:
             self.validate_start_reading()
             book = Book.find_or_create(self)
