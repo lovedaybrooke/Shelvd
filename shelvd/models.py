@@ -135,7 +135,7 @@ class Book(models.Model):
 class Reading(models.Model):
     book = models.ForeignKey('Book', related_name='readings')
     book_isbn = models.CharField(max_length=13)
-    start_date = models.DateTimeField(blank=True, null=True)
+    start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(blank=True, null=True)
     ended = models.BooleanField(default=False)
     abandoned = models.BooleanField(default=False)
