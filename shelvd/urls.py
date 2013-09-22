@@ -12,7 +12,8 @@ urlpatterns = patterns('',
     url(r'^abandoned$', views.abandoned),
     url(r'^finished$', views.finished),
     url(r'^reading-list$', views.readingList),
-    url(r'^receive-input$', csrf_exempt(views.receiveInput))
+    url(r'^receive-input$', csrf_exempt(views.receiveInput)),
+    url(r'^data-transfer$', csrf_exempt(views.dataTransfer))
 )
 
     # Examples:

@@ -20,7 +20,46 @@ def receiveInput(request):
                 t.send_response(message)
                 return HttpResponse("OK")
             else:
-                return render(request, 'home.html', {'error': 'message'})
+                return render(request, 'home.html', {'error': message})
+
+@csrf_exempt
+def dataTransfer(request):
+    if request.method == 'POST':
+        input_type = request.POST["type"]
+        if input_type == "book":
+            ISBNs = [book.isbn for book in Book.objects.all()]
+            if request.POST["isbn"] not in ISBNs:
+                book = Book()
+                book.isbn = request.POST["isbn"]
+                book.title = request.POST["title"]
+                book.author = request.POST["author"]
+                book.page_count = request.POST["page_count"]
+                book.nick = request.POST.get("nick", "")
+                if request.POST.get("last_action_date"):
+                    book.last_action_date = request.POST["last_action_date"]
+                book.save()
+        if input_type == "reading":
+            if not Reading.objects.filter(start_date = request.POST["start_date"]):
+                reading = Reading()
+                reading.book = Book.objects.filter(isbn=request.POST["isbn"]).get()
+                reading.ended = request.POST["ended"]
+                reading.abandoned = request.POST["abandoned"]
+                if request.POST.get("end_date"):
+                    reading.end_date = request.POST["end_date"]
+                reading.start_date = request.POST["start_date"]
+                reading.save()
+        if input_type == "bookmark":
+            book = Book.objects.filter(isbn=request.POST["isbn"]).get()
+            reading = Reading.objects.filter(book=book).filter(
+                start_date=request.POST["start_date"]).get()
+            bookmark = Bookmark()
+            bookmark.reading = reading
+            bookmark.date = request.POST["date"]
+            bookmark.page = request.POST["page"]
+            bookmark.pages_read = request.POST["pages_read"]
+            bookmark.save()
+
+    return render(request, 'home.html', {})
 
 def home(request):
     if request.method == 'GET':
