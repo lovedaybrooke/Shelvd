@@ -1,8 +1,8 @@
 {% extends "basic-layout.html" %}
 
    	{% block maincontent %}
-      {% if reading_list %}
-          {% for bookdata in reading_list %}
+      {% if reading_list_books %}
+          {% for bookdata in reading_list_books %}
             <p class = "booklist">{{ bookdata.title }} ({{ bookdata.isbn }})</p>
           {% endfor %}
       {% else %}

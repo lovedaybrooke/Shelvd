@@ -57,7 +57,6 @@ class Book(models.Model):
         books = cls.generate_booklist('unfinished')
         twitter_helper = TwitterHelper()
         for book in books:
-            print book
             twitter_helper.send_response("You've read '{0}' ({1}) to page"
                 " {2}".format(book["title"], book["identifier"], book["page"]))
 
@@ -97,7 +96,7 @@ class Book(models.Model):
                         "page": bookmark.page})
 
         else:
-            books = Book.all()  # order by most recently added first
+            books = Book.objects.all()  # order by most recently added first
             for book in books:
             # reading list books are those that haven't even been started
             # ie, have had no action, so no last_action_date
@@ -156,10 +155,10 @@ class Reading(models.Model):
 
     @classmethod
     def find(cls, book, ended, abandoned=False):
-        reading = Reading.objects.filter(book_isbn=book.isbn).filter(
-            ended=ended).filter(abandoned=abandoned)
+        reading = Reading.objects.filter(book=book).filter(ended=ended).filter(
+            abandoned=abandoned).order_by('-start_date')
         if reading:
-            return reading.get()
+            return reading[0]
         else:
             return False
 

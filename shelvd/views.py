@@ -42,6 +42,6 @@ def abandoned(request):
 
 def readingList(request):
     if request.method == 'GET':
-        reading_list_books = Book.generate_booklist('reading_list_books')
+        reading_list_books = Book.generate_booklist('reading_list')
         return render(request, 'reading-list.html',
             {'reading_list_books': reading_list_books})
