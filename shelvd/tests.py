@@ -5,6 +5,9 @@ from models import *
 from shelvd import *
 import twitterhelper
 
+# This relies on the environment variables set in .env. Run 
+# export $(cat .env) 
+# in terminal before running tests
 
 class ModelsTestCase(TestCase):
     fixtures = ['models.json']
@@ -20,16 +23,15 @@ class ModelsTestCase(TestCase):
             isbn=self.new_book_isbn)
         self.request_new = Request_new()
 
-    def test_find_or_create__creating_new_book(self):
-        """ Test that new book not in DB is created """
+    def test_find_or_create(self):
+        """ Test that new book not in DB is created, and that book already 
+        in DB is returned, not created again
+        """
 
         Book.find_or_create(self.request_new)
 
         self.assertTrue(len(Book.objects.filter(isbn=self.new_book_isbn).all())
              == 1, "New book not created by Book.find_or_create")
-
-    def test_find_or_create__finding_existing_book(self):
-        """ Test that book already in DB is returned, not created again """
 
         self.assertTrue(len(Book.objects.filter(
             isbn=self.existing_book_isbn).all()) == 1,
@@ -50,7 +52,8 @@ class ModelsTestCase(TestCase):
 
         book.nick = "Jimmy Shakespeare"
         self.assertTrue(book.identifier == 'Jimmy Shakespeare',
-            "Book's identifier method doesn't return nickname when exists")
+            "Book's identifier method doesn't return nickname when "
+            "nickname exists")
 
     @fudge.patch('shelvd.twitterhelper.TwitterHelper')
     def test_add_to_reading_list(self, FakeTwitterHelper):
