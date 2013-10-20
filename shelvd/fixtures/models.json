@@ -1,0 +1,11 @@
+[
+  {
+    "model": "shelvd.book",
+    "pk": 9780230200951,
+    "fields": {
+      "title": "The Complete Works of William Shakespeare",
+      "author": "William Shakespeare",
+      "page_count": 2552
+    }
+  }
+]

@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import fields
 import requests
 
-from twitterhelper import TwitterHelper
+import twitterhelper
 
 
 class Book(models.Model):
@@ -48,14 +48,14 @@ class Book(models.Model):
     @classmethod
     def add_to_reading_list(cls, request):
         book = cls.find_or_create(request)
-        twitter_helper = TwitterHelper()
+        twitter_helper = twitterhelper.TwitterHelper()
         twitter_helper.send_response("{0} ({1}) was added to your"
             " reading list".format(book.title, book.isbn))
 
     @classmethod
     def print_reading_list(cls):
         books = cls.generate_booklist('unfinished')
-        twitter_helper = TwitterHelper()
+        twitter_helper = twitterhelper.TwitterHelper()
         for book in books:
             twitter_helper.send_response("You've read '{0}' ({1}) to page"
                 " {2}".format(book["title"], book["identifier"], book["page"]))
