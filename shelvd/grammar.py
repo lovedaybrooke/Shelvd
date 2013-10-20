@@ -8,6 +8,7 @@ initiator = (Keyword('begin') | Keyword('start')).setResultsName("initiator")
 terminator = (Keyword('end') | Keyword('finish')
     | Keyword('abandon')).setResultsName("terminator")
 addreadinglist = (Keyword('addtoreadinglist')).setResultsName("addreadinglist")
+help = (Keyword('Help') | Keyword('help')).setResultsName("help")
 currentlyreading = (Keyword('reading') | Keyword('Currently reading')
 	| Keyword('currently reading') | Keyword('Reading')).setResultsName(
 	"currentlyreading")
@@ -21,4 +22,4 @@ page = Word(nums, min=1, max=4).setResultsName("page")
 identifier = isbn | nick
 command = initiator | terminator | addreadinglist | percent | page
 
-expression = currentlyreading | identifier + command | isbn + nick
+expression = help | currentlyreading | identifier + command | isbn + nick

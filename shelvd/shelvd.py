@@ -11,6 +11,7 @@ from pyparsing import *
 
 import grammar
 from models import *
+import twitterhelper
 
 
 class Request(object):
@@ -25,6 +26,7 @@ class Request(object):
         self.nick = exp.nick
         self.initiator = exp.initiator
         self.terminator = exp.terminator
+        self.help = exp.help
         self.currentlyreading = exp.currentlyreading
         self.addreadinglist = exp.addreadinglist
         self.isbn = self.convert_to_isbn_13(exp.isbn)
@@ -41,6 +43,8 @@ class Request(object):
             Book.add_to_reading_list(self)
         elif self.currentlyreading:
             Book.print_books_currently_reading()
+        elif self.help:
+            self.tweet_help()
         elif self.initiator:
             self.validate_start_reading()
             book = Book.find_or_create(self)
@@ -129,6 +133,14 @@ class Request(object):
             if last_bookmark > page:
                 raise BadThing("You've already read this far.")
 
+    def tweet_help(self):
+        t = twitterhelper.TwitterHelper()
+        t.send_response("To start a book:\n{isbn or nick} start\n{isbn or nick}"
+            " begin\n\nTo end a book:\n{isbn or nick} end\n{isbn or nick}"
+            " finish")
+        t.send_response("To nickname a book:\n{isbn} {nickname}\n\nTo log "
+            "reading:\n{isbn or nick} {page no. or %}\n\nTo see books "
+            "currently being read:\ncurrently reading")
 
 class BadThing(Exception):
     pass
