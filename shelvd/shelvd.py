@@ -25,7 +25,7 @@ class Request(object):
         self.nick = exp.nick
         self.initiator = exp.initiator
         self.terminator = exp.terminator
-        self.readinglist = exp.readinglist
+        self.currentlyreading = exp.currentlyreading
         self.addreadinglist = exp.addreadinglist
         self.isbn = self.convert_to_isbn_13(exp.isbn)
 
@@ -39,8 +39,8 @@ class Request(object):
     def perform(self):
         if self.addreadinglist:
             Book.add_to_reading_list(self)
-        elif self.readinglist:
-            Book.print_reading_list()
+        elif self.currentlyreading:
+            Book.print_books_currently_reading()
         elif self.initiator:
             self.validate_start_reading()
             book = Book.find_or_create(self)
