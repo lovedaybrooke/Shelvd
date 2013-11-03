@@ -3,7 +3,6 @@ import fudge
 
 from models import *
 from shelvd import *
-import twitterhelper
 
 # This relies on the environment variables set in .env. Run 
 # export $(cat .env) 
@@ -28,6 +27,7 @@ class ModelsTestCase(TestCase):
         in DB is returned, not created again
         """
 
+        # Need to mock the get_google_books_data() method somehow
         Book.find_or_create(self.request_new)
 
         self.assertTrue(len(Book.objects.filter(isbn=self.new_book_isbn).all())
@@ -71,3 +71,21 @@ class ModelsTestCase(TestCase):
         self.assertTrue(book.isbn == self.new_book_isbn)
         self.assertFalse(book.last_action_date)
         self.assertFalse(book.readings.all())
+
+    def test_get_google_book_data(self):
+        """ Test that Google Books API returns data in the expected format
+        """
+
+        actual_data = Book.get_google_book_data('9781408810545')
+
+        should_be_data = {'isbn': '9781408810545',
+            'title': 'Harry Potter 1 and the Philosopher\'s Stone. Signature Edition B',
+            'author': 'J. K. Rowling',
+            'page_count': 223
+        }
+
+        self.assertEqual(actual_data, should_be_data,
+            'Book.get_google_book_data did not return correct data. Should be:'
+            '\n{0}\nActually is:\n{1}'.format(should_be_data, actual_data))
+
+

@@ -24,9 +24,23 @@ class Book(models.Model):
     def find_or_create(cls, request):
         book = Book.find(request)
         if not book:
-            book = Book(isbn=request.isbn)
-            book.get_google_book_data()
+            book = Book(**cls.get_google_book_data(request.isbn))
+            book.save()
         return book
+
+    @classmethod
+    def get_google_book_data(cls, isbn):
+        google_api_key = os.environ['GOOGLE_API_KEY']
+        url = ("https://www.googleapis.com/books/v1/volumes"
+            "?key={0}&country=GB&userIp=86.184.229.225"
+            "&q=isbn:{1}").format(google_api_key, isbn)
+        bkdata = requests.get(url).json()
+        volumedata = bkdata.get('items', [{}])[0].get('volumeInfo', {})
+        return {'isbn': isbn,
+            'title': volumedata.get('title', 'Unknown'),
+            'author': volumedata.get('authors', ['Unknown'])[0],
+            'page_count': volumedata.get('pageCount', 350)
+        }
 
     @classmethod
     def find(cls, request):
@@ -108,18 +122,6 @@ class Book(models.Model):
 
     def create_nick(self, nick):
         self.nick = nick
-        self.save()
-
-    def get_google_book_data(self):
-        google_api_key = os.environ['GOOGLE_API_KEY']
-        url = ("https://www.googleapis.com/books/v1/volumes"
-            "?key={0}&country=GB&userIp=86.184.229.225"
-            "&q=isbn:{1}").format(google_api_key, self.isbn)
-        bkdata = requests.get(url).json()
-        volumedata = bkdata.get('items', [{}])[0].get('volumeInfo', {})
-        self.title = volumedata.get('title', 'Unknown')
-        self.author = volumedata.get('authors', 'Unknown')[0]
-        self.page_count = volumedata.get('pageCount', 350)
         self.save()
 
     def calculate_page(self, request):
