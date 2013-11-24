@@ -5,7 +5,7 @@ Shelvd is a reading tracking app inspired by Bkkeepr, made by James Bridle and n
 
 The app works off ISBNs and short input messages to track what you've been reading and how much you've read. It has a web interface and a twitter interface and runs on Heroku. Book data comes from Google Books API.
 
-This is the second version of the app, run on Heroku as opposed to Google App Engine. It's actually 2 apps: Shelvd, that does the bulk of the work described in the paragraph above; and Shelvd_Twitter, which simply connects to the Twitter streaming API, keeps that connection open and posts any DMs to Shelvd.
+This is the second version of the app, run on Heroku as opposed to Google App Engine. It's actually 2 apps: Shelvd, that does the bulk of the work described in the paragraph above; and [Shelvd_Twitter](https://github.com/lovedaybrooke/shelvd_twitter), which simply connects to the Twitter streaming API, keeps that connection open and posts any DMs to Shelvd.
 
 Set up
 ------
