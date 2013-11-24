@@ -174,7 +174,7 @@ class Reading(models.Model):
         self.ended = True
         self.end_date = datetime.datetime.now()
         if request.terminator == 'abandon':
-            reading.abandoned = True
+            self.abandoned = True
         else:
             request.page = self.book.page_count
             Bookmark.create(request, self)
