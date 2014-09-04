@@ -3,7 +3,7 @@
    	{% block maincontent %}
       {% if finished_books %}
           {% for bookdata in finished_books %}
-            <p class = "booklist">{{ bookdata.title }}, finished on {{ bookdata.end_date }}</p>
+            <p class = "booklist">{{ bookdata.title }} ({{ bookdata.isbn }}), finished on {{ bookdata.end_date }}</p>
           {% endfor %}
       {% else %}
         <p>You haven't finished any books.</p>
