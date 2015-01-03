@@ -7,5 +7,95 @@
       "author": "William Shakespeare",
       "page_count": 2552
     }
+ },
+ {
+   "model": "shelvd.book",
+   "pk": 9780007491520,
+   "fields": {
+     "title": "Neuromancer",
+     "author": "William Gibson",
+     "page_count": 320,
+     "nick": "Neurom"
+   }
+ },
+ {
+   "model": "shelvd.book",
+   "pk": 9780007284672,
+   "fields": {
+     "title": "The Good News Bible",
+     "author": "Jesus H. Christ",
+     "page_count": 1280
+   }
+ },
+ {
+   "model": "shelvd.reading",
+   "pk": 1,
+   "fields": {
+     "book": 9780007284672,
+     "start_date": "2013-09-11 16:52",
+     "end_date": null,
+     "ended": false,
+     "abandoned": false
+   }
+ },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 11,
+   "fields": {
+     "date": "2013-09-11 16:52",
+     "reading": 1,
+     "page": 1,
+     "pages_read": 1
+   }
+ },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 12,
+   "fields": {
+     "date": "2013-09-13 16:52",
+     "reading": 1,
+     "page": 45,
+     "pages_read": 44
+   }
+ },
+ {
+   "model": "shelvd.book",
+   "pk": 9780192805485,
+   "fields": {
+     "title": "The Qur'an",
+     "author": "Prophet Mohammad",
+     "page_count": 512
+   }
+ },
+ {
+   "model": "shelvd.reading",
+   "pk": 2,
+   "fields": {
+     "book": 9780192805485,
+     "start_date": "2013-08-11 16:52",
+     "end_date": null,
+     "ended": false,
+     "abandoned": false
+   }
+ },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 21,
+   "fields": {
+     "date": "2013-08-11 16:52",
+     "reading": 2,
+     "page": 1,
+     "pages_read": 1
+   }
+ },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 22,
+   "fields": {
+     "date": "2013-08-13 16:52",
+     "reading": 2,
+     "page": 56,
+     "pages_read": 55
+   }
   }
 ]

@@ -12,6 +12,17 @@ class ModelsTestCase(TestCase):
     fixtures = ['models.json']
 
     def setUp(self):
+        def fake_a_request(identifier_type, identifier):
+            if identifier_type == 'isbn':
+                FakeRequest = fudge.Fake('Request').provides(
+                    '__init__').has_attr(isbn=identifier)
+            elif identifier_type == 'nick':
+                FakeRequest = fudge.Fake('Request').provides(
+                    '__init__').has_attr(nick=identifier).has_attr(isbn='')
+            else:
+                FakeRequest = fudge.Fake('Request').provides(
+                    '__init__').has_attr(nick='').has_attr(isbn='')
+            return FakeRequest()
         self.existing_book_isbn = '9780230200951'
         Request_existing = fudge.Fake('Request').provides('__init__').has_attr(
             isbn=self.existing_book_isbn)
