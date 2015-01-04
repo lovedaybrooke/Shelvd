@@ -67,7 +67,7 @@ class Book(models.Model):
             " reading list".format(book.title, book.isbn))
 
     @classmethod
-    def print_books_currently_reading(cls):
+    def tweet_books_currently_reading(cls):
         books = cls.generate_booklist('unfinished')
         twitter_helper = twitterhelper.TwitterHelper()
         for book in books:

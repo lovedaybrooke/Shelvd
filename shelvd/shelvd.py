@@ -42,7 +42,7 @@ class Request(object):
         if self.addreadinglist:
             Book.add_to_reading_list(self)
         elif self.currentlyreading:
-            Book.print_books_currently_reading()
+            Book.tweet_books_currently_reading()
         elif self.help:
             self.tweet_help()
         elif self.initiator:
