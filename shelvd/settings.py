@@ -140,7 +140,7 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 # ...simple-log-to-file-example-for-django-1-3
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'formatters': {
         'standard': {
             'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
@@ -171,7 +171,10 @@ LOGGING = {
         },
         'shelvd': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
+        # to use this logger:
+        # logger = logging.getLogger('shelvd')
+        # logger.info('your message here')
         },
     }
 }
