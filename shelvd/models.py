@@ -1,5 +1,6 @@
 import datetime
 import os
+import json
 
 from django.db import models
 from django.db.models import fields
@@ -73,7 +74,7 @@ class Book(models.Model):
         for book in books:
             twitter_helper.send_response("You've read '{0}' ({1}) to page"
                 " {2}".format(book["title"], book["identifier"], book["page"]))
-
+    
     @classmethod
     def nick_already_used(cls, nick):
         nick_query = Book.objects.filter(nick=nick)
@@ -119,6 +120,11 @@ class Book(models.Model):
                         "isbn": book.isbn})
 
         return booklist
+        
+    @classmethod
+    def generate_json_booklist(cls, type):
+        booklist = cls.generate_booklist(type)
+        return json.dumps(booklist)
 
     def create_nick(self, nick):
         self.nick = nick
