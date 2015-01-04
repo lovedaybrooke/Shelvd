@@ -108,7 +108,8 @@ class Book(models.Model):
                         "title": book.title,
                         "identifier": book.identifier,
                         "isbn": book.isbn,
-                        "page": bookmark.page})
+                        "page": bookmark.page,
+                        "status": type})
 
         else:
             books = Book.objects.all()  # order by most recently added first
@@ -117,7 +118,7 @@ class Book(models.Model):
             # ie, have had no action, so no last_action_date
                 if not book.last_action_date:
                     booklist.append({"title": book.title,
-                        "isbn": book.isbn})
+                        "isbn": book.isbn, "status": "reading_list"})
 
         return booklist
         
