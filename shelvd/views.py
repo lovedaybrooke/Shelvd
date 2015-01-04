@@ -24,46 +24,26 @@ def receiveInput(request):
             else:
                 return render(request, 'home.html', {'error': message})
 
-def home(request):
+def booklistPage(request, book_status):
     if request.method == 'GET':
         if request.META['HTTP_ACCEPT'] == 'application/json':
-            json_booklist = Book.generate_json_booklist('unfinished')
+            json_booklist = Book.generate_json_booklist(book_status)
             return HttpResponse(json_booklist,
                 content_type="application/json")
         else:
-            unfinished_books = Book.generate_booklist('unfinished')
-            return render(request, 'home.html',
-                {'unfinished_books': unfinished_books})
+            dictionary_booklist = Book.generate_booklist(book_status)
+            return render(request, '{0}.html'.format(book_status),
+                {'books': dictionary_booklist})
+
+
+def home(request):
+    return booklistPage(request, "unfinished")
 
 def finished(request):
-    if request.method == 'GET':
-        if request.META['HTTP_ACCEPT'] == 'application/json':
-            json_booklist = Book.generate_json_booklist('finished')
-            return HttpResponse(json_booklist,
-                content_type="application/json")
-        else:
-            finished_books = Book.generate_booklist('finished')
-            return render(request, 'finished.html',
-                {'finished_books': finished_books})
+    return booklistPage(request, "finished")
 
 def abandoned(request):
-    if request.method == 'GET':
-        if request.META['HTTP_ACCEPT'] == 'application/json':
-            json_booklist = Book.generate_json_booklist('abandoned')
-            return HttpResponse(json_booklist,
-                content_type="application/json")
-        else:
-            abandoned_books = Book.generate_booklist('abandoned')
-            return render(request, 'abandoned.html',
-                {'abandoned_books': abandoned_books})
+    return booklistPage(request, "abandoned")
 
 def readingList(request):
-    if request.method == 'GET':
-        if request.META['HTTP_ACCEPT'] == 'application/json':
-            json_booklist = Book.generate_json_booklist('reading_list')
-            return HttpResponse(json_booklist,
-                content_type="application/json")
-        else:
-            reading_list_books = Book.generate_booklist('reading_list')
-            return render(request, 'reading-list.html',
-                {'reading_list_books': reading_list_books})
+    return booklistPage(request, "reading_list")

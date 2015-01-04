@@ -1,8 +1,8 @@
 {% extends "basic-layout.html" %}
 
    	{% block maincontent %}
-      {% if abandoned_books %}
-          {% for bookdata in abandoned_books %}
+      {% if books %}
+          {% for bookdata in books %}
             <p class = "booklist">{{ bookdata.title }} finished on {{ bookdata.end_date }}, at page {{ bookdata.page }} </p>
           {% endfor %}
       {% else %}
@@ -11,6 +11,6 @@
     {% endblock %}
       
 	{% block navigation %}
-    <p><span class="nav"><a href="/">Reading</a></span><span class="nav"><a href="/finished">Finished</a></span><span class="nav">Abandoned</span><a href="/reading-list">Reading list</a></p>
+    <p><span class="nav"><a href="/">Reading</a></span><span class="nav"><a href="/finished">Finished</a></span><span class="nav">Abandoned</span><a href="/reading_list">Reading list</a></p>
     <p><a href="/change-details">Change book details</a></p>
 	{% endblock %}
