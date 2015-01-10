@@ -15,15 +15,23 @@ def receiveInput(request):
         try:
             this_request = Request(request.POST["bkinput"])
             this_request.perform()
-            return render(request, 'home.html', {})
+            if request.POST["source"] == "app":
+                return HttpResponse(json.dumps({"response": "OK"}),
+                    content_type="application/json")
+            else:
+                return render(request, 'unfinished.html', {})
         except BadThing, message:
             if request.POST["source"] == "twitter":
                 t = TwitterHelper()
                 t.send_response(message)
                 return HttpResponse("OK")
+            elif request.POST["source"] == "app":
+                error_message = "{0}".format(message)
+                return HttpResponse(json.dumps({
+                        "response": "error",
+                        "message": error_message}),
+                    content_type="application/json")
             else:
-                return render(request, 'home.html', {'error': message})
-
 def booklistPage(request, book_status):
     if request.method == 'GET':
         if request.META['HTTP_ACCEPT'] == 'application/json':
