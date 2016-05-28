@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import datetime
 import os
 import json
@@ -15,7 +18,7 @@ class Book(models.Model):
     nick = models.CharField(max_length=500)
     page_count = models.IntegerField()
     title = models.CharField(max_length=500)
-    author = models.CharField(max_length=500)
+    author = models.ManyToManyField('Author', related_name='authors', blank=True, default=261)
     last_action_date = models.DateTimeField(blank=True, null=True)
 
     @property
@@ -225,11 +228,15 @@ class Author(models.Model):
     gender = models.CharField(max_length=500, blank=True)
 
     @classmethod
-    def generate_initial_authors(cls):
+    def link_initial_authors(cls):
         logger = logging.getLogger('shelvd')
-        for author_name, gender in authors_genders.iteritems():
-            existing_authors = [author.name for author in Author.objects.all()]
-            if author_name not in existing_authors:
-                logger.info('Adding {0}'.format(author_name))
-                a = Author(name = author_name, gender = gender)
-                a.save()
+        books = Book.objects.all()
+        for book in books:
+            logger.info(u'Checking {0} ({1})'.format(book.title, book.isbn))
+            author_name = books_and_authors[book.isbn]
+            logger.info('    written by {0}'.format(author_name))            
+            author_query = Author.objects.filter(name=author_name)
+            if author_query:
+                book.author = [author_query.get()]
+                logger.info(u'    author set')
+                book.save()

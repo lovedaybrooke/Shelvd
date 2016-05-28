@@ -62,5 +62,5 @@ def readingList(request):
     return booklistPage(request, "reading_list")
 
 def authors(request):
-    Author.generate_initial_authors()
+    Author.link_initial_authors()
     return booklistPage(request, "finished")
