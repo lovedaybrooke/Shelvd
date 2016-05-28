@@ -1,13 +1,14 @@
 import datetime
 import os
 import json
+import logging
 
 from django.db import models
 from django.db.models import fields
 import requests
 
 import twitterhelper
-
+from authordata import *
 
 class Book(models.Model):
     isbn = models.CharField(primary_key=True, max_length=13)
@@ -216,3 +217,19 @@ class Bookmark(models.Model):
         else:
             last_bookmark = reading.get_most_recent_bookmark()
             return self.page - last_bookmark.page
+
+class Author(models.Model):
+    name = models.CharField(max_length=500)
+    nationality = models.CharField(max_length=500, blank=True)
+    ethnicity = models.CharField(max_length=500, blank=True)
+    gender = models.CharField(max_length=500, blank=True)
+
+    @classmethod
+    def generate_initial_authors(cls):
+        logger = logging.getLogger('shelvd')
+        for author_name, gender in authors_genders.iteritems():
+            existing_authors = [author.name for author in Author.objects.all()]
+            if author_name not in existing_authors:
+                logger.info('Adding {0}'.format(author_name))
+                a = Author(name = author_name, gender = gender)
+                a.save()
