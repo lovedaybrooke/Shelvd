@@ -4,7 +4,7 @@
       <h2>I read, but didn't finish</h2>
       {% if books %}
           {% for bookdata in books %}
-            <div class="booklist">
+            <div class="bookinfo">
                   <img src="{{ bookdata.image_url }}"/>
                   <h4>{{ bookdata.title }}</h4><p>{{ bookdata.isbn }}<br>Abandoned on {{ bookdata.end_date }}</p>
             </div>

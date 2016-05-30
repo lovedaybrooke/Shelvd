@@ -1,17 +1,21 @@
 {% extends "basic-layout.html" %}
 
    	{% block maincontent %}
-      <h2>I've read</h2>
-          {% if books %}
-              {% for bookdata in books %}
-                <div class="booklist">
-                  <img src="{{ bookdata.image_url }}"/>
-                  <h4>{{ bookdata.title }}</h4><p>{{ bookdata.isbn }}<br>Finished on {{ bookdata.end_date }}</p>
-                </div>
-          {% endfor %}
-      {% else %}
-        <p>You haven't finished any books.</p>
-      {% endif %}
+      {% for year, booklist in books.items %}
+        <div class='booklist'>
+        <h2>Read in {{ year }}</h2>
+          {% if booklist %}
+                {% for bookdata in booklist %}
+                  <div class="bookinfo">
+                    <img src="{{ bookdata.image_url }}"/>
+                    <h4>{{ bookdata.title }}</h4><p>{{ bookdata.isbn }}<br>Finished on {{ bookdata.end_date }}</p>
+                  </div>
+                {% endfor %}
+          {% else %}
+            <p>You haven't finished any books.</p>
+          {% endif %}
+        </div>
+      {% endfor %}
     {% endblock %}
       
 	{% block navigation %}

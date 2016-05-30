@@ -4,6 +4,7 @@
 import datetime
 import os
 import json
+import collections
 
 from django.db import models
 from django.db.models import fields
@@ -154,7 +155,10 @@ class Book(models.Model):
         else:
             abandoned = False
 
-        if type != 'reading_list':
+
+        if ended and not abandoned:
+            booklist = cls.generate_year_by_year_booklist()
+        else:
             books = Book.objects.order_by('-last_action_date')
             for book in books:
                 reading = Reading.find(book, ended, abandoned)
@@ -169,15 +173,34 @@ class Book(models.Model):
                         "image_url": book.image_url,
                         "status": type})
 
-        else:
-            books = Book.objects.all()  # order by most recently added first
-            for book in books:
-            # reading list books are those that haven't even been started
-            # ie, have had no action, so no last_action_date
-                if not book.last_action_date:
-                    booklist.append({"title": book.title,
-                        "isbn": book.isbn, "status": "reading_list"})
+        return booklist
 
+    @classmethod
+    def generate_year_by_year_booklist(cls):
+        booklist = collections.OrderedDict()
+        oldest_year = Bookmark.objects.order_by('date')[0].date.year
+        this_year = datetime.datetime.today().year
+        years = [year for year in range(oldest_year, this_year + 1)]
+        years.reverse()
+        for year in years:
+            books = Book.objects.filter(
+                last_action_date__gt=datetime.date(year,1,1)
+                ).filter(
+                last_action_date__lt=datetime.date(year+1,1,1)
+                ).order_by('-last_action_date')
+            year_booklist = []
+            for book in books:
+                reading = Reading.find(book, True, False)
+                if reading:
+                    bookmark = reading.bookmarks.order_by('-date')[0]
+                    year_booklist.append({"end_date": reading.clean_end_date,
+                        "title": book.title,
+                        "identifier": book.identifier,
+                        "isbn": book.isbn,
+                        "page": bookmark.page,
+                        "image_url": book.image_url,
+                        "status": type})
+            booklist[year] = year_booklist
         return booklist
         
     @classmethod

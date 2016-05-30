@@ -4,7 +4,7 @@
           <h2>I'm reading</h2>
           {% if books %}
               {% for bookdata in books %}
-                <div class="booklist">
+                <div class="bookinfo">
                   <img src="{{ bookdata.image_url }}"/>
                   <h4>{{ bookdata.title }}</h4>
                   <p>ID: {{ bookdata.identifier }}<br>Read to page {{ bookdata.page }}</p>

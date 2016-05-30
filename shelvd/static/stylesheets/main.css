@@ -70,7 +70,7 @@ h2 {
 
 h4 {
   font-size: 16px;
-  margin: 20px 0px 10px 0px ;
+  margin: 20px 0px 10px 0px;
 }
 
 .nav {
@@ -82,17 +82,22 @@ a {
   color: #009F75;
 }
 
-.booklist img {
+div.booklist {
+  margin-top: 40px;
+  margin-bottom: 90px;
+}
+
+div.bookinfo img {
   width: 180px;
   border: 0.75px #A9A9A9 solid;
   box-shadow: 5px 5px 0px #A9A9A9;
 }
 
-div.booklist {
+div.bookinfo {
   margin: 35px 0px 45px 0px;
 }
 
-.booklist p {
+div.bookinfo p {
   margin: 0px;
   padding: 0px;
 }
