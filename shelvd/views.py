@@ -60,7 +60,3 @@ def abandoned(request):
 
 def readingList(request):
     return booklistPage(request, "reading_list")
-
-def authors(request):
-    Author.link_initial_authors()
-    return booklistPage(request, "finished")

@@ -235,16 +235,3 @@ class Author(models.Model):
     ethnicity = models.CharField(max_length=500, blank=True)
     gender = models.CharField(max_length=500, blank=True)
 
-    @classmethod
-    def link_initial_authors(cls):
-        logger = logging.getLogger('shelvd')
-        books = Book.objects.all()
-        for book in books:
-            logger.info(u'Checking {0} ({1})'.format(book.title, book.isbn))
-            author_name = books_and_authors[book.isbn]
-            logger.info('    written by {0}'.format(author_name))            
-            author_query = Author.objects.filter(name=author_name)
-            if author_query:
-                book.author = [author_query.get()]
-                logger.info(u'    author set')
-                book.save()
