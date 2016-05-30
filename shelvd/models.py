@@ -8,7 +8,7 @@ import json
 from django.db import models
 from django.db.models import fields
 import requests
-from amazon.api import AmazonAPI
+from amazon.api import AmazonAPI, AsinNotFound
 
 import twitterhelper
 
@@ -18,6 +18,7 @@ class Book(models.Model):
     page_count = models.IntegerField()
     title = models.CharField(max_length=500)
     author = models.ManyToManyField('Author', related_name='authors', blank=True, default=261)
+    image_url = models.CharField(max_length=500, blank=True)
     last_action_date = models.DateTimeField(blank=True, null=True)
 
     @property
@@ -76,6 +77,27 @@ class Book(models.Model):
             'page_count': product.pages,
             'authors': product.authors
         }
+
+    def get_amazon_image(self):
+        amazon = AmazonAPI(os.environ['AWS_ACCESS_KEY_ID'],
+            os.environ['AWS_SECRET_ACCESS_KEY'],
+            os.environ['AWS_ASSOCIATE_TAG'],
+            region='UK')
+        try:
+            product = amazon.lookup(ItemId=self.isbn, IdType='ISBN', SearchIndex="Books")
+            if type(product) is list:
+                for prod in product:
+                    if prod.large_image_url:
+                        self.image_url = prod.large_image_url
+                    elif prod.medium_image_url:
+                        self.image_url = prod.medium_image_url
+            elif product.large_image_url:
+                self.image_url = product.large_image_url
+            elif product.medium_image_url:
+                self.image_url = product.medium_image_url
+        except AsinNotFound:
+            self.image_url = "/static/images/unknown.png"
+        self.save()
 
     @classmethod
     def find(cls, request):
