@@ -1,6 +1,3 @@
-import logging
-import time
-
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -61,19 +58,3 @@ def abandoned(request):
 
 def readingList(request):
     return booklistPage(request, "reading_list")
-
-def images(request):
-    logger = logging.getLogger('shelvd')
-    books = Book.objects.filter(image_url='').order_by('isbn')
-    for book in books:
-        logger.info(book.isbn)
-        if book.image_url:
-            logger.info('    already has an image')
-        else:
-            book.get_amazon_image()
-            if book.image_url:
-                logger.info('    image is {0}'.format(book.image_url))
-            else:
-                logger.info('    no URL stored')
-            time.sleep(3)
-    return booklistPage(request, "finished")

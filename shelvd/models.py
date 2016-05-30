@@ -44,6 +44,7 @@ class Book(models.Model):
             authors = Author.find_or_create(author_names)
             for author in authors:
                 book.author.add(author)
+            book.get_amazon_image()
             book.save()
         return book
 
