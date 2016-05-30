@@ -6,7 +6,7 @@
           {% for bookdata in books %}
             <div class="bookinfo">
                   <img src="{{ bookdata.image_url }}"/>
-                  <h4>{{ bookdata.title }}</h4><p>{{ bookdata.isbn }}<br>Abandoned on {{ bookdata.end_date }}</p>
+                  <h4>{{ bookdata.title }}</h4><p>{{ bookdata.isbn }}<br>Abandoned on {{ bookdata.end_date }}, at page {{ bookdata.page}}</p>
             </div>
           {% endfor %}
       {% else %}
