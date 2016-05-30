@@ -11,8 +11,8 @@ urlpatterns = patterns('',
     url(r'^$', views.home),
     url(r'^abandoned$', views.abandoned),
     url(r'^finished$', views.finished),
-    url(r'^reading_list$', views.readingList),
-    url(r'^receive-input$', csrf_exempt(views.receiveInput))
+    url(r'^receive-input$', csrf_exempt(views.receiveInput)),
+    url(r'^bookmarks$', csrf_exempt(views.bookmarks))
 )
 
     # Examples:
