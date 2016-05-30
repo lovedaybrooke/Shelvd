@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import datetime
 import os
 import json
@@ -7,25 +10,38 @@ from django.db.models import fields
 import requests
 
 import twitterhelper
-
+from authordata import *
 
 class Book(models.Model):
     isbn = models.CharField(primary_key=True, max_length=13)
     nick = models.CharField(max_length=500)
     page_count = models.IntegerField()
     title = models.CharField(max_length=500)
-    author = models.CharField(max_length=500)
+    author = models.ManyToManyField('Author', related_name='authors', blank=True, default=261)
     last_action_date = models.DateTimeField(blank=True, null=True)
 
     @property
     def identifier(self):
         return self.nick or self.isbn
 
+    @property
+    def author_names(self):
+        authors = [author.name for author in self.author.all()]
+        if len(authors) > 1:
+            return " & ".join(authors)
+        else:
+            return authors[0]
+
     @classmethod
     def find_or_create(cls, request):
         book = Book.find(request)
         if not book:
-            book = Book(**cls.get_google_book_data(request.isbn))
+            book_info = cls.get_google_book_data(request.isbn)
+            authors = book_info.pop('author')
+            book = Book(**book_info)
+            book.save()
+            for author in authors:
+                book.author.add(author)
             book.save()
         return book
 
@@ -37,9 +53,10 @@ class Book(models.Model):
             "&q=isbn:{1}").format(google_api_key, isbn)
         bkdata = requests.get(url).json()
         volumedata = bkdata.get('items', [{}])[0].get('volumeInfo', {})
+        authors_list = Author.find_or_create(volumedata.get('authors', ['Unknown']))
         return {'isbn': isbn,
             'title': volumedata.get('title', 'Unknown'),
-            'author': volumedata.get('authors', ['Unknown'])[0],
+            'author': authors_list,
             'page_count': volumedata.get('pageCount', 350)
         }
 
@@ -216,3 +233,23 @@ class Bookmark(models.Model):
         else:
             last_bookmark = reading.get_most_recent_bookmark()
             return self.page - last_bookmark.page
+
+class Author(models.Model):
+    name = models.CharField(max_length=500)
+    nationality = models.CharField(max_length=500, blank=True)
+    ethnicity = models.CharField(max_length=500, blank=True)
+    gender = models.CharField(max_length=500, blank=True)
+
+    @classmethod
+    def find_or_create(cls, names_list):
+        author_objects = []
+        for name in names_list:
+            author_query = cls.objects.filter(name=name)
+            if author_query:
+                a = author_query.get()
+                author_objects.append(a)
+            else:
+                a = Author(name=name)
+                a.save()
+                author_objects.append(a)
+        return author_objects
