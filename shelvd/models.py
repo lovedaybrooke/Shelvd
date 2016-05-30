@@ -10,7 +10,6 @@ from django.db.models import fields
 import requests
 
 import twitterhelper
-from authordata import *
 
 class Book(models.Model):
     isbn = models.CharField(primary_key=True, max_length=13)
