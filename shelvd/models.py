@@ -8,6 +8,7 @@ import json
 from django.db import models
 from django.db.models import fields
 import requests
+from amazon.api import AmazonAPI
 
 import twitterhelper
 
@@ -35,10 +36,11 @@ class Book(models.Model):
     def find_or_create(cls, request):
         book = Book.find(request)
         if not book:
-            book_info = cls.get_google_book_data(request.isbn)
-            authors = book_info.pop('author')
+            book_info = cls.get_amazon_book_data(request.isbn)
+            author_names = book_info.pop('author')
             book = Book(**book_info)
             book.save()
+            authors = Author.find_or_create(author_names)
             for author in authors:
                 book.author.add(author)
             book.save()
@@ -52,11 +54,27 @@ class Book(models.Model):
             "&q=isbn:{1}").format(google_api_key, isbn)
         bkdata = requests.get(url).json()
         volumedata = bkdata.get('items', [{}])[0].get('volumeInfo', {})
-        authors_list = Author.find_or_create(volumedata.get('authors', ['Unknown']))
         return {'isbn': isbn,
             'title': volumedata.get('title', 'Unknown'),
-            'author': authors_list,
+            'authors': volumedata.get('authors', ['Unknown']),
             'page_count': volumedata.get('pageCount', 350)
+        }
+
+    @classmethod
+    def get_amazon_book_data(cls, isbn):
+        amazon = AmazonAPI(os.environ['AWS_ACCESS_KEY_ID'],
+            os.environ['AWS_SECRET_ACCESS_KEY'],
+            os.environ['AWS_ASSOCIATE_TAG'],
+            region='UK')
+        product_or_products = amazon.lookup(ItemId=isbn, IdType='ISBN', SearchIndex="Books")
+        if type(product_or_products) is list:
+            product = product_or_products[0]
+        else:
+            product = product_or_products
+        return {'isbn': isbn,
+            'title': product.title,
+            'page_count': product.pages,
+            'authors': product.authors
         }
 
     @classmethod
