@@ -1,5 +1,3 @@
-import logging
-
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -56,21 +54,3 @@ def finished(request):
 
 def abandoned(request):
     return booklistPage(request, "abandoned")
-
-def bookmarks(request):
-    logger = logging.getLogger('shelvd')
-    books = Book.objects.filter(last_action_date__lt='2015-08-23')
-    logger.info('{0} books finished before 2015-08-23'.format(len(books)))
-    logger.info('--------------------------------------------------')
-
-    for book in books:
-        logger.info(u'Book is {0}, ({1})'.format(book.title, book.isbn))
-        last_reading = Reading.objects.filter(book_id=book.isbn).order_by('-end_date')[0]
-        logger.info('    last reading ended {0}'.format(last_reading.end_date))
-        bookmarks = Bookmark.objects.filter(reading_id=last_reading.id).order_by('-id')
-        logger.info('    {0} bookmarks'.format(len(bookmarks)))
-        for bookmark in bookmarks:
-            bookmark.date = last_reading.end_date
-            bookmark.save()
-
-    return booklistPage(request, "finished")
