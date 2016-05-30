@@ -38,7 +38,7 @@ class Book(models.Model):
         book = Book.find(request)
         if not book:
             book_info = cls.get_amazon_book_data(request.isbn)
-            author_names = book_info.pop('author')
+            author_names = book_info.pop('authors')
             book = Book(**book_info)
             book.save()
             authors = Author.find_or_create(author_names)
