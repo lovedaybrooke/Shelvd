@@ -25,6 +25,14 @@ class Book(models.Model):
     def identifier(self):
         return self.nick or self.isbn
 
+    @property
+    def author_names(self):
+        authors = [author.name for author in self.author.all()]
+        if len(authors) > 1:
+            return " & ".join(authors)
+        else:
+            return authors[0]
+
     @classmethod
     def find_or_create(cls, request):
         book = Book.find(request)
