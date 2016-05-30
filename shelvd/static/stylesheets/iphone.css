@@ -2,7 +2,9 @@ div.content {
   width: 280px;
   height: inherit;
   min-height: 93%;
-  margin: solid #2E6444 15px;
-  background-color: #FFFFFA;  
   padding: 10px;
+}
+
+.booklist img {
+  width: 160px;
 }

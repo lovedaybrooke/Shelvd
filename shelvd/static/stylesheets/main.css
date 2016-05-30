@@ -1,15 +1,15 @@
 body {
   font-family: Helvetica, sans-serif;
   font-size: 14px;
-  background-color: #2E6444;
+  background-image: url(../images/paper.png);
+  background-repeat: repeat;
   text-align: center;
 }
 
 div.content {
-  width: 350px;
-  margin: solid #2E6444 15px;
-  height: inherit;
-  background-color: #FFFFFA;  
+  width: 90%;
+  margin: 0px auto;
+  height: inherit; 
   padding: 15px;
 }
 
@@ -36,30 +36,63 @@ input[type="text"] {
   text-align: center;
 }
 
-h1, h2 {
+
+
+h1, h2, h3 {
   font-family: 'Cardo', serif;
 }
 
 h1 {
   font-size: 40px;
   font-weight: 400;
-  /* text-shadow: 2px 2px 2px #aaa; */
-  margin-bottom: 16px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
   margin-top: 5px;
+  border-bottom: 1.75px #5E5E5E solid;
+}
+
+h1 a {
+  text-decoration: none;
+  color: black;
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 200;
-  margin-bottom: 12px;
+  margin: 30px 0px;
 }
 
-h2.footer {
-  margin-top: 50px;
+#footer {
+  padding: 30px 0px;
+  margin-top: 30px;
+  border-top: 1.75px #5E5E5E solid;
+}
+
+h4 {
+  font-size: 16px;
+  margin: 20px 0px 10px 0px ;
 }
 
 .nav {
-  margin-right: 10px;
-  padding-right: 10px;
-  border-right: solid 1px black;
+  margin-right: 20px;
+  padding-right: 20px;
+}
+
+a {
+  color: #009F75;
+}
+
+.booklist img {
+  width: 180px;
+  border: 0.75px #A9A9A9 solid;
+  box-shadow: 5px 5px 0px #A9A9A9;
+}
+
+div.booklist {
+  margin: 35px 0px 45px 0px;
+}
+
+.booklist p {
+  margin: 0px;
+  padding: 0px;
 }

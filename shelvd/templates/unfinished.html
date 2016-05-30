@@ -1,9 +1,14 @@
 {% extends "basic-layout.html" %}
 
    	{% block maincontent %}
+          <h2>I'm reading</h2>
           {% if books %}
               {% for bookdata in books %}
-                <p class = "booklist">{{ bookdata.title }} ({{ bookdata.identifier }}): page {{ bookdata.page }}</p>
+                <div class="booklist">
+                  <img src="{{ bookdata.image_url }}"/>
+                  <h4>{{ bookdata.title }}</h4>
+                  <p>ID: {{ bookdata.identifier }}<br>Read to page {{ bookdata.page }}</p>
+                </div>
               {% endfor %}
           {% else %}
             <p>You're not reading any books at the moment.</p>
@@ -11,6 +16,7 @@
     {% endblock %}
       
 	{% block navigation %}
-    <p><span class="nav">Reading</span><span class="nav"><a href="/finished">Finished</a></span><span class="nav"><a href="/abandoned">Abandoned</a></span><a href="/reading_list">Reading list</a></p>
-    <p><a href="/change-details">Change book details</a></p>
+    <div id="footer">
+      <p><span class="nav">Reading</span><span class="nav"><a href="/finished">Finished</a></span><a href="/abandoned">Abandoned<a></p>
+    </div>
 	{% endblock %}

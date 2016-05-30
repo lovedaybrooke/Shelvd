@@ -166,6 +166,7 @@ class Book(models.Model):
                         "identifier": book.identifier,
                         "isbn": book.isbn,
                         "page": bookmark.page,
+                        "image_url": book.image_url,
                         "status": type})
 
         else:
