@@ -13,12 +13,14 @@ from amazon.api import AmazonAPI, AsinNotFound
 
 import twitterhelper
 
+
 class Book(models.Model):
     isbn = models.CharField(primary_key=True, max_length=13)
     nick = models.CharField(max_length=500)
     page_count = models.IntegerField()
     title = models.CharField(max_length=500)
-    author = models.ManyToManyField('Author', related_name='authors', blank=True, default=261)
+    author = models.ManyToManyField('Author', related_name='authors',
+                blank=True, default=261)
     image_url = models.CharField(max_length=500, blank=True)
     last_action_date = models.DateTimeField(blank=True, null=True)
 
@@ -61,7 +63,7 @@ class Book(models.Model):
             'title': volumedata.get('title', 'Unknown'),
             'authors': volumedata.get('authors', ['Unknown']),
             'page_count': volumedata.get('pageCount', 350)
-        }
+            }
 
     @classmethod
     def get_amazon_book_data(cls, isbn):
@@ -69,7 +71,8 @@ class Book(models.Model):
             os.environ['AWS_SECRET_ACCESS_KEY'],
             os.environ['AWS_ASSOCIATE_TAG'],
             region='UK')
-        product_or_products = amazon.lookup(ItemId=isbn, IdType='ISBN', SearchIndex="Books")
+        product_or_products = amazon.lookup(ItemId=isbn, IdType='ISBN',
+            SearchIndex="Books")
         if type(product_or_products) is list:
             product = product_or_products[0]
         else:
@@ -78,7 +81,7 @@ class Book(models.Model):
             'title': product.title,
             'page_count': product.pages,
             'authors': product.authors
-        }
+            }
 
     def get_amazon_image(self):
         amazon = AmazonAPI(os.environ['AWS_ACCESS_KEY_ID'],
@@ -86,7 +89,8 @@ class Book(models.Model):
             os.environ['AWS_ASSOCIATE_TAG'],
             region='UK')
         try:
-            product = amazon.lookup(ItemId=self.isbn, IdType='ISBN', SearchIndex="Books")
+            product = amazon.lookup(ItemId=self.isbn, IdType='ISBN',
+                SearchIndex="Books")
             if type(product) is list:
                 for prod in product:
                     if prod.large_image_url:
@@ -132,7 +136,7 @@ class Book(models.Model):
         for book in books:
             twitter_helper.send_response("You've read '{0}' ({1}) to page"
                 " {2}".format(book["title"], book["identifier"], book["page"]))
-    
+
     @classmethod
     def nick_already_used(cls, nick):
         nick_query = Book.objects.filter(nick=nick)
@@ -154,7 +158,6 @@ class Book(models.Model):
             abandoned = True
         else:
             abandoned = False
-
 
         if ended and not abandoned:
             booklist = cls.generate_year_by_year_booklist()
@@ -184,9 +187,9 @@ class Book(models.Model):
         years.reverse()
         for year in years:
             books = Book.objects.filter(
-                last_action_date__gt=datetime.date(year,1,1)
+                last_action_date__gt=datetime.date(year, 1, 1)
                 ).filter(
-                last_action_date__lt=datetime.date(year+1,1,1)
+                last_action_date__lt=datetime.date(year + 1, 1, 1)
                 ).order_by('-last_action_date')
             year_booklist = []
             for book in books:
@@ -202,7 +205,7 @@ class Book(models.Model):
                         "status": type})
             booklist[year] = year_booklist
         return booklist
-        
+
     @classmethod
     def generate_json_booklist(cls, type):
         booklist = cls.generate_booklist(type)
@@ -297,6 +300,7 @@ class Bookmark(models.Model):
         else:
             last_bookmark = reading.get_most_recent_bookmark()
             return self.page - last_bookmark.page
+
 
 class Author(models.Model):
     name = models.CharField(max_length=500)

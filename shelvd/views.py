@@ -26,7 +26,7 @@ def receiveInput(request):
             elif request.POST["source"] == "app":
                 error_message = "{0}".format(message)
                 return HttpResponse(json.dumps({
-                        "response": "error", "message": error_message}),
+                    "response": "error", "message": error_message}),
                     content_type="application/json")
             else:
                 return render(request, 'home.html', {'error': message})

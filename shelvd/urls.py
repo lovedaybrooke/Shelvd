@@ -13,13 +13,3 @@ urlpatterns = patterns('',
     url(r'^finished$', views.finished),
     url(r'^receive-input$', csrf_exempt(views.receiveInput))
 )
-
-    # Examples:
-    # url(r'^$', 'shelvd.views.home', name='home'),
-    # url(r'^shelvd/', include('shelvd.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),

@@ -5,13 +5,13 @@ from pyparsing import *
 __all__ = ['expression']
 
 initiator = (Keyword('begin') | Keyword('start')).setResultsName("initiator")
-terminator = (Keyword('end') | Keyword('finish')
-    | Keyword('abandon')).setResultsName("terminator")
+terminator = (Keyword('end') | Keyword('finish') |
+    Keyword('abandon')).setResultsName("terminator")
 addreadinglist = (Keyword('addtoreadinglist')).setResultsName("addreadinglist")
 help = (Keyword('Help') | Keyword('help')).setResultsName("help")
-currentlyreading = (Keyword('reading') | Keyword('Currently reading')
-	| Keyword('currently reading') | Keyword('Reading')).setResultsName(
-	"currentlyreading")
+currentlyreading = (Keyword('reading') | Keyword('Currently reading') |
+    Keyword('currently reading') | Keyword('Reading')).setResultsName(
+    "currentlyreading")
 isbn = Word(nums, min=10, max=13).setResultsName("isbn")
 nick = Word(alphas).setResultsName("nick")
 percent = (Word(nums, min=1, max=2) + Word("%",

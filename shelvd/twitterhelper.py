@@ -18,6 +18,7 @@ class TwitterHelper(object):
 
     def send_response(self, DM_message):
         try:
-            self.api.direct_messages.new(user=os.environ['TWITTER_HANDLE'], text=DM_message)
+            self.api.direct_messages.new(user=os.environ['TWITTER_HANDLE'],
+                text=DM_message)
         except twitter.TwitterHTTPError, message:
             logging.info(message)
