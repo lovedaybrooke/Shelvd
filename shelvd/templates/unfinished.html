@@ -1,10 +1,13 @@
 {% extends "basic-layout.html" %}
 
    	{% block maincontent %}
-          <h2>I'm reading</h2>
+        <main class="grid-container">
+          <div class='booklist grid-100 mobile-grid-100 tablet-grid-100'>
+            <h2 id="first">I'm reading</h2>
+          </div>
           {% if books %}
               {% for bookdata in books %}
-                <div class="bookinfo">
+                <div class="bookinfo grid-25 tablet-grid-33 mobile-grid-50">
                   <img src="{{ bookdata.image_url }}"/>
                   <h4>{{ bookdata.title }}</h4>
                   <p>ID: {{ bookdata.identifier }}<br>Read to page {{ bookdata.page }}</p>
@@ -13,8 +16,13 @@
           {% else %}
             <p>You're not reading any books at the moment.</p>
           {% endif %}
+        </main>
     {% endblock %}
       
+  
+      
+
+
 	{% block navigation %}
     <div id="footer">
       <p><span class="nav">Reading</span><span class="nav"><a href="/finished">Finished</a></span><a href="/abandoned">Abandoned<a></p>

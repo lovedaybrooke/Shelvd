@@ -13,39 +13,14 @@ div.content {
   padding: 15px;
 }
 
-input {
-  font-family: Helvetica, sans-serif !important;
-  font-size: 1em;
-}
-
-input[type="text"] {
-  font-size: 14px;
-  width: 200px;
-}
-
-#details label {
-    display: block;
-    text-align: left;
-}
-
-#details {
-  text-align: left;
-}
-
-#details input {
-  text-align: center;
-}
-
-
-
 h1, h2, h3 {
   font-family: 'Cardo', serif;
 }
 
 h1 {
-  font-size: 40px;
+  font-size: 2.8em;
   font-weight: 400;
-  padding-bottom: 20px;
+  padding-bottom: 30px;
   margin-bottom: 20px;
   margin-top: 5px;
   border-bottom: 1.75px #5E5E5E solid;
@@ -57,47 +32,54 @@ h1 a {
 }
 
 h2 {
-  font-size: 30px;
+  font-size: 2.3em;
   font-weight: 200;
-  margin: 30px 0px;
+  margin: 2.3em 0em 1.2em 0em;
 }
 
-#footer {
-  padding: 30px 0px;
-  margin-top: 30px;
-  border-top: 1.75px #5E5E5E solid;
-}
-
-h4 {
-  font-size: 16px;
-  margin: 20px 0px 10px 0px;
-}
-
-.nav {
-  margin-right: 20px;
-  padding-right: 20px;
-}
-
-a {
-  color: #009F75;
-}
-
-div.booklist {
-  margin-top: 40px;
-  margin-bottom: 90px;
-}
-
-div.bookinfo img {
-  width: 180px;
-  border: 0.75px #A9A9A9 solid;
-  box-shadow: 5px 5px 0px #A9A9A9;
+h2#first {
+  margin-top: 1.8em;
 }
 
 div.bookinfo {
   margin: 35px 0px 45px 0px;
 }
 
+div.bookinfo h4 {
+  font-size: 1.2em;
+  font-weight: 400;
+  margin: 20px auto 10px auto;
+}
+
+div.bookinfo img {
+  border: 0.75px #A9A9A9 solid;
+  box-shadow: 5px 5px 0px #A9A9A9;
+}
+
 div.bookinfo p {
-  margin: 0px;
+  margin: 0px auto;
   padding: 0px;
+  line-height: 1.5em;
+}
+
+div.bookinfo h4, div.bookinfo p, div.bookinfo img {
+  width: 75%;
+  max-width: 180px;  
+}
+
+#footer {
+  font-size: 1.2em;
+  width: 100%;
+  padding: 30px 0px;
+  margin-top: 30px;
+  border-top: 1.75px #5E5E5E solid;
+}
+
+.nav {
+  margin-right: 2.2em;
+  padding-right: 2.2em;
+}
+
+a {
+  color: #009F75;
 }
