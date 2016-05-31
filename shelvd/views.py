@@ -41,7 +41,8 @@ def booklistPage(request, book_status):
         else:
             dictionary_booklist = Book.generate_booklist(book_status)
             return render(request, '{0}.html'.format(book_status),
-                {'books': dictionary_booklist})
+                {'books': dictionary_booklist,
+                "status": book_status})
 
 
 def home(request):

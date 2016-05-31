@@ -20,10 +20,9 @@ h1, h2, h3 {
 h1 {
   font-size: 2.8em;
   font-weight: 400;
-  padding-bottom: 40px;
+  padding-bottom: 10px;
   margin-bottom: 10px;
-  margin-top: 15px;
-  border-bottom: 1.75px #5E5E5E solid;
+  margin-top: 10px;
 }
 
 h1 a {
@@ -31,10 +30,37 @@ h1 a {
   color: black;
 }
 
+div.header {
+  border-bottom: 1.75px #5E5E5E solid;
+  padding-bottom: 30px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+div.header p {
+  margin: 0px auto;
+}
+
+div.header a {
+  text-decoration: none;
+  color: black;
+  font-size: 1em;
+}
+
+div.header span.current {
+  border-bottom: 1.75px #5e5E5e solid;
+  padding: 0.2em;
+}
+
+span.nav {
+  margin: 0em 2em;
+}
+
+
 h2 {
   font-size: 2.3em;
   font-weight: 200;
-  margin: 2.3em 0em 1.2em 0em;
+  margin: 2.3em 0em 1em 0em;
 }
 
 h2#first {
@@ -73,13 +99,4 @@ div.bookinfo h4, div.bookinfo p, div.bookinfo img {
   padding: 30px 0px;
   margin-top: 30px;
   border-top: 1.75px #5E5E5E solid;
-}
-
-.nav {
-  margin-right: 2.2em;
-  padding-right: 2.2em;
-}
-
-a {
-  color: #009F75;
 }
