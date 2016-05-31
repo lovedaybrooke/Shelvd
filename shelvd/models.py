@@ -266,6 +266,8 @@ class Reading(models.Model):
         self.end_date = datetime.datetime.now()
         if request.terminator == 'abandon':
             self.abandoned = True
+            self.book.last_action_date = self.end_date
+            self.book.save()
         else:
             request.page = self.book.page_count
             Bookmark.create(request, self)
