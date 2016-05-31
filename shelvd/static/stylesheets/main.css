@@ -20,9 +20,9 @@ h1, h2, h3 {
 h1 {
   font-size: 2.8em;
   font-weight: 400;
-  padding-bottom: 30px;
-  margin-bottom: 20px;
-  margin-top: 5px;
+  padding-bottom: 40px;
+  margin-bottom: 10px;
+  margin-top: 15px;
   border-bottom: 1.75px #5E5E5E solid;
 }
 
@@ -38,7 +38,7 @@ h2 {
 }
 
 h2#first {
-  margin-top: 1.8em;
+  margin-top: 1.3em;
 }
 
 div.bookinfo {
