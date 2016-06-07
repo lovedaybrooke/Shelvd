@@ -276,6 +276,17 @@ class Reading(models.Model):
     def get_most_recent_bookmark(self):
         return self.bookmarks.order_by('-date')[0]
 
+    @classmethod
+    def get_all_readings_for_year(cls, year):
+        return cls.objects.filter(
+            end_date__gt=datetime.date(year, 1, 1)).filter(
+            end_date__lt=datetime.date(year + 1, 1, 1)).order_by('-end_date')
+
+    @classmethod
+    def get_author_nationalities(cls, year):
+        readings = cls.get_all_readings_for_year(year)
+        return [reading.book.author.nationality for reading in readings]
+
 
 class Bookmark(models.Model):
     reading = models.ForeignKey('Reading', related_name='bookmarks')
