@@ -5,6 +5,7 @@ import datetime
 import os
 import json
 import collections
+import logging
 
 from django.db import models
 from django.db.models import fields
@@ -278,7 +279,20 @@ class Reading(models.Model):
     @classmethod
     def get_author_nationalities(cls, year):
         readings = cls.get_all_readings_for_year(year)
-        return [reading.book.author.nationality for reading in readings]
+        nationality_list = [reading.book.author.all()[0].nationality 
+            for reading in readings]
+        nationality_dict = {}
+        for item in nationality_list:
+            if item in nationality_dict.keys():
+                nationality_dict[item] += 1
+            else:
+                nationality_dict[item] = 1
+        if "" in nationality_dict.keys():
+            nationality_dict["Unknown"] = nationality_dict[""]
+            del nationality_dict[""]
+        tuple_list = [{"country": k, "count": v} for k,v in sorted(nationality_dict.items(), 
+            key=lambda x:x[1], reverse = True)]
+        return json.dumps(tuple_list)
 
 
 class Bookmark(models.Model):

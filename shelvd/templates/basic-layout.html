@@ -17,7 +17,7 @@
     <p>
     {% if status != 'unfinished' %}<span class="nav"><a href="/">Reading</a>{% else %}<span class="nav current">Reading{% endif %}</span>
     {% if status != 'finished' %}<span class="nav"><a href="/finished" class="active">Finished</a>{% else %}<span class="nav current">Finished{% endif %}</span>
-    {% if status != 'abandoned' %}<span class="nav"><a href="/abandoned" class="active">Abandoned</a>{% else %}<span class="nav current">Abandoned{% endif %}</span>
+    {% if status != 'abandoned' %}<span class="nav"><a href="/abandoned" class="active">Abandoned</a>{% else %}<span class="nav current">Abandoned{% endif %}</span>{% if status != 'stats' %}<span class="nav"><a href="/stats" class="active">Stats</a>{% else %}<span class="nav current">Stats{% endif %}</span>
     </p>
   </div>
     

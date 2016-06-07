@@ -1,0 +1,42 @@
+{% extends "basic-layout.html" %}
+
+    {% block maincontent %}
+    <h2 id="first">Stats for 2016 reading</h2>
+
+    <div id="nationality">
+      <h3>Author nationality</h3>
+      <div class="graph">
+      </div>
+    </div>
+
+    <script src="/static/scripts/d3.v3.js"></script>
+    <script type="text/javascript">
+      var w = 28;
+      var h = 400;
+      var barPadding = 10;
+
+      
+      d3.json("/data", function(error, dataset) {
+
+        var dataset = JSON.parse(dataset)
+      
+        var svg = d3.select("div#nationality div.graph").append("svg")
+                                        .attr("width", w + 'em')
+                                        .attr("height", h);
+
+        var labels = svg.selectAll('text').data(dataset).enter().append('text')
+                .text(function(d) {return d.country + ": " + d.count;})
+                .attr('x', 0)
+                .attr('y', function(d, i) { return i * (h / dataset.length) + 25;})
+
+        var rects = svg.selectAll('rect').data(dataset).enter().append('rect')
+                .attr('y', function(d, i) {return i * (h / dataset.length);})
+                .attr('x', 100)
+                .attr('height', h / dataset.length - barPadding)
+                .attr('width', function(d) {return d.count*10;});
+
+
+      });
+
+    </script>
+    {% endblock %}

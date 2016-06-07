@@ -49,11 +49,11 @@ div.header a {
 
 div.header span.current {
   border-bottom: 1.75px #5e5E5e solid;
-  padding: 0.2em;
+  padding-bottom: 0.15em;
 }
 
 span.nav {
-  margin: 0em 2em;
+  margin: 0em 1.2em;
 }
 
 
@@ -65,6 +65,11 @@ h2 {
 
 h2#first {
   margin-top: 1.3em;
+}
+
+h3 {
+  font-size: 1.6em;
+  font-weight: 200;
 }
 
 div.bookinfo {

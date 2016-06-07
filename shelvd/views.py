@@ -44,6 +44,14 @@ def booklistPage(request, book_status):
                 {'books': dictionary_booklist,
                 "status": book_status})
 
+def stats(request):
+    return render(request, 'stats.html',
+        {'author_data': Reading.get_author_nationalities(2016),
+         'status': 'stats'})
+
+def data(request):
+    return HttpResponse(json.dumps(Reading.get_author_nationalities(2016)),
+        content_type="application/json")
 
 def home(request):
     return booklistPage(request, "unfinished")
