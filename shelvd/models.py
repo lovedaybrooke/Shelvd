@@ -186,24 +186,17 @@ class Book(models.Model):
         years = [year for year in range(oldest_year, this_year + 1)]
         years.reverse()
         for year in years:
-            books = Book.objects.filter(
-                last_action_date__gt=datetime.date(year, 1, 1)
-                ).filter(
-                last_action_date__lt=datetime.date(year + 1, 1, 1)
-                ).order_by('-last_action_date')
-            year_booklist = []
-            for book in books:
-                reading = Reading.find(book, True, False)
-                if reading:
-                    bookmark = reading.bookmarks.order_by('-date')[0]
-                    year_booklist.append({"end_date": reading.clean_end_date,
-                        "title": book.title,
-                        "identifier": book.identifier,
-                        "isbn": book.isbn,
-                        "page": bookmark.page,
-                        "image_url": book.image_url,
-                        "status": type})
-            booklist[year] = year_booklist
+            readings = Reading.get_all_readings_for_year(year)
+            books_read = []
+            for reading in readings:
+                bookmark = reading.bookmarks.order_by('-date')[0]
+                books_read.append({"end_date": reading.clean_end_date,
+                    "title": reading.book.title,
+                    "identifier": reading.book.identifier,
+                    "isbn": reading.book.isbn,
+                    "page": bookmark.page,
+                    "image_url": reading.book.image_url})
+            booklist[year] = books_read
         return booklist
 
     @classmethod
