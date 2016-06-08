@@ -1,6 +1,6 @@
 body {
-  font-family: Helvetica, sans-serif;
-  font-size: 14px;
+  font-family: 'Cardo', serif;
+  font-size: 16px;
   background-image: url(../images/paper.png);
   background-repeat: repeat;
   text-align: center;
@@ -11,10 +11,6 @@ div.content {
   margin: 0px auto;
   height: inherit; 
   padding: 15px;
-}
-
-h1, h2, h3 {
-  font-family: 'Cardo', serif;
 }
 
 h1 {
