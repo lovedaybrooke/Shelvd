@@ -288,6 +288,7 @@ class Reading(models.Model):
         elif datatype == 'gender':
             datatype_list = [reading.book.author.all()[0].gender
                 for reading in readings]
+        overall_total = len(datatype_list)
         datatype_dict = {}
         for item in datatype_list:
             if item in datatype_dict.keys():
@@ -300,7 +301,8 @@ class Reading(models.Model):
             else:
                 datatype_dict["Unknown"] = datatype_dict[""]
             del datatype_dict[""]
-        tuple_list = [{"category": k, "count": v} for k, v
+        tuple_list = [{"category": k, "count": v, 
+            "percent": v*100/overall_total} for k, v
             in sorted(datatype_dict.items(),
             key=lambda x: x[1], reverse=True)]
         return json.dumps(tuple_list)

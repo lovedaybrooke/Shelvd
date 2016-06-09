@@ -27,7 +27,7 @@
       var barPadding = 10;
 
       // nationality graph    
-      
+
       d3.json("/data?type=nationality", function(error, dataset) {
 
         var dataset = JSON.parse(dataset)
@@ -61,7 +61,7 @@
                                         .attr("height", h);
 
         var labels = svg.selectAll('text').data(dataset).enter().append('text')
-                .text(function(d) {return d.category + ": " + d.count;})
+                .text(function(d) {return d.category + ": " + d.percent + "%";})
                 .attr('x', 0)
                 .attr('y', function(d, i) { return i * (h / dataset.length) + 25;})
         console.log(dataset);
@@ -86,7 +86,12 @@
                                         .attr("height", h);
 
         var labels = svg.selectAll('text').data(dataset).enter().append('text')
-                .text(function(d) {return d.category + ": " + d.count;})
+                .text(function(d) { 
+                    if ( d.category=='man') { 
+                      return "Men: " + d.percent + "%";
+                    } else {
+                      return "Women: " + d.percent + "%";
+                    }})
                 .attr('x', 0)
                 .attr('y', function(d, i) { return i * (h / dataset.length) + 25;})
 
