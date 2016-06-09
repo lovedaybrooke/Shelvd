@@ -1,3 +1,16 @@
+@font-face {
+  font-family: 'Cardo';
+  font-style: normal;
+  src: url('../fonts/Cardo-regular/Cardo-regular.eot');
+  src: local('Cardo'),
+       local('Cardo-regular'),
+       url('../fonts/Cardo-regular/Cardo-regular.woff2') format('woff2'),
+       url('../fonts/Cardo-regular/Cardo-regular.woff') format('woff'),
+       url('../fonts/Cardo-regular/Cardo-regular.ttf') format('truetype'),
+       url('../fonts/Cardo-regular/Cardo-regular.svg#Cardo') format('svg');
+}
+
+
 body {
   font-family: 'Cardo', serif;
   font-size: 16px;
