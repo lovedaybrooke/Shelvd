@@ -46,12 +46,17 @@ def booklistPage(request, book_status):
 
 def stats(request):
     return render(request, 'stats.html',
-        {'author_data': Reading.get_author_nationalities(2016),
+        {'author_data': Reading.get_author_data(2016, 'nationality'),
          'status': 'stats'})
 
 def data(request):
-    return HttpResponse(json.dumps(Reading.get_author_nationalities(2016)),
-        content_type="application/json")
+    if request.GET['type'] == 'nationality':
+        data = json.dumps(Reading.get_author_data(2016, 'nationality'))
+    elif request.GET['type'] == 'ethnicity':
+        data = json.dumps(Reading.get_author_data(2016, 'ethnicity'))
+    elif request.GET['type'] == 'gender':
+        data = json.dumps(Reading.get_author_data(2016, 'gender'))
+    return HttpResponse(data, content_type="application/json")
 
 def home(request):
     return booklistPage(request, "unfinished")

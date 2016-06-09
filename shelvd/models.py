@@ -277,20 +277,30 @@ class Reading(models.Model):
             end_date__lt=datetime.date(year + 1, 1, 1)).order_by('-end_date')
 
     @classmethod
-    def get_author_nationalities(cls, year):
+    def get_author_data(cls, year, datatype):
         readings = cls.get_all_readings_for_year(year)
-        nationality_list = [reading.book.author.all()[0].nationality 
-            for reading in readings]
-        nationality_dict = {}
-        for item in nationality_list:
-            if item in nationality_dict.keys():
-                nationality_dict[item] += 1
+        if datatype == 'nationality':
+            datatype_list = [reading.book.author.all()[0].nationality
+                for reading in readings]
+        elif datatype == 'ethnicity':
+            datatype_list = [reading.book.author.all()[0].ethnicity
+                for reading in readings]
+        elif datatype == 'gender':
+            datatype_list = [reading.book.author.all()[0].gender
+                for reading in readings]
+        datatype_dict = {}
+        for item in datatype_list:
+            if item in datatype_dict.keys():
+                datatype_dict[item] += 1
             else:
-                nationality_dict[item] = 1
-        if "" in nationality_dict.keys():
-            nationality_dict["Unknown"] = nationality_dict[""]
-            del nationality_dict[""]
-        tuple_list = [{"country": k, "count": v} for k,v in sorted(nationality_dict.items(), 
+                datatype_dict[item] = 1
+        if "" in datatype_dict.keys():
+            if "Unknown" in datatype_dict.keys():
+                datatype_dict["Unknown"] += datatype_dict[""]
+            else:
+                datatype_dict["Unknown"] = datatype_dict[""]
+            del datatype_dict[""]
+        tuple_list = [{"category": k, "count": v} for k,v in sorted(datatype_dict.items(), 
             key=lambda x:x[1], reverse = True)]
         return json.dumps(tuple_list)
 

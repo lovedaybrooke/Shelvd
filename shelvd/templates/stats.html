@@ -1,10 +1,21 @@
 {% extends "basic-layout.html" %}
 
     {% block maincontent %}
-    <h2 id="first">Stats for 2016 reading</h2>
-
+    <h2 id="first">Reading statistics<br>2016</h3>
     <div id="nationality">
       <h3>Author nationality</h3>
+      <div class="graph">
+      </div>
+    </div>
+
+    <div id="ethnicity">
+      <h3>Author ethnicity</h3>
+      <div class="graph">
+      </div>
+    </div>
+
+    <div id="gender">
+      <h3>Author gender</h3>
       <div class="graph">
       </div>
     </div>
@@ -15,8 +26,9 @@
       var h = 400;
       var barPadding = 10;
 
+      // nationality graph    
       
-      d3.json("/data", function(error, dataset) {
+      d3.json("/data?type=nationality", function(error, dataset) {
 
         var dataset = JSON.parse(dataset)
       
@@ -25,7 +37,7 @@
                                         .attr("height", h);
 
         var labels = svg.selectAll('text').data(dataset).enter().append('text')
-                .text(function(d) {return d.country + ": " + d.count;})
+                .text(function(d) {return d.category + ": " + d.count;})
                 .attr('x', 0)
                 .attr('y', function(d, i) { return i * (h / dataset.length) + 25;})
 
@@ -33,9 +45,57 @@
                 .attr('y', function(d, i) {return i * (h / dataset.length);})
                 .attr('x', 100)
                 .attr('height', h / dataset.length - barPadding)
-                .attr('width', function(d) {return d.count*10;});
+                .attr('width', function(d) {return d.count*10;})
+                .attr('fill', '#1A7566');
+      });
 
+      // ethnicity graph   
 
+      d3.json("/data?type=ethnicity", function(error, dataset) {
+
+        var h = 150;
+        var dataset = JSON.parse(dataset)
+      
+        var svg = d3.select("div#ethnicity div.graph").append("svg")
+                                        .attr("width", w + 'em')
+                                        .attr("height", h);
+
+        var labels = svg.selectAll('text').data(dataset).enter().append('text')
+                .text(function(d) {return d.category + ": " + d.count;})
+                .attr('x', 0)
+                .attr('y', function(d, i) { return i * (h / dataset.length) + 25;})
+        console.log(dataset);
+
+        var rects = svg.selectAll('rect').data(dataset).enter().append('rect')
+                .attr('y', function(d, i) {return i * (h / dataset.length);})
+                .attr('x', 100)
+                .attr('height', h / dataset.length - barPadding)
+                .attr('width', function(d) {return d.count*5;})
+                .attr('fill', '#1A7566');
+      });
+
+      // gender graph    
+
+      d3.json("/data?type=gender", function(error, dataset) {
+
+        var h = 100;
+        var dataset = JSON.parse(dataset)
+      
+        var svg = d3.select("div#gender div.graph").append("svg")
+                                        .attr("width", w + 'em')
+                                        .attr("height", h);
+
+        var labels = svg.selectAll('text').data(dataset).enter().append('text')
+                .text(function(d) {return d.category + ": " + d.count;})
+                .attr('x', 0)
+                .attr('y', function(d, i) { return i * (h / dataset.length) + 25;})
+
+        var rects = svg.selectAll('rect').data(dataset).enter().append('rect')
+                .attr('y', function(d, i) {return i * (h / dataset.length);})
+                .attr('x', 100)
+                .attr('height', h / dataset.length - barPadding)
+                .attr('width', function(d) {return d.count*5;})
+                .attr('fill', '#1A7566');
       });
 
     </script>

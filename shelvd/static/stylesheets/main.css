@@ -66,6 +66,7 @@ h2#first {
 h3 {
   font-size: 1.6em;
   font-weight: 200;
+  margin: 2em 0em 1em 0em;
 }
 
 div.bookinfo {
