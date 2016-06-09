@@ -142,5 +142,6 @@ class Request(object):
             "reading:\n{isbn or nick} {page no. or %}\n\nTo see books "
             "currently being read:\ncurrently reading")
 
+
 class BadThing(Exception):
     pass

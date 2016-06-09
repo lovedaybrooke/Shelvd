@@ -64,7 +64,7 @@ class Book(models.Model):
             'title': volumedata.get('title', 'Unknown'),
             'authors': volumedata.get('authors', ['Unknown']),
             'page_count': volumedata.get('pageCount', 350)
-            }
+        }
 
     @classmethod
     def get_amazon_book_data(cls, isbn):
@@ -82,7 +82,7 @@ class Book(models.Model):
             'title': product.title,
             'page_count': product.pages,
             'authors': product.authors
-            }
+        }
 
     def get_amazon_image(self):
         amazon = AmazonAPI(os.environ['AWS_ACCESS_KEY_ID'],
@@ -300,8 +300,9 @@ class Reading(models.Model):
             else:
                 datatype_dict["Unknown"] = datatype_dict[""]
             del datatype_dict[""]
-        tuple_list = [{"category": k, "count": v} for k,v in sorted(datatype_dict.items(), 
-            key=lambda x:x[1], reverse = True)]
+        tuple_list = [{"category": k, "count": v} for k, v
+            in sorted(datatype_dict.items(),
+            key=lambda x: x[1], reverse=True)]
         return json.dumps(tuple_list)
 
 
