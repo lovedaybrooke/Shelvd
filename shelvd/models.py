@@ -44,6 +44,8 @@ class Book(models.Model):
             book_info = cls.get_amazon_book_data(request.isbn)
             author_names = book_info.pop('authors')
             book = Book(**book_info)
+            if not book.page_count:
+                book.page_count = 350
             book.save()
             authors = Author.find_or_create(author_names)
             for author in authors:
