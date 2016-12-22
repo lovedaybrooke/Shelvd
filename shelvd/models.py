@@ -199,7 +199,8 @@ class Book(models.Model):
                     "isbn": reading.book.isbn,
                     "page": bookmark.page,
                     "image_url": reading.book.image_url})
-            booklist[year] = books_read
+            book_count = len(readings)
+            booklist[year] = {"books": books_read, "count": book_count}
         return booklist
 
     @classmethod
@@ -277,7 +278,7 @@ class Reading(models.Model):
     @classmethod
     def get_all_readings_for_year(cls, year):
         return cls.objects.filter(
-            end_date__gt=datetime.date(year, 1, 1)).filter(
+            end_date__gt=datetime.date(year - 1, 12, 31)).filter(
             end_date__lt=datetime.date(year + 1, 1, 1)).order_by('-end_date')
 
     @classmethod
