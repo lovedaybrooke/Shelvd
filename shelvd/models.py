@@ -224,6 +224,8 @@ class Reading(models.Model):
     end_date = models.DateTimeField(blank=True, null=True)
     ended = models.BooleanField(default=False)
     abandoned = models.BooleanField(default=False)
+    format = models.CharField(max_length=500, blank=True)
+    rereading = models.CharField(max_length=500, blank=True)
 
     @property
     def clean_start_date(self):
