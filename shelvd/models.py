@@ -6,6 +6,7 @@ import os
 import json
 import collections
 import logging
+from collections import Counter
 
 from django.db import models
 from django.db.models import fields
@@ -281,37 +282,6 @@ class Reading(models.Model):
             end_date__gt=datetime.date(year - 1, 12, 31)).filter(
             end_date__lt=datetime.date(year + 1, 1, 1)).order_by('-end_date')
 
-    @classmethod
-    def get_author_data(cls, year, datatype):
-        readings = cls.get_all_readings_for_year(year)
-        if datatype == 'nationality':
-            datatype_list = [reading.book.author.all()[0].nationality
-                for reading in readings]
-        elif datatype == 'ethnicity':
-            datatype_list = [reading.book.author.all()[0].ethnicity
-                for reading in readings]
-        elif datatype == 'gender':
-            datatype_list = [reading.book.author.all()[0].gender
-                for reading in readings]
-        overall_total = len(datatype_list)
-        datatype_dict = {}
-        for item in datatype_list:
-            if item in datatype_dict.keys():
-                datatype_dict[item] += 1
-            else:
-                datatype_dict[item] = 1
-        if "" in datatype_dict.keys():
-            if "Unknown" in datatype_dict.keys():
-                datatype_dict["Unknown"] += datatype_dict[""]
-            else:
-                datatype_dict["Unknown"] = datatype_dict[""]
-            del datatype_dict[""]
-        tuple_list = [{"category": k, "count": v, 
-            "percent": v*100/overall_total} for k, v
-            in sorted(datatype_dict.items(),
-            key=lambda x: x[1], reverse=True)]
-        return json.dumps(tuple_list)
-
 
 class Bookmark(models.Model):
     reading = models.ForeignKey('Reading', related_name='bookmarks')
@@ -359,3 +329,19 @@ class Author(models.Model):
                 a.save()
                 author_objects.append(a)
         return author_objects
+
+    @classmethod
+    def get_years_author_data(cls, year, datatype):
+        authors = [author for reading in Reading.get_all_readings_for_year(year)
+            for author in reading.book.author.all()]
+        author_data_list = [getattr(author,datatype)
+                for author in authors]
+        cleaned_author_data_list = ["Unknown" if i=="" else i 
+            for i in author_data_list]
+        overall_total = len(cleaned_author_data_list)
+        data_dict = dict(Counter(cleaned_author_data_list))
+        tuple_list = [{"category": k, "count": v, 
+            "percent": v*100/overall_total} for k, v
+            in sorted(data_dict.items(),
+            key=lambda x: x[1], reverse=True)]
+        return json.dumps(tuple_list)

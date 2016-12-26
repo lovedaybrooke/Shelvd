@@ -47,17 +47,18 @@ def booklistPage(request, book_status):
 
 def stats(request):
     return render(request, 'stats.html',
-        {'author_data': Reading.get_author_data(2016, 'nationality'),
+        {'author_data': Author.get_years_author_data(2016, 'nationality'),
          'status': 'stats'})
 
 
 def data(request):
     if request.GET['type'] == 'nationality':
-        data = json.dumps(Reading.get_author_data(2016, 'nationality'))
+        data = json.dumps(Author.get_years_author_data(2016, 'nationality'))
+        # logger.info(data)
     elif request.GET['type'] == 'ethnicity':
-        data = json.dumps(Reading.get_author_data(2016, 'ethnicity'))
+        data = json.dumps(Author.get_years_author_data(2016, 'ethnicity'))
     elif request.GET['type'] == 'gender':
-        data = json.dumps(Reading.get_author_data(2016, 'gender'))
+        data = json.dumps(Author.get_years_author_data(2016, 'gender'))
     return HttpResponse(data, content_type="application/json")
 
 
