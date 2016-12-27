@@ -279,7 +279,7 @@ class Reading(models.Model):
     @classmethod
     def get_all_readings_for_year(cls, year):
         return cls.objects.filter(abandoned=False).filter(
-            end_date__gt=datetime.date(year - 1, 12, 31)).filter(
+            end_date__gt=datetime.date(year, 1, 1)).filter(
             end_date__lt=datetime.date(year + 1, 1, 1)).order_by('-end_date')
 
 
