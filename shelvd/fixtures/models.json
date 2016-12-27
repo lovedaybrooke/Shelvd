@@ -1,10 +1,80 @@
 [
   {
+    "model": "shelvd.author",
+    "pk": 1,
+    "fields": {
+      "name": "William Shakespeare",
+      "nationality": "English",
+      "ethnicity": "White",
+      "gender": "man"
+    }
+ },
+   {
+    "model": "shelvd.author",
+    "pk": 2,
+    "fields": {
+      "name": "William Gibson",
+      "nationality": "English",
+      "ethnicity": "White",
+      "gender": "man"
+    }
+ },
+   {
+    "model": "shelvd.author",
+    "pk": 3,
+    "fields": {
+      "name": "Shin-Leqi-Unninni",
+      "nationality": "Babylonian",
+      "ethnicity": "Arab",
+      "gender": "man"
+    }
+ },
+   {
+    "model": "shelvd.author",
+    "pk": 4,
+    "fields": {
+      "name": "Snorri Sturluson",
+      "nationality": "Icelandic",
+      "ethnicity": "White",
+      "gender": "man"
+    }
+ },
+   {
+    "model": "shelvd.author",
+    "pk": 5,
+    "fields": {
+      "name": "Jessie L. Byock",
+      "nationality": "Irish",
+      "ethnicity": "White",
+      "gender": "woman"
+    }
+ },
+    {
+    "model": "shelvd.author",
+    "pk": 6,
+    "fields": {
+      "name": "Zora Neale Hurston",
+      "nationality": "American",
+      "ethnicity": "Black",
+      "gender": "woman"
+    }
+ },
+    {
+    "model": "shelvd.author",
+    "pk": 7,
+    "fields": {
+      "name": "Arundhati Roy",
+      "nationality": "Indian",
+      "ethnicity": "Asian",
+      "gender": "woman"
+    }
+ },
+ {
     "model": "shelvd.book",
     "pk": 9780230200951,
     "fields": {
+      "author": [1],
       "title": "The Complete Works of William Shakespeare",
-      "author": "William Shakespeare",
       "page_count": 2552
     }
  },
@@ -13,36 +83,27 @@
    "pk": 9780007491520,
    "fields": {
      "title": "Neuromancer",
-     "author": "William Gibson",
+     "author": [2],
      "page_count": 320,
      "nick": "Neurom"
-   }
- },
- {
-   "model": "shelvd.book",
-   "pk": 9780007284672,
-   "fields": {
-     "title": "The Good News Bible",
-     "author": "Jesus H. Christ",
-     "page_count": 1280
    }
  },
  {
    "model": "shelvd.reading",
    "pk": 1,
    "fields": {
-     "book": 9780007284672,
-     "start_date": "2013-09-11 16:52",
-     "end_date": null,
-     "ended": false,
+     "book": 9780007491520,
+     "start_date": "2013-02-17 16:52",
+     "end_date": "2013-12-31 16:52",
+     "ended": true,
      "abandoned": false
    }
  },
  {
    "model": "shelvd.bookmark",
-   "pk": 11,
+   "pk": 101,
    "fields": {
-     "date": "2013-09-11 16:52",
+     "date": "2013-02-17 16:52",
      "reading": 1,
      "page": 1,
      "pages_read": 1
@@ -50,28 +111,80 @@
  },
  {
    "model": "shelvd.bookmark",
-   "pk": 12,
+   "pk": 102,
    "fields": {
-     "date": "2013-09-13 16:52",
+     "date": "2013-12-31 16:52",
      "reading": 1,
-     "page": 45,
-     "pages_read": 44
+     "page": 320,
+     "pages_read": 319
    }
- },
+  },
  {
    "model": "shelvd.book",
-   "pk": 9780192805485,
+   "pk": 9780140449198,
    "fields": {
-     "title": "The Qur'an",
-     "author": "Prophet Mohammad",
-     "page_count": 512
+     "title": "The Epic of Gilgamesh",
+     "author": [3],
+     "last_action_date": "2013-12-13 16:52",
+     "page_count": 304
    }
  },
  {
    "model": "shelvd.reading",
    "pk": 2,
    "fields": {
-     "book": 9780192805485,
+     "book": 9780140449198,
+     "start_date": "2014-09-11 16:52",
+     "end_date": null,
+     "ended": false,
+     "abandoned": false
+   }
+ },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 201,
+   "fields": {
+     "date": "2014-09-11 16:52",
+     "reading": 2,
+     "page": 1,
+     "pages_read": 1
+   }
+ },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 202,
+   "fields": {
+     "date": "2014-09-13 16:52",
+     "reading": 2,
+     "page": 45,
+     "pages_read": 44
+   }
+ },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 203,
+   "fields": {
+     "date": "2014-12-13 16:52",
+     "reading": 2,
+     "page": 205,
+     "pages_read": 160
+   }
+ },
+ {
+   "model": "shelvd.book",
+   "pk": 9780140447552,
+   "fields": {
+     "title": "The Saga of the Volsungs",
+     "author": [4, 5],
+     "last_action_date": "2013-08-13 16:52",
+     "page_count": 224
+   }
+ },
+ {
+   "model": "shelvd.reading",
+   "pk": 3,
+   "fields": {
+     "book": 9780140447552,
      "start_date": "2013-08-11 16:52",
      "end_date": null,
      "ended": false,
@@ -80,22 +193,186 @@
  },
  {
    "model": "shelvd.bookmark",
-   "pk": 21,
+   "pk": 301,
    "fields": {
      "date": "2013-08-11 16:52",
-     "reading": 2,
+     "reading": 3,
      "page": 1,
      "pages_read": 1
    }
  },
  {
    "model": "shelvd.bookmark",
-   "pk": 22,
+   "pk": 302,
    "fields": {
      "date": "2013-08-13 16:52",
-     "reading": 2,
+     "reading": 3,
      "page": 56,
      "pages_read": 55
+   }
+  },
+{
+   "model": "shelvd.book",
+   "pk": 9780061695131,
+   "fields": {
+     "title": "Tell My Horse",
+     "author": [6],
+     "last_action_date": "2014-02-24 16:52",
+     "page_count": 336
+   }
+ },
+ {
+   "model": "shelvd.reading",
+   "pk": 4,
+   "fields": {
+     "book": 9780061695131,
+     "start_date": "2014-01-01 16:52",
+     "end_date": "2014-02-24 16:52",
+     "ended": true,
+     "abandoned": false
+   }
+ },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 401,
+   "fields": {
+     "date": "2014-01-01 16:52",
+     "reading": 4,
+     "page": 1,
+     "pages_read": 1
+   }
+ },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 402,
+   "fields": {
+     "date": "2014-02-21 16:52",
+     "reading": 4,
+     "page": 56,
+     "pages_read": 55
+   }
+  },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 403,
+   "fields": {
+     "date": "2014-02-24 16:52",
+     "reading": 4,
+     "page": 336,
+     "pages_read": 280
+   }
+  },
+ {
+   "model": "shelvd.reading",
+   "pk": 5,
+   "fields": {
+     "book": 9780061695131,
+     "start_date": "2013-02-17 16:52",
+     "end_date": "2013-02-24 16:52",
+     "ended": true,
+     "abandoned": true
+   }
+ },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 501,
+   "fields": {
+     "date": "2013-02-17 16:52",
+     "reading": 5,
+     "page": 1,
+     "pages_read": 1
+   }
+ },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 502,
+   "fields": {
+     "date": "2013-02-21 16:52",
+     "reading": 5,
+     "page": 336,
+     "pages_read": 335
+   }
+  },
+{
+   "model": "shelvd.book",
+   "pk": 9780006550686,
+   "fields": {
+     "title": "The God of Small Things",
+     "author": [7],
+     "last_action_date": "2014-05-24 16:52",
+     "page_count": 368
+   }
+ },
+ {
+   "model": "shelvd.reading",
+   "pk": 6,
+   "fields": {
+     "book": 9780006550686,
+     "start_date": "2014-04-17 16:52",
+     "end_date": "2014-05-24 16:52",
+     "ended": true,
+     "abandoned": true
+   }
+ },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 601,
+   "fields": {
+     "date": "2014-04-17 16:52",
+     "reading": 6,
+     "page": 1,
+     "pages_read": 1
+   }
+ },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 602,
+   "fields": {
+     "date": "2014-04-21 16:52",
+     "reading": 6,
+     "page": 75,
+     "pages_read": 74
+   }
+  },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 603,
+   "fields": {
+     "date": "2014-05-24 16:52",
+     "reading": 6,
+     "page": 180,
+     "pages_read": 105
+   }
+  },
+ {
+   "model": "shelvd.reading",
+   "pk": 7,
+   "fields": {
+     "book": 9780006550686,
+     "start_date": "2014-10-17 16:52",
+     "end_date": "2014-10-24 16:52",
+     "ended": true,
+     "abandoned": false
+   }
+ },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 701,
+   "fields": {
+     "date": "2014-04-17 16:52",
+     "reading": 7,
+     "page": 1,
+     "pages_read": 1
+   }
+ },
+ {
+   "model": "shelvd.bookmark",
+   "pk": 702,
+   "fields": {
+     "date": "2014-04-21 16:52",
+     "reading": 7,
+     "page": 368,
+     "pages_read": 367
    }
   }
 ]
