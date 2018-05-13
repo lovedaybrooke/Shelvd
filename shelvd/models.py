@@ -88,6 +88,7 @@ class Book(models.Model):
         }
 
     def get_amazon_image(self):
+        self.image_url = "/static/images/unknown.png"
         amazon = AmazonAPI(os.environ['AWS_ACCESS_KEY_ID'],
             os.environ['AWS_SECRET_ACCESS_KEY'],
             os.environ['AWS_ASSOCIATE_TAG'],
@@ -105,10 +106,10 @@ class Book(models.Model):
                 self.image_url = product.large_image_url
             elif product.medium_image_url:
                 self.image_url = product.medium_image_url
-        except AsinNotFound:
-            self.image_url = "/static/images/unknown.png"
+        except:
+            pass
         self.save()
-
+        
     @classmethod
     def find(cls, request):
         if request.isbn:
