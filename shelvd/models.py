@@ -109,6 +109,22 @@ class Book(models.Model):
         except:
             pass
         self.save()
+
+    def curtail_title(self):
+        if self.title.find(":") > 0:
+            title = self.title.split(":")[0]
+        elif self.title.find("(") > 0:
+            title = self.title.split("(")[0]
+        else:
+            title = self.title
+        if len(title) < 37:
+            return title
+        else:
+            nearest_break = title.find(" ", 30)
+            if nearest_break > 0:
+                return title[:nearest_break] + "..."
+            else:
+                return title[:33] + "..."            
         
     @classmethod
     def find(cls, request):
@@ -174,7 +190,7 @@ class Book(models.Model):
                     bookmark = reading.bookmarks.order_by('-date')[0]
 
                     booklist.append({"end_date": reading.clean_end_date,
-                        "title": book.title,
+                        "title": book.curtail_title(),
                         "identifier": book.identifier,
                         "isbn": book.isbn,
                         "page": bookmark.page,
@@ -196,7 +212,7 @@ class Book(models.Model):
             for reading in readings:
                 bookmark = reading.bookmarks.order_by('-date')[0]
                 books_read.append({"end_date": reading.clean_end_date,
-                    "title": reading.book.title,
+                    "title": reading.book.curtail_title(),
                     "identifier": reading.book.identifier,
                     "isbn": reading.book.isbn,
                     "page": bookmark.page,
