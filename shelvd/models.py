@@ -251,14 +251,14 @@ class Reading(models.Model):
     @property
     def clean_start_date(self):
         if self.start_date:
-            return self.start_date.strftime('%B %d, %Y').lstrip('0')
+            return self.start_date.strftime('%b %-d, %Y').lstrip('0')
         else:
             return False
 
     @property
     def clean_end_date(self):
         if self.end_date:
-            return self.end_date.strftime('%B %d, %Y').lstrip('0')
+            return self.end_date.strftime('%b %-d, %Y').lstrip('0')
         else:
             return False
 
