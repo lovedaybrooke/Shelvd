@@ -299,6 +299,7 @@ class Reading(models.Model):
             end_date__lt=datetime.date(year + 1, 1, 1)).order_by('-end_date')
 
 
+
 class Bookmark(models.Model):
     reading = models.ForeignKey('Reading', related_name='bookmarks')
     page = models.IntegerField(default=0)

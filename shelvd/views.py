@@ -48,9 +48,14 @@ def booklistPage(request, book_status):
 
 
 def stats(request):
-    year = int(request.GET.get('year', datetime.datetime.today().year - 1))
-    return render(request, 'stats.html',
-        {'year': year, 'status': 'stats'})
+    data = {'status': 'stats',
+            'year': int(request.GET.get(
+                    'year', datetime.datetime.today().year - 1))}
+    if data['year'] > 2011:
+        data['previous_year'] = data['year'] - 1
+    if data['year'] < datetime.datetime.today().year:
+        data['next_year'] = data['year'] + 1
+    return render(request, 'stats.html', data)
 
 
 def data(request):

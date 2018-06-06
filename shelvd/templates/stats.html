@@ -2,6 +2,17 @@
 
     {% block maincontent %}
     <h2 id="first">Reading statistics<br>{{ year }}</h3>
+      <h4 class="nav">
+          {% if previous_year %}<a href="/stats?year={{previous_year}}">Previous year</a>
+          {% else %}
+            Previous year
+          {% endif %}
+          <span class="divider">|</span>
+          {% if next_year %}<a href="/stats?year={{next_year}}">Next year</a>
+          {% else %}
+            Next year
+          {% endif %}
+        </h4>
     <div id="nationality">
       <h3>Author nationality</h3>
       <div class="graph">

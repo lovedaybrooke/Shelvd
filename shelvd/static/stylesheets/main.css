@@ -82,6 +82,7 @@ h3 {
   margin: 2em 0em 1em 0em;
 }
 
+
 div.bookinfo {
   margin: 60px 0px 45px 0px;
 }
@@ -107,6 +108,22 @@ div.bookinfo p {
 div.bookinfo h4, div.bookinfo p, div.bookinfo img {
   width: 75%;
   max-width: 180px;  
+}
+
+h4.nav {
+  color: #888;
+}
+
+h4.nav span.divider {
+  display: inline block;
+  padding: 0px 20px;
+  color: black;
+}
+
+h4.nav a {
+  color: black;
+  text-decoration: none;
+  font-weight: normal;
 }
 
 #footer {
