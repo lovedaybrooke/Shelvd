@@ -1,3 +1,5 @@
+import datetime
+
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -46,19 +48,19 @@ def booklistPage(request, book_status):
 
 
 def stats(request):
+    year = int(request.GET.get('year', datetime.datetime.today().year - 1))
     return render(request, 'stats.html',
-        {'author_data': Author.get_years_author_data(2016, 'nationality'),
-         'status': 'stats'})
+        {'year': year, 'status': 'stats'})
 
 
 def data(request):
+    year = int(request.GET['year'])
     if request.GET['type'] == 'nationality':
-        data = json.dumps(Author.get_years_author_data(2016, 'nationality'))
-        # logger.info(data)
+        data = json.dumps(Author.get_years_author_data(year, 'nationality'))
     elif request.GET['type'] == 'ethnicity':
-        data = json.dumps(Author.get_years_author_data(2016, 'ethnicity'))
+        data = json.dumps(Author.get_years_author_data(year, 'ethnicity'))
     elif request.GET['type'] == 'gender':
-        data = json.dumps(Author.get_years_author_data(2016, 'gender'))
+        data = json.dumps(Author.get_years_author_data(year, 'gender'))
     return HttpResponse(data, content_type="application/json")
 
 

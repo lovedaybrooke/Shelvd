@@ -5,7 +5,6 @@ import datetime
 import os
 import json
 import collections
-import logging
 from collections import Counter
 
 from django.db import models

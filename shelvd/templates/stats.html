@@ -1,7 +1,7 @@
 {% extends "basic-layout.html" %}
 
     {% block maincontent %}
-    <h2 id="first">Reading statistics<br>2016</h3>
+    <h2 id="first">Reading statistics<br>{{ year }}</h3>
     <div id="nationality">
       <h3>Author nationality</h3>
       <div class="graph">
@@ -28,7 +28,7 @@
 
       // nationality graph    
 
-      d3.json("/data?type=nationality", function(error, dataset) {
+      d3.json("/data?type=nationality&year={{ year }}", function(error, dataset) {
 
         var dataset = JSON.parse(dataset)
       
@@ -39,11 +39,11 @@
         var labels = svg.selectAll('text').data(dataset).enter().append('text')
                 .text(function(d) {return d.category + ": " + d.count;})
                 .attr('x', 0)
-                .attr('y', function(d, i) { return i * (h / dataset.length) + 25;})
+                .attr('y', function(d, i) { return i * (h / dataset.length) + 15;})
 
         var rects = svg.selectAll('rect').data(dataset).enter().append('rect')
                 .attr('y', function(d, i) {return i * (h / dataset.length);})
-                .attr('x', 100)
+                .attr('x', 120)
                 .attr('height', h / dataset.length - barPadding)
                 .attr('width', function(d) {return d.count*10;})
                 .attr('fill', '#1A7566');
@@ -51,7 +51,7 @@
 
       // ethnicity graph   
 
-      d3.json("/data?type=ethnicity", function(error, dataset) {
+      d3.json("/data?type=ethnicity&year={{ year }}", function(error, dataset) {
 
         var h = 150;
         var dataset = JSON.parse(dataset)
@@ -63,12 +63,12 @@
         var labels = svg.selectAll('text').data(dataset).enter().append('text')
                 .text(function(d) {return d.category + ": " + d.percent + "%";})
                 .attr('x', 0)
-                .attr('y', function(d, i) { return i * (h / dataset.length) + 25;})
+                .attr('y', function(d, i) { return i * (h / dataset.length) + 20;})
         console.log(dataset);
 
         var rects = svg.selectAll('rect').data(dataset).enter().append('rect')
                 .attr('y', function(d, i) {return i * (h / dataset.length);})
-                .attr('x', 100)
+                .attr('x', 120)
                 .attr('height', h / dataset.length - barPadding)
                 .attr('width', function(d) {return d.count*5;})
                 .attr('fill', '#1A7566');
@@ -76,7 +76,7 @@
 
       // gender graph    
 
-      d3.json("/data?type=gender", function(error, dataset) {
+      d3.json("/data?type=gender&year={{ year }}", function(error, dataset) {
 
         var h = 100;
         var dataset = JSON.parse(dataset)
@@ -93,11 +93,11 @@
                       return "Women: " + d.percent + "%";
                     }})
                 .attr('x', 0)
-                .attr('y', function(d, i) { return i * (h / dataset.length) + 25;})
+                .attr('y', function(d, i) { return i * (h / dataset.length) + 20;})
 
         var rects = svg.selectAll('rect').data(dataset).enter().append('rect')
                 .attr('y', function(d, i) {return i * (h / dataset.length);})
-                .attr('x', 100)
+                .attr('x', 120)
                 .attr('height', h / dataset.length - barPadding)
                 .attr('width', function(d) {return d.count*5;})
                 .attr('fill', '#1A7566');
