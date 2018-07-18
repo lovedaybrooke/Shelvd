@@ -7,9 +7,9 @@ __all__ = ['expression']
 initiator = (Keyword('begin') | Keyword('start')).setResultsName("initiator")
 terminator = (Keyword('end') | Keyword('finish') |
     Keyword('abandon')).setResultsName("terminator")
-currentlyreading = (Keyword('reading') | Keyword('Reading')).setResultsName(
+currentlyreading = (Keyword('reading')).setResultsName(
     "currentlyreading")
-isbn = Word(nums, min=10, max=13).setResultsName("isbn")
+isbn = Word(nums, min=13, max=13).setResultsName("isbn")
 nickname = Word(alphas).setResultsName("nickname")
 percent = (Word(nums, min=1, max=2) + Word("%",
     exact=1)).setResultsName("percent")
