@@ -6,7 +6,7 @@ from shelvd import db
 class Book(db.Model):
 
     isbn = db.Column(db.String(13), primary_key=True, index=True, unique=True)
-    nickname = db.Column(db.String(100), nullable=False)
+    nickname = db.Column(db.String(100), nullable=True)
     page_count = db.Column(db.Integer, default=350)
     title = db.Column(db.String(200), default="Unknown")
     image_url = db.Column(db.String(500), nullable=True)
@@ -22,7 +22,7 @@ class Book(db.Model):
 class Author(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True)
-    name = db.Column(db.String(150), nullable=False)
+    name = db.Column(db.String(150), default="Unknown")
     nationality = db.Column(db.String(100), default="Unknown")
     ethnicity = db.Column(db.String(100), default="Unknown")
     gender = db.Column(db.String(30), default="Unknown")
