@@ -3,9 +3,11 @@ import unittest
 from flask import Flask
 from flask_testing import TestCase
 
-import grammar
-import messages
+import shelvd.grammar as grammar
+import shelvd.messages as messages
 
+
+# run from root with python tests.py
 
 class TestGrammar(TestCase):
 
@@ -64,6 +66,14 @@ class TestGrammar(TestCase):
         self.assertTrue("nickname" in results.keys())
         self.assertEqual(results["nickname"], "KingInYellow")
 
+        # inputs = "9780111222333 King In Yellow"
+        # results = grammar.expression.parseString(inputs)
+
+        # self.assertTrue("isbn" in results.keys())
+        # self.assertEqual(results["isbn"], "9780111222333")
+        # self.assertTrue("nickname" in results.keys())
+        # self.assertEqual(results["nickname"], "F451")
+
         # inputs = "9780111222333 F451"
         # results = grammar.expression.parseString(inputs)
 
@@ -85,43 +95,50 @@ class TestRequests(TestCase):
         return app
 
     def test_imcoming_message_triage(self):
-        input = "9780111222333 start"
-        r = messages.Request(input)
-        action = r.perform()
-        self.assertEqual(action, "Start reading this book")
+        # Need to change these tests so they run on a dummy DB
 
-        input = "9780111222333 Start"
-        r = messages.Request(input)
-        action = r.perform()
-        self.assertEqual(action, "Start reading this book")
+        # input = "9780111222333 start"
+        # r = messages.Instruction(input)
+        # action = r.perform()
+        # self.assertEqual(action[:21], "Started reading book ")
 
-        input = "ducktales start"
-        r = messages.Request(input)
-        action = r.perform()
-        self.assertEqual(action, "Start reading this book")
+        # input = "9780111222333 Start"
+        # r = messages.Instruction(input)
+        # action = r.perform()
+        # self.assertEqual(action[:21], "Started reading book ")
+
+        # input = "ducktales start"
+        # r = messages.Instruction(input)
+        # action = r.perform()
+        # self.assertEqual(action[:21, "Started reading book ")
 
         input = "9780111222333 ducktales"
-        r = messages.Request(input)
+        r = messages.Instruction(input)
         action = r.perform()
         self.assertEqual(action, "Nickname this book")
 
+        input = "9780111222333 duck tales"
+        r = messages.Instruction(input)
+        action = r.perform()
+        self.assertEqual(action, "This test should fail because the message has 3 words: {0}".format(input))
+
         input = "9780111222333 abandon"
-        r = messages.Request(input)
+        r = messages.Instruction(input)
         action = r.perform()
         self.assertEqual(action, "Finish reading this book")
 
         input = "9780111222333 Finish"
-        r = messages.Request(input)
+        r = messages.Instruction(input)
         action = r.perform()
         self.assertEqual(action, "Finish reading this book")
 
         input = "duck duck duck"
-        r = messages.Request(input)
+        r = messages.Instruction(input)
         action = r.perform()
         self.assertEqual(action, "I couldn't understand your message")
 
         input = "9870122122 start"
-        r = messages.Request(input)
+        r = messages.Instruction(input)
         action = r.perform()
         self.assertEqual(action, "I couldn't understand your message")
 

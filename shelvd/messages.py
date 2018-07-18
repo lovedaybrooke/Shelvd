@@ -1,16 +1,28 @@
 #!flask/bin/python
 # -*- coding: utf-8 -*-
-import logging
-from collections import defaultdict
-
 from pyparsing import ParseException
 
-import grammar
+import shelvd.grammar as grammar
+from shelvd.models import Reading, MessageException
 
-class Request(object):
+class Instruction(object):
 
     def __init__(self, incoming_message):
         self.incoming_message = incoming_message.lower()
+
+    @classmethod
+    def process_incoming(cls, incoming_message):
+        try:
+            instruction = cls(incoming_message)
+            instruction.parse()
+            return instruction.perform()
+        except MessageException as x:
+            # instead of raising an error, send an SMS
+            return str(x)
+
+    def parse(self):
+        if len(self.incoming_message.lower().split(" ")) > 2:
+            raise MessageException("Sorry, your message is too long")
         try:
             parsed_request = grammar.expression.parseString(
                 self.incoming_message)
@@ -18,19 +30,22 @@ class Request(object):
             self.terminator = parsed_request.get("terminator")
             self.isbn = parsed_request.get("isbn")
             self.nickname = parsed_request.get("nickname")
-            self.currently_reading = parsed_request.get("currently_reading")
+            self.currentlyreading = parsed_request.get("currentlyreading")
         except ParseException as x:
-            self.error = x
+            raise MessageException("Sorry, I didn't understand your message")
 
     def perform(self):
-        if hasattr(self, "error"):
-            return "I couldn't understand your message"
-        else:
-            if self.isbn and self.nickname:
-                return "Nickname this book"
-            elif self.initiator:
-                return "Start reading this book"
-            elif self.terminator:
+        if self.isbn and self.nickname:
+            return "Nickname this book"
+        elif self.initiator:
+            reading = Reading.start_reading(self)
+            return "Started reading book {0}".format(self.isbn)
+        elif self.terminator:
+            if self.isbn:
                 return "Finish reading this book"
-            elif self.currently_reading:
-                return "Tell me what I'm reading"   
+            else:
+                return "Finish reading this book"
+        elif self.currentlyreading:
+            return "Tell me what I'm reading"
+
+  

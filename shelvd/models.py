@@ -18,6 +18,29 @@ class Book(db.Model):
     def __repr__(self):
         return '<Book {0} ({1})>'.format(self.title[0:30], self.isbn)
 
+    @classmethod
+    def find_or_create(cls, request):
+        if request.isbn:
+            existing_book = Book.query.filter_by(isbn=request.isbn).first()
+            if existing_book:
+                return existing_book
+            else:
+                book = Book()
+                book.isbn = request.isbn
+                db.session.add(book)
+                db.session.commit()
+                return book
+        elif request.nickname:
+            existing_book = Book.query.filter_by(
+                nickname=request.nickname).first()
+            if existing_book:
+                return existing_book
+            else:
+                raise MessageException("This nickname doesn't match a book "
+                    "that I know about already. Use an ISBN to start reading "
+                    "a brand new book.")
+
+
 
 class Author(db.Model):
 
@@ -46,3 +69,20 @@ class Reading(db.Model):
     def __repr__(self):
         return '<Reading of {0} (id {1})>'.format(self.book, self.id)
 
+    @classmethod
+    def start_reading(cls, message):
+        book = Book.find_or_create(message)
+        existing_reading = Reading.query.filter_by(
+            book_isbn=book.isbn).filter_by(ended=False).first()
+        if existing_reading:
+            raise MessageException("You've already started reading this book")
+        else:
+            book.last_action_date = datetime.datetime.now()
+            reading = Reading()
+            reading.book_isbn = book.isbn
+            db.session.add(reading)
+            db.session.commit()
+            return "Started reading {0}".format(book.title)
+
+class MessageException(Exception):
+    pass  
