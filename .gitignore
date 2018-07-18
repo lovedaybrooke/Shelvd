@@ -1,6 +1,2 @@
-venv
+env/
 *.pyc
-*/*.pyc
-.DS_Store
-.pep8
-.env

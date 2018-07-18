@@ -1,1 +1,1 @@
-web: gunicorn shelvd.wsgi
+web: gunicorn runapp:app
