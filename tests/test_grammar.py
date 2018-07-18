@@ -4,10 +4,7 @@ from flask import Flask
 from flask_testing import TestCase
 
 import shelvd.grammar as grammar
-import shelvd.messages as messages
 
-
-# run from root with python tests.py
 
 class TestGrammar(TestCase):
 
@@ -87,60 +84,6 @@ class TestGrammar(TestCase):
         results = grammar.expression.parseString(inputs)
         self.assertTrue("currentlyreading" in results.keys())
 
-
-class TestRequests(TestCase):
-    def create_app(self):
-        app = Flask(__name__)
-        app.config['TESTING'] = True
-        return app
-
-    def test_imcoming_message_triage(self):
-        # Need to change these tests so they run on a dummy DB
-
-        # input = "9780111222333 start"
-        # r = messages.Instruction(input)
-        # action = r.perform()
-        # self.assertEqual(action[:21], "Started reading book ")
-
-        # input = "9780111222333 Start"
-        # r = messages.Instruction(input)
-        # action = r.perform()
-        # self.assertEqual(action[:21], "Started reading book ")
-
-        # input = "ducktales start"
-        # r = messages.Instruction(input)
-        # action = r.perform()
-        # self.assertEqual(action[:21, "Started reading book ")
-
-        input = "9780111222333 ducktales"
-        r = messages.Instruction(input)
-        action = r.perform()
-        self.assertEqual(action, "Nickname this book")
-
-        input = "9780111222333 duck tales"
-        r = messages.Instruction(input)
-        action = r.perform()
-        self.assertEqual(action, "This test should fail because the message has 3 words: {0}".format(input))
-
-        input = "9780111222333 abandon"
-        r = messages.Instruction(input)
-        action = r.perform()
-        self.assertEqual(action, "Finish reading this book")
-
-        input = "9780111222333 Finish"
-        r = messages.Instruction(input)
-        action = r.perform()
-        self.assertEqual(action, "Finish reading this book")
-
-        input = "duck duck duck"
-        r = messages.Instruction(input)
-        action = r.perform()
-        self.assertEqual(action, "I couldn't understand your message")
-
-        input = "9870122122 start"
-        r = messages.Instruction(input)
-        action = r.perform()
-        self.assertEqual(action, "I couldn't understand your message")
 
 if __name__ == '__main__':
     unittest.main()
