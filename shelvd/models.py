@@ -19,20 +19,20 @@ class Book(db.Model):
         return '<Book {0} ({1})>'.format(self.title[0:30], self.isbn)
 
     @classmethod
-    def find_or_create(cls, request):
-        if request.isbn:
-            existing_book = Book.query.filter_by(isbn=request.isbn).first()
+    def find_or_create(cls, message):
+        if message.isbn:
+            existing_book = Book.query.filter_by(isbn=message.isbn).first()
             if existing_book:
                 return existing_book
             else:
                 book = Book()
-                book.isbn = request.isbn
+                book.isbn = message.isbn
                 db.session.add(book)
                 db.session.commit()
                 return book
-        elif request.nickname:
+        elif message.nickname:
             existing_book = Book.query.filter_by(
-                nickname=request.nickname).first()
+                nickname=message.nickname).first()
             if existing_book:
                 return existing_book
             else:
@@ -81,8 +81,29 @@ class Reading(db.Model):
             reading = Reading()
             reading.book_isbn = book.isbn
             db.session.add(reading)
+            db.session.add(book)
             db.session.commit()
             return "Started reading {0}".format(book.title)
+
+    @classmethod
+    def end_reading(cls, message):
+        book = Book.find_or_create(message)
+        existing_reading = Reading.query.filter_by(
+            book_isbn=book.isbn).filter_by(ended=False).first()
+        if existing_reading:
+            now = datetime.datetime.now()
+            book.last_action_date = now
+            existing_reading.end_date = now
+            existing_reading.ended = True
+            if message.terminator == "abandoned":
+                existing_reading.abandoned = True
+            db.session.add(book)
+            db.session.add(existing_reading)
+            db.session.commit()
+            return "Finished reading {0}".format(book.title)
+        else:
+            raise MessageException("You're not currently reading this book."
+                " You need to start reading this book before you finish")
 
 class MessageException(Exception):
     pass  

@@ -21,7 +21,7 @@ class Instruction(object):
             return str(x)
 
     def parse(self):
-        if len(self.incoming_message.lower().split(" ")) > 2:
+        if len(self.incoming_message.split(" ")) > 2:
             raise MessageException("Sorry, your message is too long")
         try:
             parsed_request = grammar.expression.parseString(
@@ -35,17 +35,21 @@ class Instruction(object):
             raise MessageException("Sorry, I didn't understand your message")
 
     def perform(self):
-        if self.isbn and self.nickname:
-            return "Nickname this book"
-        elif self.initiator:
-            reading = Reading.start_reading(self)
-            return "Started reading book {0}".format(self.isbn)
-        elif self.terminator:
-            if self.isbn:
-                return "Finish reading this book"
-            else:
-                return "Finish reading this book"
-        elif self.currentlyreading:
-            return "Tell me what I'm reading"
+        try:
+            if self.isbn and self.nickname:
+                return "Nickname this book"
+            elif self.initiator:
+                reading = Reading.start_reading(self)
+                return "Started reading book {0}".format(self.isbn)
+            elif self.terminator:
+                if self.isbn:
+                    reading = Reading.end_reading(self)
+                    return "Finish reading this book"
+                else:
+                    return "Finish reading this book"
+            elif self.currentlyreading:
+                return "Tell me what I'm reading"
+        except ParseException as x:
+            raise MessageException("Sorry, I didn't understand your message")
 
   
