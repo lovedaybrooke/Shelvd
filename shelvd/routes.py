@@ -1,3 +1,7 @@
+import logging
+import sys
+import os
+
 from flask import request
 
 from shelvd import app
@@ -8,10 +12,10 @@ from shelvd.models import MessageException
 def index():
     return "Hello, World!"
 
-@app.route('/webhook')
+@app.route('/webhook', methods=['POST'])
 def webhook():
-    message = request.args.get('message')
-    if message:
-        return Instruction.process_incoming(message)
+    if request.values.get('From') == app.config["RECIPIENT_NUMBER"]:
+        received = Instruction.process_incoming(request.values.get('Text'))
+        return received
     else:
-        return "You need to give me something to work with"
+        return 400
