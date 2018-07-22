@@ -77,8 +77,11 @@ class Reading(db.Model):
         if existing_reading:
             raise MessageException("You've already started reading this book")
         else:
-            book.last_action_date = datetime.datetime.now()
             reading = Reading()
+            now = datetime.datetime.now()
+            book.last_action_date = now
+            reading.start_date = now
+
             reading.book_isbn = book.isbn
             db.session.add(reading)
             db.session.add(book)

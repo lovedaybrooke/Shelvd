@@ -71,24 +71,24 @@ class TestInstruction(TestCase):
     def test_parse_sets_reading_dates_correctly(self):
         messages.Instruction.process_incoming("9780111111116 start")
         
-        look_up_reading = Reading.query.filter_by(book_isbn="9780111111116"
+        reading = Reading.query.filter_by(book_isbn="9780111111116"
             ).first()
-        self.assertTrue(hasattr(look_up_reading, 'start_date'))
-        reading_start_date = look_up_reading.start_date
+        self.assertTrue(hasattr(reading, 'start_date'))
+        reading.start_date
 
-        look_up_book = Book.query.filter_by(isbn="9780111111116").first()
-        self.assertTrue(hasattr(look_up_book, 'last_action_date'))
-        book_action_date = look_up_book.last_action_date
-        
-        time_difference = book_action_date - reading_start_date
-        self.assertTrue(time_difference < datetime.timedelta(0,1))
+        book = Book.query.filter_by(isbn="9780111111116").first()
+        self.assertTrue(hasattr(book, 'last_action_date'))
+
+        self.assertEqual(book.last_action_date, reading.start_date)
 
         messages.Instruction.process_incoming("9780111111116 end")
-        self.assertTrue(hasattr(look_up_reading, 'end_date'))
-        reading_end_date = look_up_reading.end_date
-        self.assertTrue(reading_end_date > reading_start_date)
-
-
+        reading = Reading.query.filter_by(book_isbn="9780111111116"
+            ).first()
+        book = Book.query.filter_by(isbn="9780111111116").first()
+        
+        self.assertTrue(hasattr(reading, 'end_date'))
+        self.assertTrue(reading.end_date > reading.start_date)
+        self.assertEqual(book.last_action_date, reading.end_date)
 
     #     # input = "9780111222333 Start"
     #     # r = messages.Instruction(input)
