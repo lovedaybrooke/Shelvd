@@ -1,9 +1,11 @@
 #!flask/bin/python
 # -*- coding: utf-8 -*-
 from pyparsing import ParseException
+import plivo
 
 import shelvd.grammar as grammar
 from shelvd.models import Reading, MessageException
+from shelvd import app
 
 class Instruction(object):
 
@@ -12,13 +14,16 @@ class Instruction(object):
 
     @classmethod
     def process_incoming(cls, incoming_message):
+        reply_client = Reply()
         try:
             instruction = cls(incoming_message)
             instruction.parse()
-            return instruction.perform()
+            response = instruction.perform()
+            reply_client.send_reply(response)
+            return response, 202
         except MessageException as x:
-            # instead of raising an error, send an SMS
-            return str(x)
+            reply_client.send_reply(str(x))
+            return str(x), 400
 
     def parse(self):
         if len(self.incoming_message.split(" ")) > 2:
@@ -53,3 +58,15 @@ class Instruction(object):
             raise MessageException("Sorry, I didn't understand your message")
 
   
+class Reply(object):
+
+    def __init__(self):
+        self.client = plivo.RestClient(app.config['PLIVO_AUTH_ID'],
+            app.config['PLIVO_AUTH_TOKEN'])
+
+    def send_reply(self, text):
+        return self.client.messages.create(
+                src=app.config['SENDING_NUMBER'],
+                dst=app.config['RECIPIENT_NUMBER'],
+                text=text
+            )

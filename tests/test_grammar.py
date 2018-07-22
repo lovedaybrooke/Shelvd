@@ -4,13 +4,14 @@ from flask import Flask
 from flask_testing import TestCase
 
 import shelvd.grammar as grammar
+from shelvd.config import TestConfig
 
 
 class TestGrammar(TestCase):
 
     def create_app(self):
         app = Flask(__name__)
-        app.config['TESTING'] = True
+        app.config.from_object(TestConfig)
         return app
 
     def test_grammar_initiators(self):
