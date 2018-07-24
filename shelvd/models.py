@@ -119,7 +119,7 @@ class Reading(db.Model):
             return "Finished reading {0}".format(book.title)
         else:
             raise MessageException("You're not currently reading this book."
-                " You need to start reading this book before you finish")
+                " You need to start reading this book before you finish it.")
 
 class MessageException(Exception):
     pass  
