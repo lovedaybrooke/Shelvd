@@ -1,10 +1,11 @@
 alembic==1.0.0
+bottlenose=1.8.8
 certifi==2018.4.16
 chardet==3.0.4
 click==6.7
 decorator==4.3.0
 factory-boy==2.11.1
-faker==0.8.17
+Faker==0.8.17
 fixture==1.5.11
 Flask==1.0.2
 Flask-Fixtures==0.3.7
@@ -24,10 +25,12 @@ psycopg2==2.7.5
 psycopg2-binary==2.7.5
 pycodestyle==2.4.0
 pyparsing==2.2.0
+python-amazon-simple-product-api==2.2.11
 python-dateutil==2.7.3
 python-editor==1.0.3
 requests==2.19.1
 six==1.11.0
 SQLAlchemy==1.2.10
+text-unidecode==1.2
 urllib3==1.23
 Werkzeug==0.14.1
