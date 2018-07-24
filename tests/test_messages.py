@@ -11,6 +11,22 @@ from shelvd.models import Book, Reading
 from shelvd import db
 from shelvd.config import TestConfig
 
+from . import factories
+
+
+def create_objects(db):
+    b1 = factories.BookFactory(
+        isbn='9780111111113',
+        title='Necronomicon'
+    )
+    r1 = factories.ReadingFactory(
+        book_isbn=b1.isbn,
+        start_date=datetime.datetime(2017, 1, 1),
+        ended=True
+    )
+    db.session.add(b1)
+    db.session.add(r1)
+    db.session.commit()
 
 class TestInstruction(TestCase):
 
@@ -22,6 +38,7 @@ class TestInstruction(TestCase):
 
     def setUp(self):
         db.create_all()
+        create_objects(db)
 
     def tearDown(self):
         db.session.remove()
@@ -46,7 +63,10 @@ class TestInstruction(TestCase):
     def test_parse_doesnt_create_existing_book(self, mock_send_reply):
         mock_send_reply.return_value.ok = True
         messages.Instruction.process_incoming("9780111111113 start")
-        messages.Instruction.process_incoming("9780111111113 end")
+        # this book should have been created by Factory Boy
+        look_up_book = Book.query.filter_by(isbn="9780111111113").all()
+        self.assertTrue(len(look_up_book) == 1)
+        # Now when a reading is started, no new book should be created
         messages.Instruction.process_incoming("9780111111113 start")
         look_up_book = Book.query.filter_by(isbn="9780111111113").all()
         self.assertTrue(len(look_up_book) == 1)
@@ -58,14 +78,15 @@ class TestInstruction(TestCase):
     @patch('shelvd.messages.Reply.send_reply')
     def test_parse_creates_readings_for_existing_book(self, mock_send_reply):
         mock_send_reply.return_value.ok = True
-        messages.Instruction.process_incoming("9780111111114 start")
-        messages.Instruction.process_incoming("9780111111114 end")
-        messages.Instruction.process_incoming("9780111111114 start")
-        look_up_readings = Reading.query.filter_by(book_isbn="9780111111114"
+        # this book should have been created by Factory Boy
+        look_up_book = Book.query.filter_by(isbn="9780111111113").all()
+        self.assertTrue(len(look_up_book) == 1)
+        messages.Instruction.process_incoming("9780111111113 start")
+        look_up_readings = Reading.query.filter_by(book_isbn="9780111111113"
             ).order_by(Reading.start_date.asc()).all()
         self.assertTrue(len(look_up_readings) == 2)
-        self.assertEqual(look_up_readings[0].book_isbn, "9780111111114")
-        self.assertEqual(look_up_readings[1].book_isbn, "9780111111114")
+        self.assertEqual(look_up_readings[0].book_isbn, "9780111111113")
+        self.assertEqual(look_up_readings[1].book_isbn, "9780111111113")
         self.assertTrue(look_up_readings[0].ended)
         self.assertFalse(look_up_readings[1].ended)
 

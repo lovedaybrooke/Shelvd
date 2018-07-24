@@ -3,6 +3,8 @@ certifi==2018.4.16
 chardet==3.0.4
 click==6.7
 decorator==4.3.0
+factory-boy==2.11.1
+faker==0.8.17
 fixture==1.5.11
 Flask==1.0.2
 Flask-Fixtures==0.3.7
