@@ -11,41 +11,7 @@ from shelvd.models import Book, Reading, Author
 from shelvd import db
 from shelvd.config import TestConfig
 
-from . import factories
-
-
-def create_objects(db):
-    b1 = factories.BookFactory(
-        isbn="9780111111113",
-        title="Necronomicon"
-    )
-    b2 = factories.BookFactory(
-            isbn="9780111111114",
-            title="The King in Yellow",
-            nickname="YKing"
-        )
-    r1 = factories.ReadingFactory(
-        book_isbn=b1.isbn,
-        start_date=datetime.datetime(2017, 1, 1),
-        ended=True
-    )
-    a1 = factories.AuthorFactory(
-        id=1001,
-        name="R. M. James"
-    )
-    db.session.add(b1)
-    db.session.add(b2)
-    db.session.add(r1)
-    db.session.add(a1)
-    db.session.commit()
-
-
-def mock_amazon_lookup(*args, **kwargs):
-    class MockBook(object):
-        title = "Not Ghost Stories"
-        pages = 380
-        authors = ["R. M. James", "Ghost Author"]
-    return MockBook()
+from . import factories as factories
 
 
 class TestInstruction(TestCase):
@@ -58,7 +24,7 @@ class TestInstruction(TestCase):
 
     def setUp(self):
         db.create_all()
-        create_objects(db)
+        factories.create_objects_for_message_testing(db)
 
     def tearDown(self):
         db.session.remove()
@@ -75,7 +41,7 @@ class TestInstruction(TestCase):
         self.assertTrue(len(look_up_book) == 1)
 
     @patch("shelvd.messages.Reply.send_reply")
-    @patch("shelvd.models.AmazonAPI.lookup", mock_amazon_lookup)
+    @patch("shelvd.models.AmazonAPI.lookup", factories.mock_amazon_lookup)
     def test_parse_assigns_attributes_to_new_book(self, mock_send_reply):
         mock_send_reply.return_value.ok = True
         messages.Instruction.process_incoming("9780241341629 start")
