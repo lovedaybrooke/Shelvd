@@ -68,10 +68,19 @@ class TestInstruction(TestCase):
         look_up_book = Book.query.filter_by(isbn="9780111111113").all()
         self.assertTrue(len(look_up_book) == 1)
 
-    # def test_finds_book_by_nickname(self):
-        
+    @patch("shelvd.messages.Reply.send_reply")
+    def test_parse_attempting_to_create_book_with_nickname(self, mock_send_reply):
+        mock_send_reply.return_value.ok = ("This nickname doesn't match a book "
+            "that I know about already. Use an ISBN to start reading a brand "
+            "new book.", 400)
+        r1 = messages.Instruction.process_incoming("Namenick start")
+        look_up_book = Book.query.filter_by(nickname="Namenick").all()
+        self.assertFalse(look_up_book)
+        self.assertEqual(r1, ("This nickname doesn't match a book "
+            "that I know about already. Use an ISBN to start reading a brand "
+            "new book.", 400))
 
-    @patch('shelvd.messages.Reply.send_reply')
+    @patch("shelvd.messages.Reply.send_reply")
     def test_parse_creates_readings_for_existing_book(self, mock_send_reply):
         mock_send_reply.return_value.ok = True
         # this book should have been created by Factory Boy
@@ -117,6 +126,25 @@ class TestInstruction(TestCase):
         self.assertTrue(hasattr(reading, "end_date"))
         self.assertTrue(reading.end_date > reading.start_date)
         self.assertEqual(book.last_action_date, reading.end_date)
+
+    @patch("shelvd.messages.Reply.send_reply")
+    def test_setting_nickname(self, mock_send_reply):
+        mock_send_reply.return_value.ok = True
+        messages.Instruction.process_incoming("9780111111113 Necro")
+        look_up_book = Book.query.filter_by(nickname="Necro").all()
+        self.assertTrue(len(look_up_book) == 1)
+
+    @patch("shelvd.messages.Reply.send_reply")
+    def test_setting_nickname_of_multiple_words(self, mock_send_reply):
+        mock_send_reply.return_value.ok = True
+        r = messages.Instruction.process_incoming("9780111111113 Necro book")
+        look_up_book_1 = Book.query.filter_by(nickname="Necro book").all()
+        self.assertFalse(look_up_book_1)
+        look_up_book_2 = Book.query.filter_by(nickname="Necro").all()
+        self.assertFalse(look_up_book_2)
+        self.assertEqual(r, ("Sorry, your message is too long. Remember that "
+            "nicknames cannot include spaces", 400))
+
 
 
 if __name__ == "__main__":

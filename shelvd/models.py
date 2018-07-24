@@ -40,6 +40,19 @@ class Book(db.Model):
                     "that I know about already. Use an ISBN to start reading "
                     "a brand new book.")
 
+    @classmethod
+    def set_nickname(cls, message):
+        existing_nickname = cls.query.filter_by(nickname=message.nickname).all()
+        if not existing_nickname:
+            book = cls.query.filter_by(isbn=message.isbn).first()
+            book.nickname = message.nickname
+            db.session.add(book)
+            db.session.commit()
+            return book
+        else:
+            raise MessageException("This nickname has already been used. "
+                "Try another.")
+
 
 
 class Author(db.Model):

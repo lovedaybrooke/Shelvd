@@ -56,21 +56,17 @@ class TestGrammar(TestCase):
         self.assertTrue("nickname" in results.keys())
         self.assertEqual(results["nickname"], "KingInYellow")
 
-        # inputs = "9780111222333 King In Yellow"
-        # results = grammar.expression.parseString(inputs)
+        results = grammar.expression.parseString("9780111222333 King In Yellow")
+        self.assertTrue("isbn" in results.keys())
+        self.assertEqual(results["isbn"], "9780111222333")
+        self.assertTrue("nickname" in results.keys())
+        self.assertEqual(results["nickname"], "King")
 
-        # self.assertTrue("isbn" in results.keys())
-        # self.assertEqual(results["isbn"], "9780111222333")
-        # self.assertTrue("nickname" in results.keys())
-        # self.assertEqual(results["nickname"], "F451")
-
-        # inputs = "9780111222333 F451"
-        # results = grammar.expression.parseString(inputs)
-
-        # self.assertTrue("isbn" in results.keys())
-        # self.assertEqual(results["isbn"], "9780111222333")
-        # self.assertTrue("nickname" in results.keys())
-        # self.assertEqual(results["nickname"], "F451")
+        results = grammar.expression.parseString("9780111222333 F451")
+        self.assertTrue("isbn" in results.keys())
+        self.assertEqual(results["isbn"], "9780111222333")
+        self.assertTrue("nickname" in results.keys())
+        self.assertEqual(results["nickname"], "F451")
 
     def test_grammar_currently_reading(self):
         results = grammar.expression.parseString("reading")
