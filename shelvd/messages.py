@@ -47,16 +47,12 @@ class Instruction(object):
     def perform(self):
         try:
             if self.isbn and self.nickname:
-                book = Book.set_nickname(self)
-                return ("The book with ISBN {0} is now nicknamed {1}").format(
-                    book.isbn, book.nickname)
+                return Book.set_nickname(self)
             elif self.initiator:
-                reading = Reading.start_reading(self)
-                return "Started reading book {0}".format(self.isbn)
+                return Reading.start_reading(self)
             elif self.terminator:
                 if self.isbn:
-                    reading = Reading.end_reading(self)
-                    return "Finish reading this book"
+                    return Reading.end_reading(self)
                 else:
                     return "Finish reading this book"
             elif self.currentlyreading:
