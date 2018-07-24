@@ -23,3 +23,11 @@ class ReadingFactory(factory.Factory):
     ended = False
     abandoned = False
     book_isbn = factory.SubFactory(BookFactory)
+
+
+class AuthorFactory(factory.Factory):
+    class Meta:
+        model = models.Author
+
+    id = factory.Sequence(lambda n: '%d' % n)
+    name = "Jeff"

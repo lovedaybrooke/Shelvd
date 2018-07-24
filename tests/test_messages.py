@@ -7,7 +7,7 @@ from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 
 import shelvd.messages as messages
-from shelvd.models import Book, Reading
+from shelvd.models import Book, Reading, Author
 from shelvd import db
 from shelvd.config import TestConfig
 
@@ -29,15 +29,21 @@ def create_objects(db):
         start_date=datetime.datetime(2017, 1, 1),
         ended=True
     )
+    a1 = factories.AuthorFactory(
+        id=1001,
+        name="R. M. James"
+    )
     db.session.add(b1)
     db.session.add(b2)
     db.session.add(r1)
+    db.session.add(a1)
     db.session.commit()
 
 def mock_amazon_lookup(*args, **kwargs):
     class MockBook(object):
         title = "Not Ghost Stories"
         pages = 380
+        authors = ["R. M. James", "Ghost Author"]
     return MockBook()
 
 class TestInstruction(TestCase):
@@ -70,14 +76,19 @@ class TestInstruction(TestCase):
     @patch("shelvd.models.AmazonAPI.lookup", mock_amazon_lookup)
     def test_parse_assigns_attributes_to_new_book(self, mock_send_reply):
         mock_send_reply.return_value.ok = True
-
         messages.Instruction.process_incoming("9780241341629 start")
         book = Book.query.filter_by(isbn="9780241341629").first()
         self.assertTrue(hasattr(book, "title"))
         self.assertEqual(book.title, "Not Ghost Stories")
         self.assertTrue(hasattr(book, "page_count"))
         self.assertEqual(book.page_count, 380)
-    
+        self.assertTrue(hasattr(book, "authors"))
+        author_names = [author.name for author in book.authors]
+        self.assertEqual(sorted(author_names), ["Ghost Author", "R. M. James"])
+        # check the author that needed to be created was created
+        newly_created_author = Author.query.filter_by(name="Ghost Author").all()
+        self.assertEqual(len(newly_created_author), 1)
+
     @patch("shelvd.messages.Reply.send_reply")
     def test_parse_doesnt_create_existing_book(self, mock_send_reply):
         mock_send_reply.return_value = True

@@ -83,6 +83,8 @@ class Book(db.Model):
                 self.image_url = book.large_image_url
             elif hasattr(book, "medium_image_url"):
                 self.image_url = book.medium_image_url
+            self.authors = [author for author
+                            in Author.create_from_amazon_data(book)]
         except AsinNotFound as e:
             pass
 
@@ -98,6 +100,27 @@ class Author(db.Model):
 
     def __repr__(self):
         return '<Author {0} ({1})>'.format(self.name, self.id)
+
+    @classmethod
+    def find_or_create(cls, name_or_id):
+        if type(name_or_id) == int:
+            author = Author.query.filter_by(id=name_or_id).first()
+        else:
+            author = Author.query.filter_by(name=name_or_id).first()
+        if author:
+            return author
+        else:
+            return Author(name=name_or_id)
+
+    @classmethod
+    def create_from_amazon_data(cls, amazon_book_object):
+        authors = []
+        for author_name in amazon_book_object.authors:
+            author = Author.find_or_create(author_name)
+            db.session.add(author)
+            authors.append(author)
+        db.session.commit()
+        return authors
 
 
 class Reading(db.Model):
