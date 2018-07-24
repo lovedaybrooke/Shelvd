@@ -39,12 +39,14 @@ def create_objects(db):
     db.session.add(a1)
     db.session.commit()
 
+
 def mock_amazon_lookup(*args, **kwargs):
     class MockBook(object):
         title = "Not Ghost Stories"
         pages = 380
         authors = ["R. M. James", "Ghost Author"]
     return MockBook()
+
 
 class TestInstruction(TestCase):
 
@@ -64,7 +66,7 @@ class TestInstruction(TestCase):
 
     @patch("shelvd.messages.Reply.send_reply")
     @patch("shelvd.models.Book.get_amazon_data")
-    def test_parse_creates_new_book(self, mock_send_reply, 
+    def test_parse_creates_new_book(self, mock_send_reply,
                                     mock_get_amazon_data):
         mock_send_reply.return_value = True
         mock_get_amazon_data.return_value = True
@@ -101,7 +103,8 @@ class TestInstruction(TestCase):
         self.assertTrue(len(look_up_book) == 1)
 
     @patch("shelvd.messages.Reply.send_reply")
-    def test_parse_attempting_to_create_book_with_nickname(self, mock_send_reply):
+    def test_parse_attempting_to_create_book_with_nickname(self, 
+                                                           mock_send_reply):
         mock_send_reply.return_value = ("This nickname doesn't match a book "
             "that I know about already. Use an ISBN to start reading a brand "
             "new book.", 400)
@@ -127,8 +130,8 @@ class TestInstruction(TestCase):
 
     @patch("shelvd.messages.Reply.send_reply")
     @patch("shelvd.models.Book.get_amazon_data")
-    def test_parse_creates_only_one_unfinished_reading(self, mock_send_reply, 
-                                                        mock_get_amazon_data):
+    def test_parse_creates_only_one_unfinished_reading(self, mock_send_reply,
+                                                       mock_get_amazon_data):
         mock_send_reply.return_value = True
         r1 = messages.Instruction.process_incoming("9780111111115 start")
         r2 = messages.Instruction.process_incoming("9780111111115 start")
@@ -149,26 +152,22 @@ class TestInstruction(TestCase):
 
     @patch("shelvd.messages.Reply.send_reply")
     @patch("shelvd.models.Book.get_amazon_data")
-    def test_parse_sets_reading_dates_correctly(self, mock_send_reply, 
+    def test_parse_sets_reading_dates_correctly(self, mock_send_reply,
                                                 mock_get_amazon_data):
         mock_send_reply.return_value = True
         messages.Instruction.process_incoming("9780111111116 start")
-        
+
         reading = Reading.query.filter_by(book_isbn="9780111111116"
             ).first()
         self.assertTrue(hasattr(reading, "start_date"))
-        reading.start_date
-
         book = Book.query.filter_by(isbn="9780111111116").first()
         self.assertTrue(hasattr(book, "last_action_date"))
-
         self.assertEqual(book.last_action_date, reading.start_date)
 
         messages.Instruction.process_incoming("9780111111116 end")
         reading = Reading.query.filter_by(book_isbn="9780111111116"
             ).first()
         book = Book.query.filter_by(isbn="9780111111116").first()
-        
         self.assertTrue(hasattr(reading, "end_date"))
         self.assertTrue(reading.end_date > reading.start_date)
         self.assertEqual(book.last_action_date, reading.end_date)
@@ -198,11 +197,12 @@ class TestInstruction(TestCase):
         self.assertTrue(len(look_up_book) == 1)
 
         r = messages.Instruction.process_incoming("9780111111113 YKing")
-        self.assertEqual(r, 
+        self.assertEqual(r,
             ("This nickname has already been used. Try another.", 400))
 
         look_up_book = Book.query.filter_by(nickname="YKing").all()
         self.assertTrue(len(look_up_book) == 1)
-        
+
+
 if __name__ == "__main__":
     unittest.main()

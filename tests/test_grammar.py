@@ -87,7 +87,8 @@ class TestGrammar(TestCase):
         self.assertTrue("nickname" in results.keys())
         self.assertEqual(results["nickname"], "KingInYellow")
 
-        results = grammar.expression.parseString("9780111222333 King In Yellow")
+        results = grammar.expression.parseString("9780111222333 "
+                                                 "King In Yellow")
         self.assertTrue("isbn" in results.keys())
         self.assertEqual(results["isbn"], "9780111222333")
         self.assertTrue("nickname" in results.keys())

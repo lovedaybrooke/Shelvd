@@ -14,7 +14,7 @@ class Book(db.Model):
     title = db.Column(db.String(200), default="Unknown")
     image_url = db.Column(db.String(500), nullable=True)
     last_action_date = db.Column(db.DateTime, default=datetime.datetime.now(),
-        index=True)
+                                 index=True)
     authors = db.relationship('Author', backref='book', lazy='dynamic')
     readings = db.relationship('Reading', backref='book', lazy='dynamic')
 
@@ -50,7 +50,7 @@ class Book(db.Model):
             return book
         else:
             raise MessageException("I don't recognise this book. Please use "
-                "the 13-digit ISBN.")
+                                   "the 13-digit ISBN.")
 
     @classmethod
     def set_nickname(cls, message):
@@ -63,16 +63,17 @@ class Book(db.Model):
             return book
         else:
             raise MessageException("This nickname has already been used. "
-                "Try another.")
+                                   "Try another.")
 
     def get_amazon_data(self):
         try:
             amazon_client = AmazonAPI(os.environ['AWS_ACCESS_KEY_ID'],
-                os.environ['AWS_SECRET_ACCESS_KEY'],
-                os.environ['AWS_ASSOCIATE_TAG'],
-                region='UK')
-            book_or_books = amazon_client.lookup(ItemId=self.isbn, IdType='ISBN',
-                SearchIndex='Books')
+                                      os.environ['AWS_SECRET_ACCESS_KEY'],
+                                      os.environ['AWS_ASSOCIATE_TAG'],
+                                      region='UK')
+            book_or_books = amazon_client.lookup(ItemId=self.isbn,
+                                                 IdType='ISBN',
+                                                 SearchIndex='Books')
             if type(book_or_books) is list:
                 book = book_or_books[0]
             else:
@@ -174,11 +175,13 @@ class Reading(db.Model):
                 db.session.commit()
                 return "Finished reading {0}".format(book.title)
             else:
-                raise MessageException("You're not currently reading this book."
-                " You need to start reading this book before you finish it.")
+                raise MessageException("You're not currently reading this "
+                    "book. You need to start reading this book before you "
+                    "finish it.")
         else:
-            raise MessageException("You're not currently reading this book."
-                " You need to start reading this book before you finish it.")
+            raise MessageException("You're not currently reading this book. "
+                "You need to start reading this book before you finish it.")
+
 
 class MessageException(Exception):
-    pass  
+    pass

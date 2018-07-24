@@ -7,6 +7,7 @@ import shelvd.grammar as grammar
 from shelvd.models import Book, Reading, MessageException
 from shelvd import app
 
+
 class Instruction(object):
 
     def __init__(self, incoming_message):
@@ -63,12 +64,12 @@ class Instruction(object):
         except ParseException as x:
             raise MessageException("Sorry, I didn't understand your message")
 
-  
+
 class Reply(object):
 
     def __init__(self):
         self.client = plivo.RestClient(app.config["PLIVO_AUTH_ID"],
-            app.config["PLIVO_AUTH_TOKEN"])
+                                       app.config["PLIVO_AUTH_TOKEN"])
 
     def send_reply(self, text):
         return self.client.messages.create(
