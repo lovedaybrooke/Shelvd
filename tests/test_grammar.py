@@ -15,8 +15,7 @@ class TestGrammar(TestCase):
         return app
 
     def test_grammar_initiators(self):
-        inputs = "9780111222333 start"
-        results = grammar.expression.parseString(inputs)
+        results = grammar.expression.parseString("9780111222333 start")
 
         self.assertTrue("isbn" in results.keys())
         self.assertTrue("initiator" in results.keys())
@@ -24,41 +23,34 @@ class TestGrammar(TestCase):
         self.assertEqual(results["isbn"], "9780111222333")
         self.assertEqual(results["initiator"], "start")
 
-        inputs = "Namenick begin"
-        results = grammar.expression.parseString(inputs)
+        results = grammar.expression.parseString("Namenick begin")
         self.assertTrue("nickname" in results.keys())
         self.assertEqual(results["nickname"], "Namenick")
         self.assertTrue("initiator" in results.keys())
         self.assertEqual(results["initiator"], "begin")
 
     def test_grammar_terminators(self):
-        inputs = "9780111222333 end"
-        results = grammar.expression.parseString(inputs)
-
+        results = grammar.expression.parseString("9780111222333 end")
         self.assertTrue("isbn" in results.keys())
         self.assertTrue("terminator" in results.keys())
         self.assertFalse("nickname" in results.keys())
         self.assertEqual(results["isbn"], "9780111222333")
         self.assertEqual(results["terminator"], "end")
 
-        inputs = "Namenick finish"
-        results = grammar.expression.parseString(inputs)
+        results = grammar.expression.parseString("Namenick finish")
         self.assertTrue("nickname" in results.keys())
         self.assertEqual(results["nickname"], "Namenick")
         self.assertTrue("terminator" in results.keys())
         self.assertEqual(results["terminator"], "finish")
 
-        inputs = "Namenick abandon"
-        results = grammar.expression.parseString(inputs)
+        results = grammar.expression.parseString("Namenick abandon")
         self.assertTrue("nickname" in results.keys())
         self.assertEqual(results["nickname"], "Namenick")
         self.assertTrue("terminator" in results.keys())
         self.assertEqual(results["terminator"], "abandon")
 
     def test_grammar_nicknaming(self):
-        inputs = "9780111222333 KingInYellow"
-        results = grammar.expression.parseString(inputs)
-
+        results = grammar.expression.parseString("9780111222333 KingInYellow")
         self.assertTrue("isbn" in results.keys())
         self.assertEqual(results["isbn"], "9780111222333")
         self.assertTrue("nickname" in results.keys())
@@ -81,10 +73,9 @@ class TestGrammar(TestCase):
         # self.assertEqual(results["nickname"], "F451")
 
     def test_grammar_currently_reading(self):
-        inputs = "reading"
-        results = grammar.expression.parseString(inputs)
+        results = grammar.expression.parseString("reading")
         self.assertTrue("currentlyreading" in results.keys())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
