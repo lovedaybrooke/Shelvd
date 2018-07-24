@@ -4,13 +4,13 @@ from pyparsing import ParseException
 import plivo
 
 import shelvd.grammar as grammar
-from shelvd.models import Reading, MessageException
+from shelvd.models import Book, Reading, MessageException
 from shelvd import app
 
 class Instruction(object):
 
     def __init__(self, incoming_message):
-        self.incoming_message = incoming_message.lower()
+        self.incoming_message = incoming_message
 
     @classmethod
     def process_incoming(cls, incoming_message):
@@ -27,7 +27,11 @@ class Instruction(object):
 
     def parse(self):
         if len(self.incoming_message.split(" ")) > 2:
-            raise MessageException("Sorry, your message is too long")
+            raise MessageException("Sorry, your message is too long. "
+                "Remember that nicknames cannot include spaces")
+        if len(self.incoming_message.split(" ")) < 2:
+            raise MessageException("You need to give me a bit more to"
+                " work with")
         try:
             parsed_request = grammar.expression.parseString(
                 self.incoming_message)
@@ -42,7 +46,9 @@ class Instruction(object):
     def perform(self):
         try:
             if self.isbn and self.nickname:
-                return "Nickname this book"
+                book = Book.set_nickname(self)
+                return ("The book with ISBN {0} is now nicknamed {1}").format(
+                    book.isbn, book.nickname)
             elif self.initiator:
                 reading = Reading.start_reading(self)
                 return "Started reading book {0}".format(self.isbn)
