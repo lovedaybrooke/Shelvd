@@ -19,12 +19,18 @@ def create_objects(db):
         isbn="9780111111113",
         title="Necronomicon"
     )
+    b2 = factories.BookFactory(
+            isbn="9780111111114",
+            title="The King in Yellow",
+            nickname="YKing"
+        )
     r1 = factories.ReadingFactory(
         book_isbn=b1.isbn,
         start_date=datetime.datetime(2017, 1, 1),
         ended=True
     )
     db.session.add(b1)
+    db.session.add(b2)
     db.session.add(r1)
     db.session.commit()
 
@@ -104,6 +110,16 @@ class TestInstruction(TestCase):
         self.assertEqual(r2, ("You've already started reading this book", 400))
 
     @patch("shelvd.messages.Reply.send_reply")
+    def test_parse_doesnt_end_reading_that_isnt_started(self, mock_send_reply):
+        mock_send_reply.return_value.ok = True
+        r = messages.Instruction.process_incoming("9780111111115 end")
+        look_up_readings = Reading.query.filter_by(book_isbn="9780111111115"
+            ).order_by(Reading.start_date.asc()).all()
+        self.assertFalse(look_up_readings)
+        self.assertEqual(r, ("You're not currently reading this book. You "
+            "need to start reading this book before you finish it.", 400))
+
+    @patch("shelvd.messages.Reply.send_reply")
     def test_parse_sets_reading_dates_correctly(self, mock_send_reply):
         mock_send_reply.return_value.ok = True
         messages.Instruction.process_incoming("9780111111116 start")
@@ -145,7 +161,18 @@ class TestInstruction(TestCase):
         self.assertEqual(r, ("Sorry, your message is too long. Remember that "
             "nicknames cannot include spaces", 400))
 
+    @patch("shelvd.messages.Reply.send_reply")
+    def test_setting_existing_nickname(self, mock_send_reply):
+        mock_send_reply.return_value.ok = True
+        look_up_book = Book.query.filter_by(nickname="YKing").all()
+        self.assertTrue(len(look_up_book) == 1)
 
+        r = messages.Instruction.process_incoming("9780111111113 YKing")
+        self.assertEqual(r, 
+            ("This nickname has already been used. Try another.", 400))
 
+        look_up_book = Book.query.filter_by(nickname="YKing").all()
+        self.assertTrue(len(look_up_book) == 1)
+        
 if __name__ == "__main__":
     unittest.main()
