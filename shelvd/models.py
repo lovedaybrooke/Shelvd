@@ -60,7 +60,8 @@ class Book(db.Model):
             book.nickname = message.nickname
             db.session.add(book)
             db.session.commit()
-            return book
+            return "'{0}' (ISBN {1}) is now nicknamed '{2}'".format(
+                    book.title, book.isbn, book.nickname)
         else:
             raise MessageException("This nickname has already been used. "
                                    "Try another.")
@@ -155,7 +156,8 @@ class Reading(db.Model):
             db.session.add(reading)
             db.session.add(book)
             db.session.commit()
-            return "Started reading {0}".format(book.title)
+            return "Started reading {0} (ISBN {1})".format(book.title,
+                                                           book.isbn)
 
     @classmethod
     def end_reading(cls, message):
@@ -173,7 +175,8 @@ class Reading(db.Model):
                 db.session.add(book)
                 db.session.add(existing_reading)
                 db.session.commit()
-                return "Finished reading {0}".format(book.title)
+                return "Finished reading {0} (ISBN {1})".format(book.title,
+                                                                book.isbn)
             else:
                 raise MessageException("You're not currently reading this "
                     "book. You need to start reading this book before you "
