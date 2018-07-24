@@ -1,4 +1,7 @@
 import datetime
+import os
+
+from amazon.api import AmazonAPI, AsinNotFound
 
 from shelvd import db
 
@@ -20,25 +23,34 @@ class Book(db.Model):
 
     @classmethod
     def find_or_create(cls, message):
+        book = Book.find(message)
+        if not book:
+            book = Book.create(message)
+        return book
+
+    @classmethod
+    def create(cls, message):
+        book = Book()
+        book.isbn = message.isbn
+        book.get_amazon_data()
+        db.session.add(book)
+        db.session.commit()
+        return book
+
+    @classmethod
+    def find(cls, message):
         if message.isbn:
-            existing_book = Book.query.filter_by(isbn=message.isbn).first()
-            if existing_book:
-                return existing_book
-            else:
-                book = Book()
-                book.isbn = message.isbn
-                db.session.add(book)
-                db.session.commit()
-                return book
+            return Book.query.filter_by(isbn=message.isbn).first()
         elif message.nickname:
-            existing_book = Book.query.filter_by(
-                nickname=message.nickname).first()
-            if existing_book:
-                return existing_book
-            else:
+            book = Book.query.filter_by(nickname=message.nickname).first()
+            if not book:
                 raise MessageException("This nickname doesn't match a book "
                     "that I know about already. Use an ISBN to start reading "
                     "a brand new book.")
+            return book
+        else:
+            raise MessageException("I don't recognise this book. Please use "
+                "the 13-digit ISBN.")
 
     @classmethod
     def set_nickname(cls, message):
@@ -53,6 +65,26 @@ class Book(db.Model):
             raise MessageException("This nickname has already been used. "
                 "Try another.")
 
+    def get_amazon_data(self):
+        try:
+            amazon_client = AmazonAPI(os.environ['AWS_ACCESS_KEY_ID'],
+                os.environ['AWS_SECRET_ACCESS_KEY'],
+                os.environ['AWS_ASSOCIATE_TAG'],
+                region='UK')
+            book_or_books = amazon_client.lookup(ItemId=self.isbn, IdType='ISBN',
+                SearchIndex='Books')
+            if type(book_or_books) is list:
+                book = book_or_books[0]
+            else:
+                book = book_or_books
+            self.title = book.title
+            self.page_count = book.pages
+            if hasattr(book, "large_image_url"):
+                self.image_url = book.large_image_url
+            elif hasattr(book, "medium_image_url"):
+                self.image_url = book.medium_image_url
+        except AsinNotFound as e:
+            pass
 
 
 class Author(db.Model):
@@ -103,20 +135,24 @@ class Reading(db.Model):
 
     @classmethod
     def end_reading(cls, message):
-        book = Book.find_or_create(message)
-        existing_reading = Reading.query.filter_by(
-            book_isbn=book.isbn).filter_by(ended=False).first()
-        if existing_reading:
-            now = datetime.datetime.now()
-            book.last_action_date = now
-            existing_reading.end_date = now
-            existing_reading.ended = True
-            if message.terminator == "abandoned":
-                existing_reading.abandoned = True
-            db.session.add(book)
-            db.session.add(existing_reading)
-            db.session.commit()
-            return "Finished reading {0}".format(book.title)
+        book = Book.find(message)
+        if book:
+            existing_reading = Reading.query.filter_by(
+                book_isbn=book.isbn).filter_by(ended=False).first()
+            if existing_reading:
+                now = datetime.datetime.now()
+                book.last_action_date = now
+                existing_reading.end_date = now
+                existing_reading.ended = True
+                if message.terminator == "abandoned":
+                    existing_reading.abandoned = True
+                db.session.add(book)
+                db.session.add(existing_reading)
+                db.session.commit()
+                return "Finished reading {0}".format(book.title)
+            else:
+                raise MessageException("You're not currently reading this book."
+                " You need to start reading this book before you finish it.")
         else:
             raise MessageException("You're not currently reading this book."
                 " You need to start reading this book before you finish it.")

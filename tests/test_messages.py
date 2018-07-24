@@ -34,6 +34,12 @@ def create_objects(db):
     db.session.add(r1)
     db.session.commit()
 
+def mock_amazon_lookup(*args, **kwargs):
+    class MockBook(object):
+        title = "Not Ghost Stories"
+        pages = 380
+    return MockBook()
+
 class TestInstruction(TestCase):
 
     def create_app(self):
@@ -51,21 +57,30 @@ class TestInstruction(TestCase):
         db.drop_all()
 
     @patch("shelvd.messages.Reply.send_reply")
-    def test_parse_creates_new_book(self, mock_send_reply):
+    @patch("shelvd.models.Book.get_amazon_data")
+    def test_parse_creates_new_book(self, mock_send_reply, 
+                                    mock_get_amazon_data):
+        mock_send_reply.return_value = True
+        mock_get_amazon_data.return_value = True
         messages.Instruction.process_incoming("9780111111111 start")
         look_up_book = Book.query.filter_by(isbn="9780111111111").all()
         self.assertTrue(len(look_up_book) == 1)
 
     @patch("shelvd.messages.Reply.send_reply")
-    def test_parse_creates_new_book_with_uppercase_initiator(self, mock_send_reply):
+    @patch("shelvd.models.AmazonAPI.lookup", mock_amazon_lookup)
+    def test_parse_assigns_attributes_to_new_book(self, mock_send_reply):
         mock_send_reply.return_value.ok = True
-        messages.Instruction.process_incoming("9780111111112 Start")
-        look_up_book = Book.query.filter_by(isbn="9780111111112").all()
-        self.assertTrue(len(look_up_book) == 1)
+
+        messages.Instruction.process_incoming("9780241341629 start")
+        book = Book.query.filter_by(isbn="9780241341629").first()
+        self.assertTrue(hasattr(book, "title"))
+        self.assertEqual(book.title, "Not Ghost Stories")
+        self.assertTrue(hasattr(book, "page_count"))
+        self.assertEqual(book.page_count, 380)
     
     @patch("shelvd.messages.Reply.send_reply")
     def test_parse_doesnt_create_existing_book(self, mock_send_reply):
-        mock_send_reply.return_value.ok = True
+        mock_send_reply.return_value = True
         # this book should have been created by Factory Boy
         look_up_book = Book.query.filter_by(isbn="9780111111113").all()
         self.assertTrue(len(look_up_book) == 1)
@@ -76,7 +91,7 @@ class TestInstruction(TestCase):
 
     @patch("shelvd.messages.Reply.send_reply")
     def test_parse_attempting_to_create_book_with_nickname(self, mock_send_reply):
-        mock_send_reply.return_value.ok = ("This nickname doesn't match a book "
+        mock_send_reply.return_value = ("This nickname doesn't match a book "
             "that I know about already. Use an ISBN to start reading a brand "
             "new book.", 400)
         r1 = messages.Instruction.process_incoming("Namenick start")
@@ -88,7 +103,7 @@ class TestInstruction(TestCase):
 
     @patch("shelvd.messages.Reply.send_reply")
     def test_parse_creates_readings_for_existing_book(self, mock_send_reply):
-        mock_send_reply.return_value.ok = True
+        mock_send_reply.return_value = True
         # this book should have been created by Factory Boy
         look_up_book = Book.query.filter_by(isbn="9780111111113").all()
         self.assertTrue(len(look_up_book) == 1)
@@ -100,8 +115,10 @@ class TestInstruction(TestCase):
         self.assertFalse(look_up_readings[1].ended)
 
     @patch("shelvd.messages.Reply.send_reply")
-    def test_parse_creates_only_one_unfinished_reading(self, mock_send_reply):
-        mock_send_reply.return_value.ok = True
+    @patch("shelvd.models.Book.get_amazon_data")
+    def test_parse_creates_only_one_unfinished_reading(self, mock_send_reply, 
+                                                        mock_get_amazon_data):
+        mock_send_reply.return_value = True
         r1 = messages.Instruction.process_incoming("9780111111115 start")
         r2 = messages.Instruction.process_incoming("9780111111115 start")
         look_up_readings = Reading.query.filter_by(book_isbn="9780111111115"
@@ -111,7 +128,7 @@ class TestInstruction(TestCase):
 
     @patch("shelvd.messages.Reply.send_reply")
     def test_parse_doesnt_end_reading_that_isnt_started(self, mock_send_reply):
-        mock_send_reply.return_value.ok = True
+        mock_send_reply.return_value = True
         r = messages.Instruction.process_incoming("9780111111115 end")
         look_up_readings = Reading.query.filter_by(book_isbn="9780111111115"
             ).order_by(Reading.start_date.asc()).all()
@@ -120,8 +137,10 @@ class TestInstruction(TestCase):
             "need to start reading this book before you finish it.", 400))
 
     @patch("shelvd.messages.Reply.send_reply")
-    def test_parse_sets_reading_dates_correctly(self, mock_send_reply):
-        mock_send_reply.return_value.ok = True
+    @patch("shelvd.models.Book.get_amazon_data")
+    def test_parse_sets_reading_dates_correctly(self, mock_send_reply, 
+                                                mock_get_amazon_data):
+        mock_send_reply.return_value = True
         messages.Instruction.process_incoming("9780111111116 start")
         
         reading = Reading.query.filter_by(book_isbn="9780111111116"
@@ -145,14 +164,14 @@ class TestInstruction(TestCase):
 
     @patch("shelvd.messages.Reply.send_reply")
     def test_setting_nickname(self, mock_send_reply):
-        mock_send_reply.return_value.ok = True
+        mock_send_reply.return_value = True
         messages.Instruction.process_incoming("9780111111113 Necro")
         look_up_book = Book.query.filter_by(nickname="Necro").all()
         self.assertTrue(len(look_up_book) == 1)
 
     @patch("shelvd.messages.Reply.send_reply")
     def test_setting_nickname_of_multiple_words(self, mock_send_reply):
-        mock_send_reply.return_value.ok = True
+        mock_send_reply.return_value = True
         r = messages.Instruction.process_incoming("9780111111113 Necro book")
         look_up_book_1 = Book.query.filter_by(nickname="Necro book").all()
         self.assertFalse(look_up_book_1)
@@ -163,7 +182,7 @@ class TestInstruction(TestCase):
 
     @patch("shelvd.messages.Reply.send_reply")
     def test_setting_existing_nickname(self, mock_send_reply):
-        mock_send_reply.return_value.ok = True
+        mock_send_reply.return_value = True
         look_up_book = Book.query.filter_by(nickname="YKing").all()
         self.assertTrue(len(look_up_book) == 1)
 
