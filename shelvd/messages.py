@@ -61,12 +61,12 @@ class Instruction(object):
 class Reply(object):
 
     def __init__(self):
-        self.client = plivo.RestClient(app.config['PLIVO_AUTH_ID'],
-            app.config['PLIVO_AUTH_TOKEN'])
+        self.client = plivo.RestClient(app.config["PLIVO_AUTH_ID"],
+            app.config["PLIVO_AUTH_TOKEN"])
 
     def send_reply(self, text):
         return self.client.messages.create(
-                src=app.config['SENDING_NUMBER'],
-                dst=app.config['RECIPIENT_NUMBER'],
+                src=app.config["SENDING_NUMBER"],
+                dst=app.config["RECIPIENT_NUMBER"],
                 text=text
             )

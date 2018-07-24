@@ -1,13 +1,13 @@
 from pyparsing import *
 
 # Adam sez that this line means the only thing imported when I do
-# 'from grammar import *' will be the value of expression.
-__all__ = ['expression']
+# "from grammar import *" will be the value of expression.
+__all__ = ["expression"]
 
-initiator = (Keyword('begin') | Keyword('start')).setResultsName("initiator")
-terminator = (Keyword('end') | Keyword('finish') |
-    Keyword('abandon')).setResultsName("terminator")
-currentlyreading = (Keyword('reading')).setResultsName(
+initiator = (Keyword("begin") | Keyword("start")).setResultsName("initiator")
+terminator = (Keyword("end") | Keyword("finish") |
+    Keyword("abandon")).setResultsName("terminator")
+currentlyreading = (Keyword("reading")).setResultsName(
     "currentlyreading")
 isbn = Word(nums, min=13, max=13).setResultsName("isbn")
 nickname = Word(alphas).setResultsName("nickname")
