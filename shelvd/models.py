@@ -110,15 +110,19 @@ class Author(db.Model):
         if author:
             return author
         else:
-            return Author(name=name_or_id)
+            author = Author(name=name_or_id)
+            db.session.add(author)
+            db.session.commit()
+            return author
 
     @classmethod
     def create_from_amazon_data(cls, amazon_book_object):
         authors = []
         for author_name in amazon_book_object.authors:
             author = Author.find_or_create(author_name)
-            db.session.add(author)
-            authors.append(author)
+            if author:
+                db.session.add(author)
+                authors.append(author)
         db.session.commit()
         return authors
 
