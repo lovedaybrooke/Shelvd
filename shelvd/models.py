@@ -52,16 +52,14 @@ class Book(db.Model):
             raise MessageException("I don't recognise this book. Please use "
                                    "the 13-digit ISBN.")
 
-    @classmethod
-    def set_nickname(cls, message):
-        existing_nickname = cls.query.filter_by(nickname=message.nickname).all()
+    def set_nickname(self, message):
+        existing_nickname = Book.query.filter_by(nickname=message.nickname).all()
         if not existing_nickname:
-            book = cls.query.filter_by(isbn=message.isbn).first()
-            book.nickname = message.nickname
-            db.session.add(book)
+            self.nickname = message.nickname
+            db.session.add(self)
             db.session.commit()
             return "'{0}' (ISBN {1}) is now nicknamed '{2}'".format(
-                    book.title, book.isbn, book.nickname)
+                    self.title, self.isbn, self.nickname)
         else:
             raise MessageException("This nickname has already been used. "
                                    "Try another.")

@@ -69,7 +69,7 @@ class TestInstruction(TestCase):
         self.assertTrue(len(look_up_book) == 1)
 
     @patch("shelvd.messages.Reply.send_reply")
-    def test_parse_attempting_to_create_book_with_nickname(self, 
+    def test_parse_attempting_to_create_book_with_nickname(self,
                                                            mock_send_reply):
         mock_send_reply.return_value = ("This nickname doesn't match a book "
             "that I know about already. Use an ISBN to start reading a brand "
