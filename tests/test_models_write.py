@@ -180,8 +180,8 @@ class TestReading(TestCase):
         message = factories.FakeMessage()
         message.isbn = "9780111111121"
         reading = Reading.start_reading(message)
-        look_up_reading = Reading.query.filter_by(book_isbn="9780111111121"
-                                                 ).all()
+        look_up_reading = Reading.query.filter_by(
+                          book_isbn="9780111111121").all()
         self.assertEqual(len(look_up_reading), 1)
         self.assertEqual(look_up_reading[0].book_isbn, "9780111111121")
         self.assertTrue(look_up_reading[0].start_date)
@@ -194,8 +194,8 @@ class TestReading(TestCase):
         message = factories.FakeMessage()
         message.isbn = "9780111111188"
         reading = Reading.start_reading(message)
-        look_up_reading = Reading.query.filter_by(book_isbn="9780111111188"
-                                                 ).all()
+        look_up_reading = Reading.query.filter_by(
+                          book_isbn="9780111111188").all()
         self.assertEqual(len(look_up_reading), 1)
         self.assertEqual(look_up_reading[0].book_isbn, "9780111111188")
         self.assertTrue(look_up_reading[0].start_date)
@@ -205,34 +205,37 @@ class TestReading(TestCase):
 
     @patch("shelvd.models.Book.get_amazon_data")
     def test_start_reading_when_unfinished_reading_exists(self,
-                                                         mock_get_amazon_data):
-        look_up_reading = Reading.query.filter_by(book_isbn="9780111111114"
-                                      ).filter_by(ended=False
-                                      ).all()
+                                                          mock_get_amazon_data):
+        look_up_reading = Reading.query.filter_by(
+                          book_isbn="9780111111114").filter_by(
+                          ended=False).all()
         self.assertEqual(len(look_up_reading), 1)
         message = factories.FakeMessage()
         message.isbn = "9780111111114"
         with self.assertRaises(MessageException):
             Reading.start_reading(message)
-        look_up_reading = Reading.query.filter_by(book_isbn="9780111111114"
-                                      ).filter_by(ended=False
-                                      ).all()
+        look_up_reading = Reading.query.filter_by(
+                          book_isbn="9780111111114").filter_by(
+                          ended=False).all()
         self.assertEqual(len(look_up_reading), 1)
 
     @patch("shelvd.models.Book.get_amazon_data")
     def test_start_reading_when_ended_reading_exists(self,
                                                      mock_get_amazon_data):
-        look_up_reading = Reading.query.filter_by(book_isbn="9780111111113"
-                                                 ).filter_by(ended=True).all()
-        self.assertEqual(len(look_up_reading), 1)
+        look_up_reading = Reading.query.filter_by(
+                          book_isbn="9780111111113").filter_by(
+                          ended=True).all()
+        self.assertEqual(len(look_up_reading), 2)
         message = factories.FakeMessage()
         message.isbn = "9780111111113"
         Reading.start_reading(message)
-        look_up_reading = Reading.query.filter_by(book_isbn="9780111111113"
-                            ).order_by(Reading.start_date.asc()).all()
-        self.assertEqual(len(look_up_reading), 2)
+        look_up_reading = Reading.query.filter_by(
+                          book_isbn="9780111111113").order_by(
+                          Reading.start_date.asc()).all()
+        self.assertEqual(len(look_up_reading), 3)
         self.assertTrue(look_up_reading[0].ended)
-        self.assertFalse(look_up_reading[1].ended)
+        self.assertTrue(look_up_reading[1].ended)
+        self.assertFalse(look_up_reading[2].ended)
 
     def test_end_reading_of_existing_book(self):
         message = factories.FakeMessage()
@@ -241,8 +244,8 @@ class TestReading(TestCase):
         reading_response = Reading.end_reading(message)
         self.assertEqual(reading_response, "Finished reading The King in "
                          "Yellow (ISBN 9780111111114)")
-        look_up_reading = Reading.query.filter_by(book_isbn="9780111111114"
-                                                 ).all()
+        look_up_reading = Reading.query.filter_by(
+                          book_isbn="9780111111114").all()
         self.assertEqual(len(look_up_reading), 1)
         self.assertTrue(look_up_reading[0].ended)
 
@@ -252,24 +255,25 @@ class TestReading(TestCase):
         message.terminator = "end"
         with self.assertRaises(MessageException):
             Reading.end_reading(message)
-        look_up_reading = Reading.query.filter_by(book_isbn="9780111111122"
-                                                 ).all()
+        look_up_reading = Reading.query.filter_by(
+                          book_isbn="9780111111122").all()
         self.assertEqual(len(look_up_reading), 0)
 
     def test_end_reading_when_no_unended_reading(self):
-        look_up_reading = Reading.query.filter_by(book_isbn="9780111111113"
-                                                 ).all()
-        self.assertEqual(len(look_up_reading), 1)
+        look_up_reading = Reading.query.filter_by(
+                          book_isbn="9780111111113").all()
+        self.assertEqual(len(look_up_reading), 2)
         self.assertTrue(look_up_reading[0].ended)
         message = factories.FakeMessage()
         message.isbn = "9780111111113"
         message.terminator = "end"
         with self.assertRaises(MessageException):
             Reading.end_reading(message)
-        look_up_reading = Reading.query.filter_by(book_isbn="9780111111113"
-                                                 ).all()
-        self.assertEqual(len(look_up_reading), 1)
+        look_up_reading = Reading.query.filter_by(
+                          book_isbn="9780111111113").all()
+        self.assertEqual(len(look_up_reading), 2)
         self.assertTrue(look_up_reading[0].ended)
+
 
 class TestAuthor(TestCase):
 
