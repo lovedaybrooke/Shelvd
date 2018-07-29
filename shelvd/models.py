@@ -206,17 +206,19 @@ class Reading(db.Model):
                 "You need to start reading this book before you finish it.")
 
     @classmethod
-    def get_reading_list(cls, ended, abandoned):
+    def get_reading_list(cls, ended, abandoned, year="all"):
+        reading_query = cls.query.filter_by(ended=ended)
+        if year != "all":
+            reading_query = reading_query.filter(
+                            cls.end_date >= '{0}-01-01'.format(year)).filter(
+                            cls.end_date < '{0}-01-01'.format(year+1))
         if abandoned:
-            reading_query = cls.query.filter_by(ended=ended
-                                    ).filter_by(abandoned=abandoned
+            reading_query = reading_query.filter_by(abandoned=abandoned
                                     ).order_by(cls.end_date.desc())
         elif ended:
-            reading_query = cls.query.filter_by(ended=ended
-                                    ).order_by(cls.end_date.desc())
+            reading_query = reading_query.order_by(cls.end_date.desc())
         else:
-            reading_query = cls.query.filter_by(ended=ended
-                                    ).order_by(cls.start_date.desc())
+            reading_query = reading_query.order_by(cls.start_date.desc())
         return [reading for reading in reading_query]
 
 
