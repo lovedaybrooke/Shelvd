@@ -90,6 +90,22 @@ class Book(db.Model):
         except AsinNotFound as e:
             pass
 
+    def curtail_title(self):
+        if self.title.find(":") > 0:
+            title = self.title.split(":")[0]
+        elif self.title.find("(") > 0:
+            title = self.title.split("(")[0][:-1]
+        else:
+            title = self.title
+        if len(title) < 37:
+            return title
+        else:
+            nearest_break = title.find(" ", 30)
+            if nearest_break > 0 and nearest_break < 37:
+                return title[:nearest_break] + "..."
+            else:
+                return title[:33] + "..."
+
 
 class Author(db.Model):
 

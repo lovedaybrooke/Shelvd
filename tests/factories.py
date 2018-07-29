@@ -96,12 +96,12 @@ class FakeAmazonException(Exception):
 def create_objects_for_models_testing(db):
     b1 = BookFactory( # book with 2 unended readings: 1 abandoned & 1 not
         isbn="9780111111113",
-        title="Necronomicon",
+        title="Necronomicon (not a real book)", # curtail at (
         last_action_date=datetime.datetime(2017, 1, 5)
     )
     b2 = BookFactory( # book with unended reading
         isbn="9780111111114",
-        title="The King in Yellow",
+        title="The King in Yellow: various stories", # curtail at :
         nickname="YKing",
         last_action_date=datetime.datetime(2017, 1, 1)
     )
@@ -111,8 +111,12 @@ def create_objects_for_models_testing(db):
     )
     b4 = BookFactory( # book with 1 readings, 1 unended, 1 ended
         isbn="9780111111333",
-        title="Ghost Stories of an Antiquary",
+        title="Ghost Stories of Antiquarians IE History Fans", # curtail with space & ...
         last_action_date=datetime.datetime(2016, 3, 1)
+    )
+    b5 = BookFactory(
+        isbn="9780111111334",
+        title="Oh, Whistle, and I'll Come Laddiebuck" # curtail with ...
     )
     r1 = ReadingFactory( # finished reading of Necronomicon
         book_isbn=b1.isbn,
@@ -151,6 +155,7 @@ def create_objects_for_models_testing(db):
     db.session.add(b2)
     db.session.add(b3)
     db.session.add(b4)
+    db.session.add(b5)
     db.session.add(r1)
     db.session.add(r2)
     db.session.add(r3)

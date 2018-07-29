@@ -2,7 +2,7 @@ from flask import Flask
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 
-from shelvd.models import Reading
+from shelvd.models import Reading, Book
 from shelvd.config import TestConfig
 from shelvd import db
 from . import factories
@@ -30,9 +30,9 @@ class TestReading(TestCase):
         self.assertEqual(["{0} ({1})".format(
                          reading.book.title, reading.start_date)
                          for reading in readings],
-                         ["The King in Yellow "
+                         ["The King in Yellow: various stories "
                             "(2017-02-01 00:00:00)",
-                         "Ghost Stories of an Antiquary "
+                         "Ghost Stories of Antiquarians IE History Fans "
                             "(2016-04-01 00:00:00)"])
 
     def test_get_reading_list_finished(self):
@@ -41,11 +41,11 @@ class TestReading(TestCase):
         self.assertEqual(["{0} ({1})".format(
                          reading.book.title, reading.end_date)
                          for reading in readings],
-                         ["Necronomicon "
+                         ["Necronomicon (not a real book) "
                             "(2017-01-05 00:00:00)",
-                          "Ghost Stories of an Antiquary "
+                          "Ghost Stories of Antiquarians IE History Fans "
                             "(2016-03-09 00:00:00)",
-                          "Necronomicon "
+                          "Necronomicon (not a real book) "
                             "(2016-01-10 00:00:00)"])
 
     def test_get_reading_list_abandoned(self):
@@ -53,5 +53,30 @@ class TestReading(TestCase):
         self.assertEqual(["{0} ({1})".format(
                          reading.book.title, reading.end_date)
                          for reading in readings],
-                         ["Necronomicon "
+                         ["Necronomicon (not a real book) "
                             "(2016-01-10 00:00:00)"])
+
+class TestBook(TestCase):
+
+    def create_app(self):
+        app = Flask(__name__)
+        app.config.from_object(TestConfig)
+        db = SQLAlchemy(app)
+        return app
+
+    def setUp(self):
+        db.create_all()
+        factories.create_objects_for_models_testing(db)
+
+    def tearDown(all):
+        db.session.remove()
+        db.drop_all()
+
+    def test_curtail_title(self):
+        books = [book.curtail_title() for book in Book.query.all()]
+        self.assertEqual(sorted(books), 
+                         ["Ghost Stories of Antiquarians IE...",
+                         "Necronomicon",
+                         "Oh, Whistle, and I'll Come Laddie...",
+                         "The King in Yellow",
+                         "The Yellow Wallpaper"])
