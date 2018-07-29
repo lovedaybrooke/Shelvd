@@ -56,6 +56,17 @@ class TestReading(TestCase):
                          ["Necronomicon (not a real book) "
                             "(2016-01-10 00:00:00)"])
 
+    def test_get_reading_list_finished_by_year(self):
+        readings = Reading.get_reading_list(True, False, 2016)
+        formatted_list = ["{0} ({1})".format(
+                         reading.book.title, reading.end_date)
+                         for reading in readings]
+        self.assertEqual(formatted_list,
+                         ["Ghost Stories of Antiquarians IE History Fans "
+                            "(2016-03-09 00:00:00)",
+                          "Necronomicon (not a real book) "
+                            "(2016-01-10 00:00:00)"])
+
 class TestBook(TestCase):
 
     def create_app(self):
