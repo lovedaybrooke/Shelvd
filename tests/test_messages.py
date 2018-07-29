@@ -34,8 +34,6 @@ class TestInstruction(TestCase):
     @patch("shelvd.models.Book.get_amazon_data")
     def test_parse_creates_new_book(self, mock_send_reply,
                                     mock_get_amazon_data):
-        mock_send_reply.return_value = True
-        mock_get_amazon_data.return_value = True
         messages.Instruction.process_incoming("9780111111111 start")
         look_up_book = Book.query.filter_by(isbn="9780111111111").all()
         self.assertTrue(len(look_up_book) == 1)
@@ -55,6 +53,18 @@ class TestInstruction(TestCase):
         # check the author that needed to be created was created
         newly_created_author = Author.query.filter_by(name="Ghost Author").all()
         self.assertEqual(len(newly_created_author), 1)
+
+    @patch("shelvd.messages.Reply.send_reply")
+    @patch("shelvd.models.AmazonAPI.lookup", factories.mock_amazon_lookup)
+    def test_parse_handles_books_amazon_doesnt_know_about(self, mock_send_reply):
+        messages.Instruction.process_incoming("0879111111111 start")
+        book = Book.query.filter_by(isbn="0879111111111").first()
+        self.assertTrue(hasattr(book, "title"))
+        self.assertEqual(book.title, "Unknown")
+        self.assertTrue(hasattr(book, "page_count"))
+        self.assertEqual(book.page_count, 350)
+        author_names = [author.name for author in book.authors]
+        self.assertEqual(author_names, ["Unknown"])  
 
     @patch("shelvd.messages.Reply.send_reply")
     def test_parse_doesnt_create_existing_book(self, mock_send_reply):

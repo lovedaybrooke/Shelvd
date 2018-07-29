@@ -1,6 +1,7 @@
 import datetime
 
 import factory
+from amazon.api import AsinNotFound
 
 from shelvd import models, messages
 
@@ -84,6 +85,8 @@ def mock_amazon_lookup(*args, **kwargs):
             return MockBook("Mysterious Semi-known Book", 280, ["A. N. Author"])
         elif key == "ItemId" and value == "9780000000888":
             return MockBook("Mysterious Unknown Book", 260, [])
+        elif key == "ItemId" and value == "0879111111111":
+            raise AsinNotFound
 
 
 class FakeAmazonException(Exception):
