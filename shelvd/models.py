@@ -33,6 +33,8 @@ class Book(db.Model):
         book = Book()
         book.isbn = message.isbn
         book.get_amazon_data()
+        if not book.authors.all():
+            book.authors = [Author.find_or_create("Unknown")]
         db.session.add(book)
         db.session.commit()
         return book
