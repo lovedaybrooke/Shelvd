@@ -189,6 +189,21 @@ class Reading(db.Model):
             raise MessageException("You're not currently reading this book. "
                 "You need to start reading this book before you finish it.")
 
+    @classmethod
+    def get_reading_list(cls, ended, abandoned):
+        if abandoned:
+            reading_query = cls.query.filter_by(ended=ended
+                                    ).filter_by(abandoned=abandoned
+                                    ).order_by(cls.end_date.desc())
+        elif ended:
+            reading_query = cls.query.filter_by(ended=ended
+                                    ).order_by(cls.end_date.desc())
+        else:
+            reading_query = cls.query.filter_by(ended=ended
+                                    ).order_by(cls.start_date.desc())
+        return [reading for reading in reading_query]
+
+
 
 class MessageException(Exception):
     pass

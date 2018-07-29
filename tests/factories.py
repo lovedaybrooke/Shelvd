@@ -94,28 +94,53 @@ class FakeAmazonException(Exception):
 
 
 def create_objects_for_models_testing(db):
-    b1 = BookFactory(
+    b1 = BookFactory( # book with 2 unended readings: 1 abandoned & 1 not
         isbn="9780111111113",
-        title="Necronomicon"
+        title="Necronomicon",
+        last_action_date=datetime.datetime(2017, 1, 5)
     )
-    b2 = BookFactory(
+    b2 = BookFactory( # book with unended reading
         isbn="9780111111114",
         title="The King in Yellow",
-        nickname="YKing"
+        nickname="YKing",
+        last_action_date=datetime.datetime(2017, 1, 1)
     )
-    b3 = BookFactory(
-            isbn="9780111111188",
-            title="The Yellow Wallpaper"
+    b3 = BookFactory( # book with no reading
+        isbn="9780111111188",
+        title="The Yellow Wallpaper"
     )
-    r1 = ReadingFactory(
+    b4 = BookFactory( # book with 1 readings, 1 unended, 1 ended
+        isbn="9780111111333",
+        title="Ghost Stories of an Antiquary",
+        last_action_date=datetime.datetime(2016, 3, 1)
+    )
+    r1 = ReadingFactory( # finished reading of Necronomicon
         book_isbn=b1.isbn,
         start_date=datetime.datetime(2017, 1, 1),
         end_date=datetime.datetime(2017, 1, 5),
         ended=True
     )
-    r2 = ReadingFactory(
+    r2 = ReadingFactory( # unfinished reading of King
         book_isbn=b2.isbn,
-        start_date=datetime.datetime(2017, 1, 1),
+        start_date=datetime.datetime(2017, 2, 1),
+        ended=False
+    )
+    r3 = ReadingFactory( # finished, abandoned reading of Necronomicon
+        book_isbn=b1.isbn,
+        start_date=datetime.datetime(2016, 1, 1),
+        end_date=datetime.datetime(2016, 1, 10),
+        ended=True,
+        abandoned=True
+    )
+    r4 = ReadingFactory( # finished reading of Ghost Stories
+        book_isbn=b4.isbn,
+        start_date=datetime.datetime(2016, 3, 1),
+        end_date=datetime.datetime(2016, 3, 9),
+        ended=True
+    )
+    r5 = ReadingFactory( # unfinished reading of Ghost Stories
+        book_isbn=b4.isbn,
+        start_date=datetime.datetime(2016, 4, 1),
         ended=False
     )
     a1 = AuthorFactory(
@@ -124,7 +149,12 @@ def create_objects_for_models_testing(db):
     )
     db.session.add(b1)
     db.session.add(b2)
+    db.session.add(b3)
+    db.session.add(b4)
     db.session.add(r1)
     db.session.add(r2)
+    db.session.add(r3)
+    db.session.add(r4)
+    db.session.add(r5)
     db.session.add(a1)
     db.session.commit()
