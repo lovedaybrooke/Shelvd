@@ -37,7 +37,7 @@ class TestBook(TestCase):
         book = Book.find_or_create(message)
         self.assertEqual(type(book), Book)
         self.assertEqual(book.isbn, "9780111111113")
-        self.assertEqual(book.title, "Necronomicon")
+        self.assertEqual(book.title, "Necronomicon (not a real book)")
         all_books_with_this_isbn = Book.query.filter_by(
                                    isbn="9780111111113").all()
         self.assertEqual(len(all_books_with_this_isbn), 1)
@@ -82,7 +82,7 @@ class TestBook(TestCase):
         book = Book.find(message)
         self.assertTrue(book)
         self.assertEqual(type(book), Book)
-        self.assertEqual(book.title, "Necronomicon")
+        self.assertEqual(book.title, "Necronomicon (not a real book)")
 
     @patch("shelvd.models.AmazonAPI.lookup", factories.mock_amazon_lookup)
     def test_create(self):
@@ -243,7 +243,7 @@ class TestReading(TestCase):
         message.terminator = "end"
         reading_response = Reading.end_reading(message)
         self.assertEqual(reading_response, "Finished reading The King in "
-                         "Yellow (ISBN 9780111111114)")
+                         "Yellow: various stories (ISBN 9780111111114)")
         look_up_reading = Reading.query.filter_by(
                           book_isbn="9780111111114").all()
         self.assertEqual(len(look_up_reading), 1)
