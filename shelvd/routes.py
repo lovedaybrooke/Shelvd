@@ -2,15 +2,17 @@ import logging
 import sys
 import os
 
-from flask import request
+from flask import request, render_template
 
 from shelvd import app
 from shelvd.messages import Instruction
-from shelvd.models import MessageException
+from shelvd.models import MessageException, Reading
+    
 
 @app.route('/')
-def index():
-    return "Hello, World!"
+def unfinished():
+    return render_template('unfinished.html', 
+                           readings=Reading.get_reading_list(False, False))
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
