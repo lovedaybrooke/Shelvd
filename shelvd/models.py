@@ -13,7 +13,7 @@ class Book(db.Model):
     nickname = db.Column(db.String(100), nullable=True)
     page_count = db.Column(db.Integer, default=350)
     title = db.Column(db.String(200), default="Unknown")
-    image_url = db.Column(db.String(500), nullable=True)
+    image_url = db.Column(db.String(500), default="/static/images/unknown.png")
     last_action_date = db.Column(db.DateTime, default=datetime.datetime.now(),
                                  index=True)
     authors = db.relationship('Author', backref='book', lazy='dynamic')
