@@ -17,7 +17,7 @@ def unfinished():
 @app.route('/finished')
 def finished():
     return render_template('finished.html', 
-        readings=Reading.get_year_by_year_reading_list(False))
+        readings=Reading.get_year_by_year_reading_list())
 
 @app.route('/abandoned')
 def abandoned():

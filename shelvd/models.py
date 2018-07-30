@@ -226,7 +226,7 @@ class Reading(db.Model):
         return [reading for reading in reading_query]
 
     @classmethod
-    def get_year_by_year_reading_list(cls, abandoned):
+    def get_year_by_year_reading_list(cls):
         current_year = datetime.datetime.now().year
         earliest_year = cls.query.order_by(cls.end_date.asc()
                            ).first().end_date.year
@@ -234,7 +234,7 @@ class Reading(db.Model):
         years = [year for year in range(earliest_year, current_year+1)]
         years.reverse()
         for year in years:
-            books_read = cls.get_reading_list(True, abandoned, year)
+            books_read = cls.get_reading_list(True, False, year)
             booklists[year] = {"books_read": books_read,
                                "book_count": len(books_read)}
         return booklists
