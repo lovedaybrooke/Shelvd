@@ -1,0 +1,22 @@
+{% extends "basic_layout.html" %}
+
+   	{% block maincontent %}
+      <main class="grid-container">
+      {% for year, reading_info in readings.items() %}
+        <div class='booklist grid-100 mobile-grid-100 tablet-grid-100'>
+          <h2>{{ reading_info.book_count }} books read in {{ year }}</h2>
+        </div>
+          {% if reading_info.books_read %}
+                {% for reading in reading_info.books_read %}
+                  <div class="bookinfo grid-25 tablet-grid-33 mobile-grid-50">
+                    <img src="{{ reading.book.image_url }}"/>
+                    <h4>{{ reading.book.curtail_title() }}</h4><p>{{ reading.book.isbn }}<br>Finished on {{ reading.clean_end_date }}</p>
+                  </div>
+                {% endfor %}
+          {% else %}
+            <p>You haven't finished any books.</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+      </main>
+    {% endblock %}
