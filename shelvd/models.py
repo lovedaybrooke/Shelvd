@@ -21,7 +21,7 @@ class Book(db.Model):
     image_url = db.Column(db.String(500), default="/static/images/unknown.png")
     last_action_date = db.Column(db.DateTime, default=datetime.datetime.now(),
                                  index=True)
-    authors = db.relationship('Author', secondary=book_author)
+    authors = db.relationship('Author', secondary=book_author, backref='author')
     readings = db.relationship('Reading', backref='book', lazy='dynamic')
 
     def __repr__(self):
