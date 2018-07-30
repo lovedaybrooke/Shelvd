@@ -7,6 +7,11 @@ from amazon.api import AmazonAPI, AsinNotFound
 from shelvd import db
 
 
+book_author = db.Table('book_author',
+    db.Column('book_isbn', db.String(13), db.ForeignKey('book.isbn')),
+    db.Column('author_id', db.Integer, db.ForeignKey('author.id'))
+)
+
 class Book(db.Model):
 
     isbn = db.Column(db.String(13), primary_key=True, index=True, unique=True)
@@ -16,7 +21,7 @@ class Book(db.Model):
     image_url = db.Column(db.String(500), default="/static/images/unknown.png")
     last_action_date = db.Column(db.DateTime, default=datetime.datetime.now(),
                                  index=True)
-    authors = db.relationship('Author', backref='book', lazy='dynamic')
+    authors = db.relationship('Author', secondary=book_author)
     readings = db.relationship('Reading', backref='book', lazy='dynamic')
 
     def __repr__(self):
@@ -34,7 +39,7 @@ class Book(db.Model):
         book = Book()
         book.isbn = message.isbn
         book.get_amazon_data()
-        if not book.authors.all():
+        if not book.authors:
             book.authors = [Author.find_or_create("Unknown")]
         db.session.add(book)
         db.session.commit()
@@ -116,7 +121,6 @@ class Author(db.Model):
     nationality = db.Column(db.String(100), default="Unknown")
     ethnicity = db.Column(db.String(100), default="Unknown")
     gender = db.Column(db.String(30), default="Unknown")
-    books = db.Column(db.String(13), db.ForeignKey('book.isbn'))
 
     def __repr__(self):
         return '<Author {0} ({1})>'.format(self.name, self.id)

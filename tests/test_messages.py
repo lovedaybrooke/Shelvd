@@ -56,6 +56,18 @@ class TestInstruction(TestCase):
 
     @patch("shelvd.messages.Reply.send_reply")
     @patch("shelvd.models.AmazonAPI.lookup", factories.mock_amazon_lookup)
+    def test_parse_on_muany_to_many_relationships(self, mock_send_reply):
+        messages.Instruction.process_incoming("9780241341629 start")
+        messages.Instruction.process_incoming("9780000000666 start")
+        book_1 = Book.query.filter_by(isbn="9780241341629").first()
+        book_2 = Book.query.filter_by(isbn="9780000000666").first()
+        self.assertEqual(sorted([author.name for author in book_1.authors]),
+                         ["Ghost Author", "R. M. James"])
+        self.assertEqual(sorted([author.name for author in book_2.authors]),
+                         ['D. Grimmer', 'Ghost Author'])
+
+    @patch("shelvd.messages.Reply.send_reply")
+    @patch("shelvd.models.AmazonAPI.lookup", factories.mock_amazon_lookup)
     def test_parse_handles_books_amazon_doesnt_know_about(self, mock_send_reply):
         messages.Instruction.process_incoming("0879111111111 start")
         book = Book.query.filter_by(isbn="0879111111111").first()

@@ -80,7 +80,7 @@ def mock_amazon_lookup(*args, **kwargs):
                             ["R. M. James", "Ghost Author"])
         elif key == "ItemId" and value == "9780000000666":
             return MockBook("Especially Violent Fairytales", 620,
-                            ["D. Grimmer", "T. Grimmer"])
+                            ["D. Grimmer", "Ghost Author"])
         elif key == "ItemId" and value == "9780000000777":
             return MockBook("Mysterious Semi-known Book", 280, ["A. N. Author"])
         elif key == "ItemId" and value == "9780000000888":

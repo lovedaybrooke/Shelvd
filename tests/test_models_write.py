@@ -158,6 +158,22 @@ class TestBook(TestCase):
         self.assertEqual(book.page_count, 260)
         self.assertEqual([author for author in book.authors], [])
 
+    @patch("shelvd.models.AmazonAPI.lookup", factories.mock_amazon_lookup)
+    def test_get_amazon_data_with_many_to_many_author_book_relations(self):
+        book_1 = Book()
+        book_1.isbn = "9780241341629"
+        book_1.get_amazon_data()
+        book_2 = Book()
+        book_2.isbn = "9780000000666"
+        book_2.get_amazon_data()
+        look_up_author = Author.query.filter_by(name="Ghost Author").all()
+        self.assertEqual(len(look_up_author), 1)
+        self.assertEqual(sorted([author.name for author in book_1.authors]),
+                         ["Ghost Author", "R. M. James"])
+        self.assertEqual(sorted([author.name for author in book_2.authors]),
+                         ['D. Grimmer', 'Ghost Author'])
+        
+        
 
 class TestReading(TestCase):
 
