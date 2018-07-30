@@ -160,6 +160,11 @@ class Reading(db.Model):
     def __repr__(self):
         return '<Reading of {0} (id {1})>'.format(self.book, self.id)
 
+    @property
+    def clean_end_date(self):
+        return self.end_date.strftime("%d %b %Y").lstrip("0").replace(" 0", " ")
+    
+
     @classmethod
     def start_reading(cls, message):
         book = Book.find_or_create(message)

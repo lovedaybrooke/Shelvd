@@ -14,6 +14,11 @@ def unfinished():
     return render_template('unfinished.html', 
                            readings=Reading.get_reading_list(False, False))
 
+@app.route('/finished')
+def finished():
+    return render_template('finished.html', 
+        readings=Reading.get_year_by_year_reading_list(False))
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
     if request.values.get('From') == app.config["RECIPIENT_NUMBER"]:
