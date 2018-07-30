@@ -5,17 +5,17 @@ from pyparsing import *
 __all__ = ["expression"]
 
 initiator = (Keyword("begin") | Keyword("start") | Keyword("Begin") |
-    Keyword("Start")).setResultsName("initiator")
+             Keyword("Start")).setResultsName("initiator")
 terminator = (Keyword("end") | Keyword("finish") | Keyword("abandon") |
-    Keyword("End") | Keyword("Finish") | Keyword("Abandon")
-    ).setResultsName("terminator")
+              Keyword("End") | Keyword("Finish") | Keyword("Abandon")
+              ).setResultsName("terminator")
 currentlyreading = (Keyword("reading") | Keyword("Reading")).setResultsName(
-    "currentlyreading")
+                   "currentlyreading")
 isbn = Word(nums, min=13, max=13).setResultsName("isbn")
 nickname = (Combine(Word(alphas, exact=1) + Word(alphanums))
-    ).setResultsName("nickname")
+            ).setResultsName("nickname")
 percent = (Word(nums, min=1, max=2) + Word("%",
-    exact=1)).setResultsName("percent")
+           exact=1)).setResultsName("percent")
 page = Word(nums, min=1, max=4).setResultsName("page")
 
 

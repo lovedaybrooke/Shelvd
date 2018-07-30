@@ -99,9 +99,9 @@ class TestBook(TestCase):
 
     def test_curtail_title(self):
         books = [book.curtail_title() for book in Book.query.all()]
-        self.assertEqual(sorted(books), 
+        self.assertEqual(sorted(books),
                          ["Ghost Stories of Antiquarians IE...",
-                         "Necronomicon",
-                         "Oh, Whistle, and I'll Come Laddie...",
-                         "The King in Yellow",
-                         "The Yellow Wallpaper"])
+                          "Necronomicon",
+                          "Oh, Whistle, and I'll Come Laddie...",
+                          "The King in Yellow",
+                          "The Yellow Wallpaper"])

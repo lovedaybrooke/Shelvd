@@ -56,7 +56,8 @@ class Book(db.Model):
                                    "the 13-digit ISBN.")
 
     def set_nickname(self, message):
-        existing_nickname = Book.query.filter_by(nickname=message.nickname).all()
+        existing_nickname = Book.query.filter_by(
+                            nickname=message.nickname).all()
         if not existing_nickname:
             self.nickname = message.nickname
             db.session.add(self)
@@ -163,7 +164,6 @@ class Reading(db.Model):
     @property
     def clean_end_date(self):
         return self.end_date.strftime("%d %b %Y").lstrip("0").replace(" 0", " ")
-    
 
     @classmethod
     def start_reading(cls, message):
@@ -228,8 +228,8 @@ class Reading(db.Model):
     @classmethod
     def get_year_by_year_reading_list(cls):
         current_year = datetime.datetime.now().year
-        earliest_year = cls.query.order_by(cls.end_date.asc()
-                           ).first().end_date.year
+        earliest_year = cls.query.order_by(
+                        cls.end_date.asc()).first().end_date.year
         booklists = collections.OrderedDict()
         years = [year for year in range(earliest_year, current_year+1)]
         years.reverse()
@@ -238,7 +238,6 @@ class Reading(db.Model):
             booklists[year] = {"books_read": books_read,
                                "book_count": len(books_read)}
         return booklists
-
 
 
 class MessageException(Exception):
