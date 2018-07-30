@@ -94,55 +94,55 @@ class FakeAmazonException(Exception):
 
 
 def create_objects_for_models_testing(db):
-    b1 = BookFactory( # book with 2 unended readings: 1 abandoned & 1 not
+    b1 = BookFactory(  # book with 2 unended readings: 1 abandoned & 1 not
         isbn="9780111111113",
-        title="Necronomicon (not a real book)", # curtail at (
+        title="Necronomicon (not a real book)",  # curtail at (
         last_action_date=datetime.datetime(2017, 1, 5)
     )
-    b2 = BookFactory( # book with unended reading
+    b2 = BookFactory(  # book with unended reading
         isbn="9780111111114",
-        title="The King in Yellow: various stories", # curtail at :
+        title="The King in Yellow: various stories",  # curtail at :
         nickname="YKing",
         last_action_date=datetime.datetime(2017, 1, 1)
     )
-    b3 = BookFactory( # book with no reading
+    b3 = BookFactory(  # book with no reading
         isbn="9780111111188",
         title="The Yellow Wallpaper"
     )
-    b4 = BookFactory( # book with 1 readings, 1 unended, 1 ended
+    b4 = BookFactory(  # book with 1 readings, 1 unended, 1 ended
         isbn="9780111111333",
-        title="Ghost Stories of Antiquarians IE History Fans", # curtail with space & ...
+        title="Ghost Stories of Antiquarians IE History Fans",  # curtail with space & ...
         last_action_date=datetime.datetime(2016, 3, 1)
     )
     b5 = BookFactory(
         isbn="9780111111334",
-        title="Oh, Whistle, and I'll Come Laddiebuck" # curtail with ...
+        title="Oh, Whistle, and I'll Come Laddiebuck"  # curtail with ...
     )
-    r1 = ReadingFactory( # finished reading of Necronomicon
+    r1 = ReadingFactory(  # finished reading of Necronomicon
         book_isbn=b1.isbn,
         start_date=datetime.datetime(2017, 1, 1),
         end_date=datetime.datetime(2017, 1, 5),
         ended=True
     )
-    r2 = ReadingFactory( # unfinished reading of King
+    r2 = ReadingFactory(  # unfinished reading of King
         book_isbn=b2.isbn,
         start_date=datetime.datetime(2017, 2, 1),
         ended=False
     )
-    r3 = ReadingFactory( # finished, abandoned reading of Necronomicon
+    r3 = ReadingFactory(  # finished, abandoned reading of Necronomicon
         book_isbn=b1.isbn,
         start_date=datetime.datetime(2016, 1, 1),
         end_date=datetime.datetime(2016, 1, 10),
         ended=True,
         abandoned=True
     )
-    r4 = ReadingFactory( # finished reading of Ghost Stories
+    r4 = ReadingFactory(  # finished reading of Ghost Stories
         book_isbn=b4.isbn,
         start_date=datetime.datetime(2016, 3, 1),
         end_date=datetime.datetime(2016, 3, 9),
         ended=True
     )
-    r5 = ReadingFactory( # unfinished reading of Ghost Stories
+    r5 = ReadingFactory(  # unfinished reading of Ghost Stories
         book_isbn=b4.isbn,
         start_date=datetime.datetime(2016, 4, 1),
         ended=False

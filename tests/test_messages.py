@@ -33,7 +33,7 @@ class TestInstruction(TestCase):
     @patch("shelvd.messages.Reply.send_reply")
     @patch("shelvd.models.Book.get_amazon_data")
     def test_parse_creates_new_book(self, mock_send_reply,
-                                    mock_get_amazon_data):
+                                    mock_get_amazon_data):  
         messages.Instruction.process_incoming("9780111111111 start")
         look_up_book = Book.query.filter_by(isbn="9780111111111").all()
         self.assertTrue(len(look_up_book) == 1)
@@ -64,7 +64,7 @@ class TestInstruction(TestCase):
         self.assertTrue(hasattr(book, "page_count"))
         self.assertEqual(book.page_count, 350)
         author_names = [author.name for author in book.authors]
-        self.assertEqual(author_names, ["Unknown"])  
+        self.assertEqual(author_names, ["Unknown"])
 
     @patch("shelvd.messages.Reply.send_reply")
     def test_parse_doesnt_create_existing_book(self, mock_send_reply):
@@ -97,7 +97,7 @@ class TestInstruction(TestCase):
         self.assertTrue(len(look_up_book) == 0)
         messages.Instruction.process_incoming("9780111111115 start")
         look_up_readings = Reading.query.filter_by(book_isbn="9780111111115"
-            ).all()
+                                                   ).all()
         self.assertTrue(len(look_up_readings) == 1)
         self.assertFalse(look_up_readings[0].ended)
         self.assertFalse(look_up_readings[0].abandoned)
@@ -110,7 +110,7 @@ class TestInstruction(TestCase):
         self.assertTrue(len(look_up_book) == 1)
         messages.Instruction.process_incoming("9780111111113 start")
         look_up_readings = Reading.query.filter_by(book_isbn="9780111111113"
-            ).order_by(Reading.start_date.asc()).all()
+                           ).order_by(Reading.start_date.asc()).all()
         self.assertTrue(len(look_up_readings) == 2)
         self.assertTrue(look_up_readings[0].ended)
         self.assertTrue(look_up_readings[0].end_date)
@@ -124,7 +124,7 @@ class TestInstruction(TestCase):
         r1 = messages.Instruction.process_incoming("9780111111115 start")
         r2 = messages.Instruction.process_incoming("9780111111115 start")
         look_up_readings = Reading.query.filter_by(book_isbn="9780111111115"
-            ).order_by(Reading.start_date.asc()).all()
+                           ).order_by(Reading.start_date.asc()).all()
         self.assertTrue(len(look_up_readings) == 1)
         self.assertEqual(r2, ("You've already started reading this book", 400))
 
@@ -132,7 +132,7 @@ class TestInstruction(TestCase):
     def test_parse_doesnt_end_reading_that_isnt_started(self, mock_send_reply):
         r = messages.Instruction.process_incoming("9780111111115 end")
         look_up_readings = Reading.query.filter_by(book_isbn="9780111111115"
-            ).order_by(Reading.start_date.asc()).all()
+                           ).order_by(Reading.start_date.asc()).all()
         self.assertFalse(look_up_readings)
         self.assertEqual(r, ("You're not currently reading this book. You "
             "need to start reading this book before you finish it.", 400))
@@ -144,7 +144,7 @@ class TestInstruction(TestCase):
         messages.Instruction.process_incoming("9780111111116 start")
 
         reading = Reading.query.filter_by(book_isbn="9780111111116"
-            ).first()
+                  ).first()
         self.assertTrue(hasattr(reading, "start_date"))
         book = Book.query.filter_by(isbn="9780111111116").first()
         self.assertTrue(hasattr(book, "last_action_date"))
@@ -152,7 +152,7 @@ class TestInstruction(TestCase):
 
         messages.Instruction.process_incoming("9780111111116 end")
         reading = Reading.query.filter_by(book_isbn="9780111111116"
-            ).first()
+                  ).first()
         book = Book.query.filter_by(isbn="9780111111116").first()
         self.assertTrue(hasattr(reading, "end_date"))
         self.assertTrue(reading.end_date > reading.start_date)
