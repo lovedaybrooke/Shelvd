@@ -37,16 +37,14 @@ class TestReading(TestCase):
 
     def test_get_reading_list_finished(self):
         readings = Reading.get_reading_list(True, False)
-        self.assertEqual(len(readings), 3)
+        self.assertEqual(len(readings), 2)
         self.assertEqual(["{0} ({1})".format(
                          reading.book.title, reading.end_date)
                          for reading in readings],
                          ["Necronomicon (not a real book) "
                             "(2017-01-05 00:00:00)",
                           "Ghost Stories of Antiquarians IE History Fans "
-                            "(2016-03-09 00:00:00)",
-                          "Necronomicon (not a real book) "
-                            "(2016-01-10 00:00:00)"])
+                            "(2016-03-09 00:00:00)"])
 
     def test_get_reading_list_abandoned(self):
         readings = Reading.get_reading_list(True, True)
@@ -63,9 +61,7 @@ class TestReading(TestCase):
                          for reading in readings]
         self.assertEqual(formatted_list,
                          ["Ghost Stories of Antiquarians IE History Fans "
-                            "(2016-03-09 00:00:00)",
-                          "Necronomicon (not a real book) "
-                            "(2016-01-10 00:00:00)"])
+                            "(2016-03-09 00:00:00)"])
 
 class TestBook(TestCase):
 
