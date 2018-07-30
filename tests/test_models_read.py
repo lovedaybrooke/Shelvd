@@ -64,8 +64,8 @@ class TestReading(TestCase):
                          ["Ghost Stories of Antiquarians IE History Fans "
                             "(2016-03-09 00:00:00)"])
 
-    def test_get_reading_list_year_by_year_finished(self):
-        reading_list = Reading.get_year_by_year_reading_list(False)
+    def test_get_reading_list_year_by_year(self):
+        reading_list = Reading.get_year_by_year_reading_list()
         self.assertEqual(len(reading_list), 3)
         self.assertEqual(reading_list[2018]["book_count"], 0)
         self.assertFalse(reading_list[2018]["books_read"])
@@ -79,19 +79,6 @@ class TestReading(TestCase):
         self.assertEqual(
             [reading.book.isbn for reading in reading_list[2016]["books_read"]],
             ["9780111111333"])
-
-    def test_get_reading_list_year_by_year_abandoned(self):
-        reading_list = Reading.get_year_by_year_reading_list(True)
-        self.assertEqual(len(reading_list), 3)
-        self.assertEqual(reading_list[2018]["book_count"], 0)
-        self.assertFalse(reading_list[2018]["books_read"])
-        self.assertEqual(reading_list[2017]["book_count"], 0)
-        self.assertEqual(len(reading_list[2017]["books_read"]), 0)
-        self.assertEqual(reading_list[2016]["book_count"], 1)
-        self.assertEqual(len(reading_list[2016]["books_read"]), 1)
-        self.assertEqual(
-            [reading.book.isbn for reading in reading_list[2016]["books_read"]],
-            ["9780111111113"])
 
 
 class TestBook(TestCase):
