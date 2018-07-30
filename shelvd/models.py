@@ -1,5 +1,6 @@
 import datetime
 import os
+import collections
 
 from amazon.api import AmazonAPI, AsinNotFound
 
@@ -218,6 +219,21 @@ class Reading(db.Model):
         else:
             reading_query = reading_query.order_by(cls.start_date.desc())
         return [reading for reading in reading_query]
+
+    @classmethod
+    def get_year_by_year_reading_list(cls, abandoned):
+        current_year = datetime.datetime.now().year
+        earliest_year = cls.query.order_by(cls.end_date.asc()
+                           ).first().end_date.year
+        booklists = collections.OrderedDict()
+        years = [year for year in range(earliest_year, current_year+1)]
+        years.reverse()
+        for year in years:
+            books_read = cls.get_reading_list(True, abandoned, year)
+            booklists[year] = {"books_read": books_read,
+                               "book_count": len(books_read)}
+        return booklists
+
 
 
 class MessageException(Exception):
