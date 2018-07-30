@@ -19,6 +19,11 @@ def finished():
     return render_template('finished.html', 
         readings=Reading.get_year_by_year_reading_list(False))
 
+@app.route('/abandoned')
+def abandoned():
+    return render_template('abandoned.html', 
+        readings=Reading.get_reading_list(True, True))
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
     if request.values.get('From') == app.config["RECIPIENT_NUMBER"]:
