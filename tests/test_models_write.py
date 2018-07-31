@@ -128,6 +128,30 @@ class TestBook(TestCase):
                                    nickname="YellowKing").all()
         self.assertEqual(len(all_books_with_this_nickname), 1)
 
+    def test_find_book_and_set_nickname_with_known_book(self):
+        message = factories.FakeMessage()
+        message.isbn = "9780111111113"
+        message.nickname = "Necro"
+        book = Book.query.filter_by(isbn="9780111111113").first()
+        self.assertTrue(book)
+        Book.find_book_and_set_nickname(message)
+        all_books_with_this_nickname = Book.query.filter_by(
+                                   nickname="Necro").all()
+        self.assertEqual(len(all_books_with_this_nickname), 1)
+
+    def test_find_book_and_set_nickname_with_unknown_book(self):
+        message = factories.FakeMessage()
+        message.isbn = "9780888888888"
+        message.nickname = "Duckling"
+        all_books_with_this_nickname = Book.query.filter_by(
+                                   nickname="Duckling").all()
+        all_books_with_this_isbn = Book.query.filter_by(
+                                   isbn="9780888888888").all()
+        self.assertEqual(len(all_books_with_this_nickname), 0)
+        self.assertEqual(len(all_books_with_this_isbn), 0)
+        with self.assertRaises(MessageException):
+            Book.find_book_and_set_nickname(message)
+
     @patch("shelvd.models.AmazonAPI.lookup", factories.mock_amazon_lookup)
     def test_get_amazon_data_with_multiple_authors(self):
         book = Book()

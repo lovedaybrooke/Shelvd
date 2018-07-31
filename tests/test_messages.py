@@ -198,6 +198,15 @@ class TestInstruction(TestCase):
         look_up_book = Book.query.filter_by(nickname="YKing").all()
         self.assertTrue(len(look_up_book) == 1)
 
+    @patch("shelvd.messages.Reply.send_reply")
+    def test_setting_nickname_for_unstarted_book(self, mock_send_reply):
+        r = messages.Instruction.process_incoming("9780888888888 YKing")
+        self.assertEqual(r,
+                         ("You haven't started reading this book yet. You "
+                          "need to start it before nicknaming it.", 400))
+        look_up_book = Book.query.filter_by(isbn="9780888888888").all()
+        self.assertEqual(len(look_up_book), 0)
+
 
 if __name__ == "__main__":
     unittest.main()
