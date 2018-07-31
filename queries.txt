@@ -1,0 +1,31 @@
+\copy (select id, start_date, end_date, ended, abandoned, format, rereading, book_id from shelvd_reading where book_id in ('9781479835454', '9780575076952', '9780575076945', '9780141191454', '9780719564550')) TO readings_test.csv CSV DELIMITER ','
+
+\copy (select * from shelvd_author where id in (select author_id from shelvd_book_author where book_id in ('9781479835454', '9780575076952', '9780575076945', '9780141191454', '9780719564550'))) TO authors_test.csv CSV DELIMITER ','
+
+\copy (select b.isbn, b.nick, b.title, b.last_action_date, b.image_url, array_to_string(array_agg(ab.author_id), ',') from shelvd_book b join shelvd_book_author ab on ab.book_id=b.isbn where b.isbn in ('9781479835454', '9780575076952', '9780575076945', '9780141191454', '9780719564550') group by b.isbn, b.nick, b.title, b.last_action_date, b.image_url) TO books_test.csv CSV DELIMITER ','
+
+
+\copy (select id, start_date, end_date, ended, abandoned, format, rereading, book_id from shelvd_reading) TO readings.csv CSV DELIMITER ','
+
+\copy (select * from shelvd_author) TO authors.csv CSV DELIMITER ','
+
+\copy (select b.isbn, b.nick, b.title, b.page_count, b.last_action_date, b.image_url, array_to_string(array_agg(ab.author_id), ',') from shelvd_book b join shelvd_book_author ab on ab.book_id=b.isbn group by b.isbn, b.nick, b.page_count, b.title, b.last_action_date, b.image_url) TO books.csv CSV DELIMITER ','
+
+
+insert into book (isbn, page_count, title, last_action_date, image_url) values ('9780356508368',448,'The Obilisk Gate', '2017-08-27 00:41:15.761407+00', 'https://images-eu.ssl-images-amazon.com/images/I/61CQsF83qcL.jpg');
+
+insert into book_author (book_isbn, author_id) values ('9780356508368',10302);
+
+insert into book (isbn, page_count, title, last_action_date, image_url) values ('9781784871901', 182, 'Ghost Stories', '2017-01-07 13:22:42.951619+00', 'https://images-na.ssl-images-amazon.com/images/I/51G1V26-3zL._SX324_BO1,204,203,200_.jpg');
+
+INSERT INTO author (id, name, nationality, ethnicity, gender) VALUES (10999,'E. F. Benson', 'British', 'White', 'man');
+
+INSERT INTO book_author (book_isbn, author_id) VALUES ('9781784871901', 10999);
+
+insert into book (isbn, page_count, title, last_action_date, image_url) values ('9780141196398', 340, 'The Looking Glass War', '2017-09-18 14:09:13.818891+00', 'https://s3-eu-west-1.amazonaws.com/shelvdpics/9780141196398.jpg');
+
+insert into book_author (book_isbn, author_id) values ('9780141196398', 10289);
+
+pg_dump -Fc --no-acl --no-owner shelvd --file=shelvd_local.dump
+
+heroku pg:backups:restore 'https://s3-eu-west-1.amazonaws.com/shelvdpics/shelvd_local.dump' DATABASE_URL --app shelvd-staging
