@@ -48,7 +48,8 @@ class Book(db.Model):
     @classmethod
     def find(cls, message):
         if message.isbn:
-            return Book.query.filter_by(isbn=message.isbn).first()
+            book = Book.query.filter_by(isbn=message.isbn).first()
+            return book
         elif message.nickname:
             book = Book.query.filter_by(nickname=message.nickname).first()
             if not book:
@@ -59,6 +60,15 @@ class Book(db.Model):
         else:
             raise MessageException("I don't recognise this book. Please use "
                                    "the 13-digit ISBN.")
+
+    @classmethod
+    def find_book_and_set_nickname(cls, message):
+        book = cls.find(message)
+        if book:
+            book.set_nickname(message)
+        else:
+            raise MessageException("You haven't started reading this book yet."
+                             " You need to start it before nicknaming it.")
 
     def set_nickname(self, message):
         existing_nickname = Book.query.filter_by(

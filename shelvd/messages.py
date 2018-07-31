@@ -47,8 +47,7 @@ class Instruction(object):
     def perform(self):
         try:
             if self.isbn and self.nickname:
-                book = Book.find(self)
-                return book.set_nickname(self)
+                return Book.find_book_and_set_nickname(self)
             elif self.initiator:
                 return Reading.start_reading(self)
             elif self.terminator:
