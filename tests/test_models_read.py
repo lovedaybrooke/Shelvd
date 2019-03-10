@@ -66,7 +66,8 @@ class TestReading(TestCase):
 
     def test_get_reading_list_year_by_year(self):
         reading_list = Reading.get_year_by_year_reading_list()
-        self.assertEqual(len(reading_list), 3)
+        self.assertEqual(len(reading_list), 4)
+        self.assertEqual(reading_list[2019]["book_count"], 0)
         self.assertEqual(reading_list[2018]["book_count"], 0)
         self.assertFalse(reading_list[2018]["books_read"])
         self.assertEqual(reading_list[2017]["book_count"], 1)
