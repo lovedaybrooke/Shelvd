@@ -2,3 +2,4 @@ env/
 *.pyc
 .pytest_cache/
 instance/
+.env
