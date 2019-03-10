@@ -104,7 +104,7 @@ class Book(db.Model):
                 self.image_url = book.medium_image_url
             self.authors = [author for author
                             in Author.create_from_amazon_data(book)]
-        except AsinNotFound as e:
+        except:
             pass
 
     def curtail_title(self):
