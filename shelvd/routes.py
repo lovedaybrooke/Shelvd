@@ -1,12 +1,14 @@
 import logging
 import sys
 import os
+import json
+import datetime
 
-from flask import request, render_template
+from flask import request, render_template, jsonify
 
 from shelvd import app
 from shelvd.messages import Instruction
-from shelvd.models import MessageException, Reading
+from shelvd.models import MessageException, Reading, Author
 
 
 @app.route('/')
@@ -25,6 +27,26 @@ def finished():
 def abandoned():
     return render_template('abandoned.html',
                            readings=Reading.get_reading_list(True, True))
+
+
+@app.route('/stats')
+def stats():
+    year = datetime.datetime.now().year - 1
+    return render_template('stats.html',
+                           author_data=Author.get_years_author_data(
+                              year, 'nationality'),
+                           year=year)
+
+
+@app.route('/data')
+def data():
+    year = int(request.values.get('year'))
+    if request.values.get('type') in ('nationality', 'ethnicity', 'gender'):
+        data = json.dumps(Author.get_years_author_data(
+            year, request.values.get('type')))
+    else:
+        data = json.dumps({})
+    return jsonify(data)
 
 
 @app.route('/webhook', methods=['POST'])

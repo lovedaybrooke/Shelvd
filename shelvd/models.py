@@ -1,6 +1,7 @@
 import datetime
 import os
 import collections
+import json
 
 from amazon.api import AmazonAPI, AsinNotFound
 
@@ -21,7 +22,9 @@ class Book(db.Model):
     image_url = db.Column(db.String(500), default="/static/images/unknown.png")
     last_action_date = db.Column(db.DateTime, default=datetime.datetime.now(),
                                  index=True)
-    authors = db.relationship('Author', secondary=book_author, backref='author')
+    authors = db.relationship('Author', secondary=book_author,
+                              lazy='dynamic',
+                              backref='author')
     readings = db.relationship('Reading', backref='book', lazy='dynamic')
 
     def __repr__(self):
@@ -159,6 +162,23 @@ class Author(db.Model):
                 authors.append(author)
         db.session.commit()
         return authors
+
+    @classmethod
+    def get_years_author_data(cls, year, demogtype):
+        authors = [author for reading
+            in Reading.get_reading_list(True, False, year=year)
+            for author in reading.book.authors.all()]
+        author_data_list = [getattr(author, demogtype)
+                for author in authors]
+        cleaned_author_data_list = ["Unknown" if i == "" else i
+            for i in author_data_list]
+        overall_total = len(cleaned_author_data_list)
+        data_dict = dict(collections.Counter(cleaned_author_data_list))
+        tuple_list = [{"category": k, "count": v,
+            "percent": int(round(v*100/overall_total, 0))} for k, v
+            in sorted(data_dict.items(),
+            key=lambda x: x[1], reverse=True)]
+        return tuple_list
 
 
 class Reading(db.Model):
