@@ -230,7 +230,7 @@ class Reading(db.Model):
                 book.last_action_date = now
                 existing_reading.end_date = now
                 existing_reading.ended = True
-                if message.terminator == "abandoned":
+                if message.terminator == "abandon":
                     existing_reading.abandoned = True
                 db.session.add(book)
                 db.session.add(existing_reading)
