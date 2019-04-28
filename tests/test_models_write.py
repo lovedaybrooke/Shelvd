@@ -315,6 +315,19 @@ class TestReading(TestCase):
                           book_isbn="9780111111113").all()
         self.assertEqual(len(look_up_reading), 2)
         self.assertTrue(look_up_reading[0].ended)
+    
+    def test_abandon_reading(self):
+        message = factories.FakeMessage()
+        message.isbn = "9780111111114"
+        message.terminator = "abandon"
+        reading_response = Reading.end_reading(message)
+        self.assertEqual(reading_response, "Finished reading The King in "
+                         "Yellow: various stories (ISBN 9780111111114)")
+        look_up_reading = Reading.query.filter_by(
+                          book_isbn="9780111111114").all()
+        self.assertEqual(len(look_up_reading), 1)
+        self.assertTrue(look_up_reading[0].abandoned)
+
 
 
 class TestAuthor(TestCase):
