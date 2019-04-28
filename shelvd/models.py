@@ -102,9 +102,21 @@ class Book(db.Model):
         response = requests.get(url)
         if response.status_code == 200 and response.json()["totalItems"] == 1:
             json_response = response.json()["items"][0]["volumeInfo"]
+            json_response = cls.get_covers_from_Abebooks(isbn, json_response)
             return json_response
         else:
             return {}
+
+    @classmethod
+    def get_covers_from_Abebooks(cls, isbn, json_response):
+        url = "https://pictures.abebooks.com/isbn/{0}-us.jpg".format(isbn)
+        response = requests.get(url)
+        if response.status_code == 200:
+            json_response["imageLinks"] = url
+        else:
+            json_response["imageLinks"] = json_response["imageLinks"]["thumbnail"]
+            json_response = json_response.replace("&edge=curl", "")
+        return json_response
 
     def curtail_title(self):
         if self.title.find(":") > 0:
