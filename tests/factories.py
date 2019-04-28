@@ -1,7 +1,6 @@
 import datetime
 
 import factory
-from amazon.api import AsinNotFound
 
 from shelvd import models, messages
 
