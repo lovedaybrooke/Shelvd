@@ -3,7 +3,7 @@ import os
 import collections
 import json
 
-from amazon.api import AmazonAPI, AsinNotFound
+import requests
 
 from shelvd import db
 
@@ -41,9 +41,7 @@ class Book(db.Model):
     def create(cls, message):
         book = Book()
         book.isbn = message.isbn
-        book.get_amazon_data()
-        if not book.authors:
-            book.authors = [Author.find_or_create("Unknown")]
+        book.get_api_data()
         db.session.add(book)
         db.session.commit()
         return book
@@ -86,29 +84,27 @@ class Book(db.Model):
             raise MessageException("This nickname has already been used. "
                                    "Try another.")
 
-    def get_amazon_data(self):
-        try:
-            amazon_client = AmazonAPI(os.environ['AWS_ACCESS_KEY_ID'],
-                                      os.environ['AWS_SECRET_ACCESS_KEY'],
-                                      os.environ['AWS_ASSOCIATE_TAG'],
-                                      region='UK')
-            book_or_books = amazon_client.lookup(ItemId=self.isbn,
-                                                 IdType='ISBN',
-                                                 SearchIndex='Books')
-            if type(book_or_books) is list:
-                book = book_or_books[0]
-            else:
-                book = book_or_books
-            self.title = book.title
-            self.page_count = book.pages
-            if hasattr(book, "large_image_url"):
-                self.image_url = book.large_image_url
-            elif hasattr(book, "medium_image_url"):
-                self.image_url = book.medium_image_url
-            self.authors = [author for author
-                            in Author.create_from_amazon_data(book)]
-        except:
-            pass
+    def get_api_data(self):
+        book_info = Book.call_bookdata_api(self.isbn)
+        self.title = book_info.get("title", "Unknown")
+        self.page_count = book_info.get("page_count", 350)
+        self.image_url = book_info.get("imageLinks", 
+                                       "/static/images/unknown.png")
+        self.authors = [author for author
+                        in Author.create_from_api_data(
+                        book_info.get("authors", ["Unknown"]))]
+
+    @classmethod
+    def call_bookdata_api(cls, isbn):
+        url = ("https://www.googleapis.com/books/v1/volumes?q=isbn"
+               ":{0}&key={1}").format(isbn, 
+               os.environ["GOOGLE_BOOKS_API_KEY"])
+        response = requests.get(url)
+        if response.status_code == 200 and response.json()["totalItems"] == 1:
+            json_response = response.json()["items"][0]["volumeInfo"]
+            return json_response
+        else:
+            return {}
 
     def curtail_title(self):
         if self.title.find(":") > 0:
@@ -153,9 +149,9 @@ class Author(db.Model):
             return author
 
     @classmethod
-    def create_from_amazon_data(cls, amazon_book_object):
+    def create_from_api_data(cls, authors_list):
         authors = []
-        for author_name in amazon_book_object.authors:
+        for author_name in authors_list:
             author = Author.find_or_create(author_name)
             if author:
                 db.session.add(author)

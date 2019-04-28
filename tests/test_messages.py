@@ -31,15 +31,15 @@ class TestInstruction(TestCase):
         db.drop_all()
 
     @patch("shelvd.messages.Reply.send_reply")
-    @patch("shelvd.models.Book.get_amazon_data")
+    @patch("shelvd.models.Book.get_api_data")
     def test_parse_creates_new_book(self, mock_send_reply,
-                                    mock_get_amazon_data):  
+                                    mock_get_api_data):  
         messages.Instruction.process_incoming("9780111111111 start")
         look_up_book = Book.query.filter_by(isbn="9780111111111").all()
         self.assertTrue(len(look_up_book) == 1)
 
     @patch("shelvd.messages.Reply.send_reply")
-    @patch("shelvd.models.AmazonAPI.lookup", factories.mock_amazon_lookup)
+    @patch("shelvd.models.Book.call_bookdata_api", factories.mock_api_lookup)
     def test_parse_assigns_attributes_to_new_book(self, mock_send_reply):
         messages.Instruction.process_incoming("9780241341629 start")
         book = Book.query.filter_by(isbn="9780241341629").first()
@@ -55,7 +55,7 @@ class TestInstruction(TestCase):
         self.assertEqual(len(newly_created_author), 1)
 
     @patch("shelvd.messages.Reply.send_reply")
-    @patch("shelvd.models.AmazonAPI.lookup", factories.mock_amazon_lookup)
+    @patch("shelvd.models.Book.call_bookdata_api", factories.mock_api_lookup)
     def test_parse_on_muany_to_many_relationships(self, mock_send_reply):
         messages.Instruction.process_incoming("9780241341629 start")
         messages.Instruction.process_incoming("9780000000666 start")
@@ -67,7 +67,7 @@ class TestInstruction(TestCase):
                          ['D. Grimmer', 'Ghost Author'])
 
     @patch("shelvd.messages.Reply.send_reply")
-    @patch("shelvd.models.AmazonAPI.lookup", factories.mock_amazon_lookup)
+    @patch("shelvd.models.Book.call_bookdata_api", factories.mock_api_lookup)
     def test_parse_handles_books_amazon_doesnt_know_about(self, mock_send_reply):
         messages.Instruction.process_incoming("0879111111111 start")
         book = Book.query.filter_by(isbn="0879111111111").first()
@@ -102,9 +102,9 @@ class TestInstruction(TestCase):
             "new book.", 400))
 
     @patch("shelvd.messages.Reply.send_reply")
-    @patch("shelvd.models.Book.get_amazon_data")
+    @patch("shelvd.models.Book.get_api_data")
     def test_parse_creates_reading_for_new_book(self, mock_send_reply,
-                                                mock_get_amazon_data):
+                                                mock_get_api_data):
         look_up_book = Book.query.filter_by(isbn="9780111111115").all()
         self.assertTrue(len(look_up_book) == 0)
         messages.Instruction.process_incoming("9780111111115 start")
@@ -130,9 +130,9 @@ class TestInstruction(TestCase):
         self.assertFalse(look_up_readings[1].end_date)
 
     @patch("shelvd.messages.Reply.send_reply")
-    @patch("shelvd.models.Book.get_amazon_data")
+    @patch("shelvd.models.Book.get_api_data")
     def test_parse_creates_only_one_unfinished_reading(self, mock_send_reply,
-                                                       mock_get_amazon_data):
+                                                       mock_get_api_data):
         r1 = messages.Instruction.process_incoming("9780111111115 start")
         r2 = messages.Instruction.process_incoming("9780111111115 start")
         look_up_readings = Reading.query.filter_by(book_isbn="9780111111115"
@@ -150,9 +150,9 @@ class TestInstruction(TestCase):
             "need to start reading this book before you finish it.", 400))
 
     @patch("shelvd.messages.Reply.send_reply")
-    @patch("shelvd.models.Book.get_amazon_data")
+    @patch("shelvd.models.Book.get_api_data")
     def test_parse_sets_reading_dates_correctly(self, mock_send_reply,
-                                                mock_get_amazon_data):
+                                                mock_get_api_data):
         messages.Instruction.process_incoming("9780111111116 start")
 
         reading = Reading.query.filter_by(book_isbn="9780111111116"

@@ -42,8 +42,8 @@ class TestBook(TestCase):
                                    isbn="9780111111113").all()
         self.assertEqual(len(all_books_with_this_isbn), 1)
 
-    @patch("shelvd.models.Book.get_amazon_data")
-    def test_find_or_create_on_new_book(self, mock_get_amazon_data):
+    @patch("shelvd.models.Book.get_api_data")
+    def test_find_or_create_on_new_book(self, mock_get_api_data):
         message = factories.FakeMessage()
         message.isbn = "9780111111118"
         all_books_with_this_isbn = Book.query.filter_by(
@@ -84,7 +84,7 @@ class TestBook(TestCase):
         self.assertEqual(type(book), Book)
         self.assertEqual(book.title, "Necronomicon (not a real book)")
 
-    @patch("shelvd.models.AmazonAPI.lookup", factories.mock_amazon_lookup)
+    @patch("shelvd.models.Book.call_bookdata_api", factories.mock_api_lookup)
     def test_create(self):
         message = factories.FakeMessage()
         message.isbn = "9780241341629"
@@ -152,44 +152,44 @@ class TestBook(TestCase):
         with self.assertRaises(MessageException):
             Book.find_book_and_set_nickname(message)
 
-    @patch("shelvd.models.AmazonAPI.lookup", factories.mock_amazon_lookup)
-    def test_get_amazon_data_with_multiple_authors(self):
+    @patch("shelvd.models.Book.call_bookdata_api", factories.mock_api_lookup)
+    def test_get_api_data_with_multiple_authors(self):
         book = Book()
         book.isbn = "9780000000666"
-        book.get_amazon_data()
+        book.get_api_data()
         self.assertEqual(book.title, "Especially Violent Fairytales")
         self.assertEqual(book.page_count, 620)
         self.assertEqual(sorted([author.name for author
                          in book.authors]),
                          ["D. Grimmer", "Ghost Author"])
 
-    @patch("shelvd.models.AmazonAPI.lookup", factories.mock_amazon_lookup)
-    def test_get_amazon_data_with_one_author(self):
+    @patch("shelvd.models.Book.call_bookdata_api", factories.mock_api_lookup)
+    def test_get_api_data_with_one_author(self):
         book = Book()
         book.isbn = "9780000000777"
-        book.get_amazon_data()
+        book.get_api_data()
         self.assertEqual(book.title, "Mysterious Semi-known Book")
         self.assertEqual(book.page_count, 280)
         self.assertEqual([author.name for author in book.authors],
                          ["A. N. Author"])
 
-    @patch("shelvd.models.AmazonAPI.lookup", factories.mock_amazon_lookup)
-    def test_get_amazon_data_with_no_author(self):
+    @patch("shelvd.models.Book.call_bookdata_api", factories.mock_api_lookup)
+    def test_get_api_data_with_no_author(self):
         book = Book()
         book.isbn = "9780000000888"
-        book.get_amazon_data()
+        book.get_api_data()
         self.assertEqual(book.title, "Mysterious Unknown Book")
         self.assertEqual(book.page_count, 260)
         self.assertEqual([author for author in book.authors], [])
 
-    @patch("shelvd.models.AmazonAPI.lookup", factories.mock_amazon_lookup)
-    def test_get_amazon_data_with_many_to_many_author_book_relations(self):
+    @patch("shelvd.models.Book.call_bookdata_api", factories.mock_api_lookup)
+    def test_get_api_data_with_many_to_many_author_book_relations(self):
         book_1 = Book()
         book_1.isbn = "9780241341629"
-        book_1.get_amazon_data()
+        book_1.get_api_data()
         book_2 = Book()
         book_2.isbn = "9780000000666"
-        book_2.get_amazon_data()
+        book_2.get_api_data()
         look_up_author = Author.query.filter_by(name="Ghost Author").all()
         self.assertEqual(len(look_up_author), 1)
         self.assertEqual(sorted([author.name for author in book_1.authors]),
@@ -217,8 +217,8 @@ class TestReading(TestCase):
         db.session.remove()
         db.drop_all()
 
-    @patch("shelvd.models.Book.get_amazon_data")
-    def test_start_reading_of_new_book(self, mock_get_amazon_data):
+    @patch("shelvd.models.Book.get_api_data")
+    def test_start_reading_of_new_book(self, mock_get_api_data):
         message = factories.FakeMessage()
         message.isbn = "9780111111121"
         reading = Reading.start_reading(message)
@@ -231,8 +231,8 @@ class TestReading(TestCase):
         self.assertFalse(look_up_reading[0].ended)
         self.assertFalse(look_up_reading[0].abandoned)
 
-    @patch("shelvd.models.Book.get_amazon_data")
-    def test_start_reading_of_existing_book(self, mock_get_amazon_data):
+    @patch("shelvd.models.Book.get_api_data")
+    def test_start_reading_of_existing_book(self, mock_get_api_data):
         message = factories.FakeMessage()
         message.isbn = "9780111111188"
         reading = Reading.start_reading(message)
@@ -245,9 +245,9 @@ class TestReading(TestCase):
         self.assertFalse(look_up_reading[0].ended)
         self.assertFalse(look_up_reading[0].abandoned)
 
-    @patch("shelvd.models.Book.get_amazon_data")
+    @patch("shelvd.models.Book.get_api_data")
     def test_start_reading_when_unfinished_reading_exists(self,
-                                                          mock_get_amazon_data):
+                                                          mock_get_api_data):
         look_up_reading = Reading.query.filter_by(
                           book_isbn="9780111111114").filter_by(
                           ended=False).all()
@@ -261,9 +261,9 @@ class TestReading(TestCase):
                           ended=False).all()
         self.assertEqual(len(look_up_reading), 1)
 
-    @patch("shelvd.models.Book.get_amazon_data")
+    @patch("shelvd.models.Book.get_api_data")
     def test_start_reading_when_ended_reading_exists(self,
-                                                     mock_get_amazon_data):
+                                                     mock_get_api_data):
         look_up_reading = Reading.query.filter_by(
                           book_isbn="9780111111113").filter_by(
                           ended=True).all()
@@ -369,21 +369,21 @@ class TestAuthor(TestCase):
         look_up_author = Author.query.filter_by(name="Mary Shelley").all()
         self.assertEqual(len(look_up_author), 1)
 
-    def test_create_from_amazon_data_with_multiple_authors(self):
-        fake_book_object = factories.mock_amazon_lookup(ItemId="9780000000666")
-        Author.create_from_amazon_data(fake_book_object)
+    def test_create_from_api_data_with_multiple_authors(self):
+        authors = factories.mock_api_lookup("9780000000666")["authors"]
+        Author.create_from_api_data(authors)
         look_up_author = Author.query.filter_by(name="D. Grimmer").all()
         self.assertEqual(len(look_up_author), 1)
         look_up_author = Author.query.filter_by(name="Ghost Author").all()
         self.assertEqual(len(look_up_author), 1)
 
-    def test_create_from_amazon_data_with_one_author(self):
-        fake_book_object = factories.mock_amazon_lookup(ItemId="9780000000777")
-        Author.create_from_amazon_data(fake_book_object)
+    def test_create_from_api_data_with_one_author(self):
+        authors = factories.mock_api_lookup("9780000000777")["authors"]
+        Author.create_from_api_data(authors)
         look_up_author = Author.query.filter_by(name="A. N. Author").all()
         self.assertEqual(len(look_up_author), 1)
 
-    def test_create_from_amazon_data_with_no_authors(self):
-        fake_book_object = factories.mock_amazon_lookup(ItemId="9780000000888")
-        authors = Author.create_from_amazon_data(fake_book_object)
+    def test_create_from_api_data_with_no_authors(self):
+        authors = Author.create_from_api_data(
+                    factories.mock_api_lookup("9780000000888")["authors"])
         self.assertFalse(authors)

@@ -66,31 +66,24 @@ def create_objects_for_message_testing(db):
     db.session.commit()
 
 
-def mock_amazon_lookup(*args, **kwargs):
-    class MockBook(object):
-
-        def __init__(self, title, pages, authors):
-            self.title = title
-            self.pages = pages
-            self.authors = authors
-
-    for key, value in kwargs.items():
-        if key == "ItemId" and value == "9780241341629":
-            return MockBook("Not Ghost Stories", 380,
-                            ["R. M. James", "Ghost Author"])
-        elif key == "ItemId" and value == "9780000000666":
-            return MockBook("Especially Violent Fairytales", 620,
-                            ["D. Grimmer", "Ghost Author"])
-        elif key == "ItemId" and value == "9780000000777":
-            return MockBook("Mysterious Semi-known Book", 280, ["A. N. Author"])
-        elif key == "ItemId" and value == "9780000000888":
-            return MockBook("Mysterious Unknown Book", 260, [])
-        elif key == "ItemId" and value == "0879111111111":
-            raise AsinNotFound
-
-
-class FakeAmazonException(Exception):
-    pass
+def mock_api_lookup(isbn):
+    if isbn == "9780241341629":
+        return {"title": "Not Ghost Stories", "page_count": 380,
+                "authors": ["R. M. James", "Ghost Author"]}
+    elif isbn == "9780000000666":
+        return {"title": "Especially Violent Fairytales", 
+                "page_count": 620,
+                "authors": ["D. Grimmer", "Ghost Author"]}
+    elif isbn == "9780000000777":
+        return {"title": "Mysterious Semi-known Book", 
+                "page_count": 280,
+                "authors": ["A. N. Author"]}
+    elif isbn == "9780000000888":
+        return {"title": "Mysterious Unknown Book", 
+                "page_count": 260,
+                "authors": []}
+    elif isbn == "0879111111111":
+        return {}
 
 
 def create_objects_for_models_testing(db):
