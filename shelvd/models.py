@@ -113,7 +113,7 @@ class Book(db.Model):
         response = requests.get(url)
         if response.status_code == 200:
             json_response["imageLinks"] = url
-        else:
+        elif "imageLinks" in json_response.keys():
             json_response["imageLinks"] = json_response["imageLinks"]["thumbnail"]
             json_response = json_response.replace("&edge=curl", "")
         return json_response
