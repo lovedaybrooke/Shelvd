@@ -4,11 +4,11 @@ import os
 import json
 import datetime
 
-from flask import request, render_template, jsonify
+from flask import request, render_template, jsonify, redirect
 
 from shelvd import app
 from shelvd.messages import Instruction
-from shelvd.models import MessageException, Reading, Author
+from shelvd.models import MessageException, Reading, Author, Book
 
 
 @app.route('/')
@@ -36,6 +36,21 @@ def stats():
                            author_data=Author.get_years_author_data(
                               year, 'nationality'),
                            year=year)
+
+
+@app.route('/bookinfo/<isbn>', methods=['POST', 'GET'])
+def bookinfo(isbn):
+    book = Book.query.filter_by(isbn=isbn).first()
+    if request.method == 'GET':    
+        return render_template('bookinfo.html',
+                               book=book)
+    if request.method == 'POST':
+        outcome = book.update_info(request.form)
+        return render_template('bookinfo.html',
+                               book=book,
+                               success=outcome["success"],
+                               error=outcome["error"],
+                               input_data=request.form)
 
 
 @app.route('/data')

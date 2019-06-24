@@ -84,6 +84,37 @@ class Book(db.Model):
             raise MessageException("This nickname has already been used. "
                                    "Try another.")
 
+    def update_info(self, form_values):
+        if form_values.get('key') != os.environ['FORM_KEY']:
+            if form_values.get('key') == '':
+                error = ("You need to enter a key to validate your "
+                                "request")
+            else:
+                error = "That's not the right key"
+            return {"success": False, "error": error}
+        else:
+            try:
+                if form_values.get("title"):
+                    if len(form_values["title"]) > 200:
+                        return {"success": False, "error": "The title you've "
+                                "given is too long"}
+                    self.title = form_values["title"]
+                if form_values.get("page_count"):
+                    self.page_count = form_values["page_count"]
+                if form_values.get("image_url"):
+                    if len(form_values["image_url"]) > 500:
+                        return {"success": False, "error": "The image url "
+                                "you've given is too long"}
+                    self.image_url = form_values["image_url"]
+                db.session.add(self)
+                db.session.commit()
+                return {"success": True, "error": False}
+            except Exception as e:
+                return {"success": False, 
+                        "error": "Sorry, something's wrong with the book info "
+                                 "you've entered"}
+
+
     def get_api_data(self):
         book_info = Book.call_bookdata_api(self.isbn)
         self.title = book_info.get("title", "Unknown")

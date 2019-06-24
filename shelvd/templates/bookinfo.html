@@ -1,0 +1,37 @@
+{% extends "basic_layout.html" %}
+
+   	{% block maincontent %}
+      <main class="grid-container">
+        <div class='booklist grid-100 mobile-grid-100 tablet-grid-100'>
+          <h2>Book info for {{ book.isbn }}</h2>
+          {% if error %}<p class="error">{{error}}</p>{% endif %}
+          {% if success %}<p class="success">Book details changed successfully</p>{% endif %}
+            <form action="/bookinfo/{{ book.isbn }}" method="post">
+                <div class="fields">
+                  <label>Title</label>
+                  <textarea name="title" rows="3" cols="50">{% if input_data %}{{ input_data.title }}{% else %}{{ book.title }}{% endif %}</textarea>
+                </div>
+                <div class="fields">
+                  <label>Pages</label>
+                  {% if input_data %}<input type="text" name="page_count" value="{{ input_data.page_count }}">
+                  {% else %}<input type="text" name="page_count" value="{{ book.page_count }}">
+                  {% endif %}
+                </div>
+                <div class="fields">
+                  <label>Image</label>
+                  {% if input_data %}<input type="text" name="image_url" value="{{ input_data.image_url }}">
+                  {% else %}<input type="text" name="image_url" value="{{ book.image_url }}">
+                  {% endif %}
+                  <img src="{{ book.image_url }}"/>
+                </div>
+                <div class="fields">
+                  <label>Key</label>
+                  <input type="text" name="key" value="">
+                </div>
+                <div class="fields">
+                  <input type="submit" value="Update book info">
+                </div>
+              </form>
+          </div>
+      </main>
+    {% endblock %}

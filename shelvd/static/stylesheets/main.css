@@ -67,7 +67,7 @@ span.nav {
 
 
 h2 {
-  font-size: 2.3em;
+  font-size: 2em;
   font-weight: 200;
   margin: 2.3em 0em 1em 0em;
 }
@@ -124,6 +124,80 @@ h4.nav a {
   color: black;
   text-decoration: none;
   font-weight: normal;
+}
+
+form {
+  width: 270px;
+  margin: 40px auto;
+  -webkit-appearance: none;
+}
+
+p.error {
+    text-align: center;
+    background-color: #F7B4AB;
+    width: 270px;
+    padding: 10px;
+    margin: 0px auto;
+    border: 0.75px #F49587 solid;
+    -webkit-appearance: none;
+}
+
+p.success {
+    text-align: center;
+    width: 270px;
+    max-width:;
+    padding: 10px;
+    margin: 0px auto;
+    border: 1.5px #A9A9A9 solid;
+    -webkit-appearance: none;
+}
+
+form div.fields {
+  margin: 30px 0px;
+  font-size: 1.4em;
+  -webkit-appearance: none;
+}
+
+form label {
+  text-align: left;
+  width: 60px;
+  display: inline-block;
+  -webkit-appearance: none;
+  vertical-align: top;
+}
+
+form input, form textarea {
+  width: 200px;
+  padding: 3px 5px;
+  font-size: 0.9em;
+  font-family: 'Cardo', serif;
+  -webkit-appearance: none;
+}
+
+form input[type=submit] {
+  height: 50px;
+  width: 200px;
+  font-size: 1.1em;
+  font-family: 'Cardo', serif;
+  box-shadow: 5px 5px 0px #A9A9A9;
+  background-color: #A5C5C5;
+  border: none;
+  -webkit-appearance: none;
+}
+
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  -webkit-appearance: button;
+}
+
+form img {
+  width: 50%;
+  display: block;
+  margin: 18px auto;
+  border: 0.75px #A9A9A9 solid;
+  -webkit-appearance: none;
 }
 
 #footer {
