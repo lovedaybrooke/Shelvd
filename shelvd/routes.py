@@ -41,7 +41,7 @@ def stats():
 @app.route('/bookinfo/<isbn>', methods=['POST', 'GET'])
 def bookinfo(isbn):
     book = Book.query.filter_by(isbn=isbn).first()
-    if request.method == 'GET':    
+    if request.method == 'GET':
         return render_template('bookinfo.html',
                                book=book)
     if request.method == 'POST':
@@ -51,6 +51,16 @@ def bookinfo(isbn):
                                success=outcome["success"],
                                error=outcome["error"],
                                input_data=request.form)
+
+
+@app.route('/log', methods=['POST', 'GET'])
+def logreading():
+    if request.method == 'GET':
+        return render_template('webform.html')
+    if request.method == 'POST':
+        outcome = Instruction.process_from_web(request.form)
+        return render_template('webform.html', success=outcome["success"],
+                               error=outcome["error"])
 
 
 @app.route('/data')

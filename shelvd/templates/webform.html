@@ -1,0 +1,22 @@
+{% extends "basic_layout.html" %}
+
+   	{% block maincontent %}
+      <main class="grid-container">
+        <div class='booklist grid-100 mobile-grid-100 tablet-grid-100'>
+          {% if error %}<p class="error">{{error}}</p>{% endif %}
+          {% if success %}<p class="success">{{success}}</p>{% endif %}
+            <form action="/log" method="post">
+                <div class="fields">
+                  <input type="text" id="message" name="message" value="{{ input_message }}">
+                </div>
+                <div class="fields">
+                  <label>Key</label>
+                  <input type="text" name="key" value="">
+                </div>
+                <div class="fields">
+                  <input type="submit" value="Log reading">
+                </div>
+              </form>
+          </div>
+      </main>
+    {% endblock %}

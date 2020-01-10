@@ -1,5 +1,7 @@
 #!flask/bin/python
 # -*- coding: utf-8 -*-
+import os
+
 from pyparsing import ParseException
 import plivo
 
@@ -25,6 +27,23 @@ class Instruction(object):
         except MessageException as x:
             reply_client.send_reply(str(x))
             return str(x), 400
+
+    @classmethod
+    def process_from_web(cls, form_values):
+        if form_values.get('key') != os.environ['FORM_KEY']:
+            if form_values.get('key') == '':
+                error = "You need to enter a key to validate your request"
+            else:
+                error = "That's not the right key"
+            return {"success": False, "error": error}
+        else:
+            try:
+                instruction = cls(form_values.get("message"))
+                instruction.parse()
+                response = instruction.perform()
+                return {"success": response, "error": False}
+            except MessageException as x:
+                return {"success": False, "error": str(x)}
 
     def parse(self):
         if len(self.incoming_message.split(" ")) > 2:
