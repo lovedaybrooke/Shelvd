@@ -80,4 +80,4 @@ def webhook():
         received = Instruction.process_incoming(request.values.get('Text'))
         return received
     else:
-        return 400
+        return "Unauthorized", 401
