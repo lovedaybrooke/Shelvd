@@ -119,7 +119,7 @@ class Book(db.Model):
         book_info = Book.call_bookdata_api(self.isbn)
         self.title = book_info.get("title", "Unknown")
         self.page_count = book_info.get("page_count", 350)
-        self.image_url = book_info.get("imageLinks", 
+        self.image_url = book_info.get("image_url", 
                                        "/static/images/unknown.png")
         self.authors = [author for author
                         in Author.create_from_api_data(
@@ -133,20 +133,19 @@ class Book(db.Model):
         response = requests.get(url)
         if response.status_code == 200 and response.json()["totalItems"] == 1:
             json_response = response.json()["items"][0]["volumeInfo"]
-            json_response = cls.get_covers_from_Abebooks(isbn, json_response)
+            json_response = cls.get_cover_image(isbn, json_response)
             return json_response
         else:
             return {}
 
     @classmethod
-    def get_covers_from_Abebooks(cls, isbn, json_response):
+    def get_cover_image(cls, isbn, json_response):
         url = "https://pictures.abebooks.com/isbn/{0}-us.jpg".format(isbn)
         response = requests.get(url)
         if response.status_code == 200:
-            json_response["imageLinks"] = url
+            json_response["image_url"] = url
         elif "imageLinks" in json_response.keys():
-            json_response["imageLinks"] = json_response["imageLinks"]["thumbnail"]
-            json_response = json_response.replace("&edge=curl", "")
+            json_response["image_url"] = json_response["imageLinks"]["thumbnail"].replace("&edge=curl", "")
         return json_response
 
     def curtail_title(self):
