@@ -66,7 +66,7 @@ class Book(db.Model):
     def find_book_and_set_nickname(cls, message):
         book = cls.find(message)
         if book:
-            book.set_nickname(message)
+            return book.set_nickname(message)
         else:
             raise MessageException("You haven't started reading this book yet."
                              " You need to start it before nicknaming it.")

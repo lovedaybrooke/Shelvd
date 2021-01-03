@@ -53,7 +53,7 @@ class TestInstruction(TestCase):
         self.assertEqual(len(newly_created_author), 1)
 
     @patch("shelvd.models.Book.call_bookdata_api", factories.mock_api_lookup)
-    def test_parse_on_muany_to_many_relationships(self):
+    def test_parse_on_many_to_many_relationships(self):
         messages.Instruction.process_incoming("9780241341629 start")
         messages.Instruction.process_incoming("9780000000666 start")
         book_1 = Book.query.filter_by(isbn="9780241341629").first()
@@ -156,9 +156,12 @@ class TestInstruction(TestCase):
         self.assertEqual(book.last_action_date, reading.end_date)
 
     def test_setting_nickname(self):
-        messages.Instruction.process_incoming("9780111111113 Necro")
+        r = messages.Instruction.process_incoming("9780111111113 Necro")
         look_up_book = Book.query.filter_by(nickname="Necro").all()
         self.assertTrue(len(look_up_book) == 1)
+        self.assertEqual(r, ("'Necronomicon' (ISBN 9780111111113) is now "
+                             "nicknamed 'Necro'", 202))
+
 
     def test_setting_nickname_of_multiple_words(self):
         r = messages.Instruction.process_incoming("9780111111113 Necro book")
