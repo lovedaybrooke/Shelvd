@@ -32,10 +32,18 @@ def abandoned():
 @app.route('/stats')
 def stats():
     year = datetime.datetime.now().year - 1
+    return redirect("/stats/{0}".format(year), code=302)
+
+
+@app.route('/stats/<year>')
+def stats_for_year(year):
+    year, last_year, next_year = Reading.available_years(int(year))
     return render_template('stats.html',
                            author_data=Author.get_years_author_data(
                               year, 'nationality'),
-                           year=year)
+                           year=year,
+                           last_year=last_year,
+                           next_year=next_year)
 
 
 @app.route('/bookinfo/<isbn>', methods=['POST', 'GET'])

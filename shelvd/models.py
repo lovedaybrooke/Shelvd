@@ -311,6 +311,18 @@ class Reading(db.Model):
                                "book_count": len(books_read)}
         return booklists
 
+    @classmethod
+    def available_years(cls, year):
+        ended_readings = cls.query.filter_by(ended=True).filter_by(
+                        abandoned=False)
+        earliest_year = ended_readings.order_by(
+                        cls.end_date.asc()).first().end_date.year
+        latest_year = ended_readings.order_by(
+                        cls.end_date.desc()).first().end_date.year
+        next_year = year + 1 if year < latest_year else False
+        last_year = year - 1 if year > earliest_year else False
+        return year, last_year, next_year
+
 
 class MessageException(Exception):
     pass

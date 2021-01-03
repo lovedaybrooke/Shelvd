@@ -38,12 +38,13 @@ class TestReading(TestCase):
 
     def test_get_reading_list_finished(self):
         readings = Reading.get_reading_list(True, False)
-        self.assertEqual(len(readings), 2)
+        self.assertEqual(len(readings), 3)
         self.assertEqual(["{0} ({1})".format(
                          reading.book.title, reading.end_date)
                          for reading in readings],
                          ["Necronomicon (not a real book) "
-                            "(2017-01-05 00:00:00)",
+                            "(2018-01-05 00:00:00)",
+                          'Gay T-Rex Law Firm (2017-10-31 00:00:00)',
                           "Ghost Stories of Antiquarians IE History Fans "
                             "(2016-03-09 00:00:00)"])
 
@@ -53,7 +54,7 @@ class TestReading(TestCase):
                          reading.book.title, reading.end_date)
                          for reading in readings],
                          ["Necronomicon (not a real book) "
-                            "(2016-01-10 00:00:00)"])
+                            "(2017-01-10 00:00:00)"])
 
     def test_get_reading_list_finished_by_year(self):
         readings = Reading.get_reading_list(True, False, 2016)
@@ -66,20 +67,32 @@ class TestReading(TestCase):
 
     def test_get_reading_list_year_by_year(self):
         reading_list = Reading.get_year_by_year_reading_list()
-        self.assertEqual(len(reading_list), 4)
+        self.assertEqual(len(reading_list), 6)
         self.assertEqual(reading_list[2019]["book_count"], 0)
-        self.assertEqual(reading_list[2018]["book_count"], 0)
-        self.assertFalse(reading_list[2018]["books_read"])
+        self.assertFalse(reading_list[2019]["books_read"])
+        self.assertEqual(reading_list[2018]["book_count"], 1)
         self.assertEqual(reading_list[2017]["book_count"], 1)
         self.assertEqual(len(reading_list[2017]["books_read"]), 1)
         self.assertEqual(
             [reading.book.isbn for reading in reading_list[2017]["books_read"]],
-            ["9780111111113"])
+            ["9780111111143"])
         self.assertEqual(reading_list[2016]["book_count"], 1)
         self.assertEqual(len(reading_list[2016]["books_read"]), 1)
         self.assertEqual(
             [reading.book.isbn for reading in reading_list[2016]["books_read"]],
             ["9780111111333"])
+
+    def test_available_years(self):
+        year, last_year, next_year = Reading.available_years(2018)
+        self.assertEqual(last_year, 2017)
+        self.assertFalse(next_year)
+        year, last_year, next_year = Reading.available_years(2017)
+        self.assertEqual(last_year, 2016)
+        self.assertEqual(next_year, 2018)
+        year, last_year, next_year = Reading.available_years(2016)
+        self.assertEqual(next_year, 2017)
+        self.assertFalse(last_year)
+
 
 
 class TestBook(TestCase):
@@ -101,7 +114,8 @@ class TestBook(TestCase):
     def test_curtail_title(self):
         books = [book.curtail_title() for book in Book.query.all()]
         self.assertEqual(sorted(books),
-                         ["Ghost Stories of Antiquarians IE...",
+                         ["Gay T-Rex Law Firm",
+                          "Ghost Stories of Antiquarians IE...",
                           "Necronomicon",
                           "Oh, Whistle, and I'll Come Laddie...",
                           "The King in Yellow",

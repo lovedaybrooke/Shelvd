@@ -72,8 +72,23 @@ h2 {
   margin: 2.3em 0em 1em 0em;
 }
 
-h2#first {
+h2.stats {
+  margin: 0em;
+}
+
+h2.first {
   margin-top: 1.3em;
+}
+
+a.year-nav {
+  text-decoration: none;
+  color: black;
+  padding: 0em 2em;
+}
+
+a#hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 h3 {
