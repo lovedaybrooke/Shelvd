@@ -91,12 +91,14 @@
 
         var labels = svg.selectAll('text').data(dataset).enter().append('text')
                 .text(function(d) { 
-                    if ( d.category=='man') { 
+                    if ( d.category=='Man') { 
                       return "Men: " + d.percent + "%";
-                    } else if ( d.category=='woman') { 
+                    } else if ( d.category=='Woman') { 
                       return "Women: " + d.percent + "%";
-                    } else {
+                    } else if ( d.category=='Non-Binary') { 
                       return "Non-binary: " + d.percent + "%";
+                    } else {
+                      return "Unknown: " + d.percent + "%";
                     }})
                 .attr('x', 0)
                 .attr('y', function(d, i) { return i * (h / dataset.length) + 20;})
