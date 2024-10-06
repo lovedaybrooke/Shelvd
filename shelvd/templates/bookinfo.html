@@ -3,7 +3,9 @@
    	{% block maincontent %}
       <main class="grid-container">
         <div class='booklist grid-100 mobile-grid-100 tablet-grid-100'>
-          <h2>Book info for {{ book.isbn }}</h2>
+          <div class='title'>
+            <h2>Book info for {{ book.isbn }}</h2>
+          </div>
           {% if error %}<p class="error">{{error}}</p>{% endif %}
           {% if success %}<p class="success">Book details changed successfully</p>{% endif %}
             <form action="/bookinfo/{{ book.isbn }}" method="post">

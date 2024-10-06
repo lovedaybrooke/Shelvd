@@ -61,6 +61,11 @@ div.header span.current {
   padding-bottom: 0.15em;
 }
 
+div.title {
+  margin-top: 1.5em;
+  margin-bottom: 1em;
+}
+
 span.nav {
   margin: 0em 1em;
 }
@@ -72,18 +77,22 @@ h2 {
   margin: 2.3em 0em 1em 0em;
 }
 
-h2.stats {
+
+div.title h2 {
   margin: 0em;
 }
 
-h2.first {
-  margin-top: 1.3em;
-}
 
-a.year-nav {
+a.year-nav-left {
   text-decoration: none;
   color: black;
-  padding: 0em 2em;
+  padding: 0em 1em 0em 0em;
+}
+
+a.year-nav-right {
+  text-decoration: none;
+  color: black;
+  padding: 0em 0em 0em 1em;
 }
 
 a#hidden {
@@ -95,6 +104,10 @@ h3 {
   font-size: 1.6em;
   font-weight: 200;
   margin: 2em 0em 1em 0em;
+}
+
+div.title h3 {
+  margin-top: 0.8em;
 }
 
 

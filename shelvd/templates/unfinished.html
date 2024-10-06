@@ -3,7 +3,9 @@
    	{% block maincontent %}
         <main class="grid-container">
           <div class='booklist grid-100 mobile-grid-100 tablet-grid-100'>
-            <h2 class="first">Currently reading</h2>
+            <div class='title'>
+              <h2 class="first">Currently reading</h2>
+            </div>
           </div>
           {% if readings %}
               {% for reading in readings %}

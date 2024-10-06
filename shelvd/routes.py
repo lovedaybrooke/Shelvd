@@ -17,10 +17,27 @@ def unfinished():
                            readings=Reading.get_reading_list(False, False))
 
 
-@app.route('/finished')
-def finished():
+@app.route('/finished/all')
+def finished_all():
     return render_template('finished.html',
                            readings=Reading.get_year_by_year_reading_list())
+
+
+@app.route('/finished/')
+def finished():
+    year = datetime.datetime.now().year
+    return redirect("/finished/{0}".format(year), code=302)
+
+
+@app.route('/finished/<year>')
+def finished_by_year(year):
+    year, last_year, next_year = Reading.available_years(int(year))
+    return render_template('finished_year.html',
+                           readings=Reading.get_year_reading_list(year),
+                           year=year,
+                           last_year=last_year,
+                           next_year=next_year)
+
 
 
 @app.route('/abandoned')
@@ -31,7 +48,7 @@ def abandoned():
 
 @app.route('/stats')
 def stats():
-    year = datetime.datetime.now().year - 1
+    year = datetime.datetime.now().year
     return redirect("/stats/{0}".format(year), code=302)
 
 

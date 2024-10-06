@@ -312,6 +312,15 @@ class Reading(db.Model):
         return booklists
 
     @classmethod
+    def get_year_reading_list(cls, year):
+        books_read = cls.get_reading_list(True, False, year)
+        print({"books_read": books_read,
+                "book_count": len(books_read)})
+        return {"books_read": books_read,
+                "book_count": len(books_read)}
+
+
+    @classmethod
     def available_years(cls, year):
         ended_readings = cls.query.filter_by(ended=True).filter_by(
                         abandoned=False)

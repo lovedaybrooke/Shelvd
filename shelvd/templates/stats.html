@@ -1,12 +1,16 @@
 {% extends "basic_layout.html" %}
 
     {% block maincontent %}
-    <h2 class="first stats" >Reading statistics</h2>
-    <h2 class="stats" >
-      <a href="/stats/{{last_year}}" class="year-nav" {% if last_year %}{% else %}id="hidden"{% endif %}> < </a>
-      {{year}}
-      <a href="/stats/{{next_year}}" class="year-nav" {% if next_year %}{% else %}id="hidden"{% endif %}> > </a>
-    </h2>
+    <main class="grid-container">
+      <div class='booklist grid-100 mobile-grid-100 tablet-grid-100'>
+      <div class='title'>
+      <h2 class="first" >Reading statistics</h2>
+      <h3>
+        <a href="/stats/{{last_year}}" class="year-nav-left" {% if last_year %}{% else %}id="hidden"{% endif %}> < </a>
+        {{year}}
+        <a href="/stats/{{next_year}}" class="year-nav-right" {% if next_year %}{% else %}id="hidden"{% endif %}> > </a>
+      </h3>
+    </div>
     <div id="nationality">
       <h3>Author nationality</h3>
       <div class="graph">
@@ -112,4 +116,6 @@
       });
 
     </script>
+  </div>
+</main>
     {% endblock %}
