@@ -6,10 +6,8 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL').replace("postgres://", "postgresql://", 1)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    PLIVO_AUTH_ID = os.environ.get('PLIVO_AUTH_ID')
-    PLIVO_AUTH_TOKEN = os.environ.get('PLIVO_AUTH_TOKEN')
     RECIPIENT_NUMBER = os.environ.get('RECIPIENT_NUMBER')
     SENDING_NUMBER = os.environ.get('SENDING_NUMBER')
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
